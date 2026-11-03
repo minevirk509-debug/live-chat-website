@@ -2,126 +2,312 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Live Chat Website</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #101827;
-      color: white;
-      text-align: center;
-    }
-    .container {
-      max-width: 500px;
-      margin: 40px auto;
-      padding: 20px;
-    }
-    h1 { color: #38bdf8; }
-    input, button {
-      box-sizing: border-box;
-      width: 100%;
-      padding: 14px;
-      margin: 8px 0;
-      border: 0;
-      border-radius: 8px;
-      font-size: 16px;
-    }
-    button {
-      background: #0284c7;
-      color: white;
-      font-weight: bold;
-    }
-    #messages {
-      background: #1e293b;
-      height: 300px;
-      overflow-y: auto;
-      padding: 12px;
-      border-radius: 10px;
-      text-align: left;
-      margin: 15px 0;
-    }
-    .message {
-      padding: 10px;
-      margin: 7px 0;
-      background: #334155;
-      border-radius: 8px;
-      overflow-wrap: anywhere;
-    }
-    #status { color: #facc15; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LiveChat - Connect Instantly</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0b1220;
+  color: white;
+}
+
+.container {
+  max-width: 600px;
+  height: 100dvh;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  padding: 14px;
+}
+
+header {
+  background: #17243a;
+  padding: 18px;
+  border-radius: 16px;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+header h1 {
+  margin: 0;
+  color: #38bdf8;
+}
+
+header p {
+  color: #aabbd0;
+  margin-bottom: 0;
+}
+
+#login {
+  background: #17243a;
+  padding: 22px;
+  border-radius: 16px;
+  margin: auto 0;
+}
+
+input, button {
+  width: 100%;
+  padding: 14px;
+  border-radius: 10px;
+  border: none;
+  font-size: 16px;
+  margin-top: 10px;
+}
+
+input {
+  background: #26364e;
+  color: white;
+  outline: none;
+}
+
+button {
+  background: #0284c7;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: .5;
+}
+
+#chat {
+  display: none;
+  flex: 1;
+  min-height: 0;
+  flex-direction: column;
+  background: #17243a;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.chat-top {
+  padding: 14px;
+  border-bottom: 1px solid #34445c;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#status {
+  color: #4ade80;
+  font-size: 13px;
+}
+
+#messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px;
+}
+
+.message {
+  background: #26364e;
+  padding: 12px;
+  border-radius: 12px;
+  margin-bottom: 10px;
+  overflow-wrap: anywhere;
+}
+
+.message .name {
+  color: #38bdf8;
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+.message .time {
+  color: #91a2b9;
+  font-size: 11px;
+  text-align: right;
+  margin-top: 7px;
+}
+
+.send-area {
+  display: flex;
+  gap: 8px;
+  padding: 12px;
+  border-top: 1px solid #34445c;
+}
+
+.send-area input {
+  margin: 0;
+  min-width: 0;
+}
+
+.send-area button {
+  width: 85px;
+  margin: 0;
+}
+
+#notice {
+  text-align: center;
+  color: #aabbd0;
+  padding: 12px;
+  font-size: 13px;
+}
+
+</style>
 </head>
+
 <body>
-  <div class="container">
-    <h1>🌍 Live Chat</h1>
-    <p>Welcome to our chat room!</p>
+<div class="container">
 
-    <input id="name" placeholder="Enter your name">
-    <div id="messages"></div>
+<header>
+  <h1>💬 LiveChat</h1>
+  <p>Connect with people around the world</p>
+</header>
 
-    <input id="message" placeholder="Write your message">
-    <button id="send">Send Message</button>
-    <p id="status">Connecting...</p>
+<div id="login">
+  <h2>Welcome to LiveChat</h2>
+  <p>Enter your name to join the conversation.</p>
+  <input id="username" maxlength="24"
+    placeholder="Your name">
+  <button id="joinBtn" onclick="joinChat()">
+    Join Chat
+  </button>
+  <div id="notice">Free public chat room</div>
+</div>
+
+<div id="chat">
+  <div class="chat-top">
+    <strong id="welcome">Chat Room</strong>
+    <span id="status">Connecting...</span>
   </div>
 
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+  <div id="messages">
+    <div id="notice">Loading messages...</div>
+  </div>
 
-  <script>
-    const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_PROJECT.firebaseapp.com",
-      databaseURL: "YOUR_DATABASE_URL",
-      projectId: "YOUR_PROJECT_ID",
-      appId: "YOUR_APP_ID"
-    };
+  <div class="send-area">
+    <input id="messageInput" maxlength="500"
+      placeholder="Type your message..."
+      onkeydown="if(event.key==='Enter') sendMessage()">
+    <button id="sendBtn" onclick="sendMessage()">Send</button>
+  </div>
+</div>
 
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.database();
-    const messages = document.getElementById("messages");
-    const status = document.getElementById("status");
+</div>
 
-    auth.signInAnonymously()
-      .then(() => {
-        status.textContent = "Connected to chat";
-        db.ref("messages").limitToLast(100).on("child_added", snapshot => {
-          const data = snapshot.val();
-          const item = document.createElement("div");
-          item.className = "message";
-          item.textContent = data.name + ": " + data.text;
-          messages.appendChild(item);
-          messages.scrollTop = messages.scrollHeight;
-        });
-      })
-      .catch(error => {
-        status.textContent = "Connection error: " + error.message;
-      });
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 
-    document.getElementById("send").onclick = async () => {
-      const name = document.getElementById("name").value.trim();
-      const message = document.getElementById("message").value.trim();
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyCIgG9MMxLlvuMM9MavvMTrAQPuYZ6a2Ds",
+  authDomain: "livechat2026-51a85.firebaseapp.com",
+  databaseURL: "https://livechat2026-51a85-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "livechat2026-51a85",
+  storageBucket: "livechat2026-51a85.firebasestorage.app",
+  messagingSenderId: "467836802450",
+  appId: "1:467836802450:web:c9c48f316fcf3bf4d4dd4b"
+};
 
-      if (!name || !message) {
-        alert("Enter your name and message");
-        return;
-      }
+firebase.initializeApp(firebaseConfig);
 
-      if (!auth.currentUser) {
-        alert("Chat is not connected yet");
-        return;
-      }
+const auth = firebase.auth();
+const db = firebase.database();
 
-      await db.ref("messages").push({
-        name: name,
-        text: message,
-        time: Date.now()
-      });
+let currentUser = null;
+let currentName = "";
 
-      document.getElementById("message").value = "";
-    };
-  </script>
+async function joinChat() {
+  const name = document.getElementById("username").value.trim();
+  const btn = document.getElementById("joinBtn");
+
+  if (!name || name.length > 24) {
+    alert("Please enter a name (maximum 24 characters).");
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = "Joining...";
+
+  try {
+    const result = await auth.signInAnonymously();
+    currentUser = result.user;
+    currentName = name;
+
+    document.getElementById("login").style.display = "none";
+    document.getElementById("chat").style.display = "flex";
+    document.getElementById("welcome").textContent = "Hello, " + name;
+    document.getElementById("status").textContent = "● Online";
+
+    loadMessages();
+  } catch (error) {
+    alert("Could not join: " + error.message);
+    btn.disabled = false;
+    btn.textContent = "Join Chat";
+  }
+}
+
+function loadMessages() {
+  const list = document.getElementById("messages");
+
+  db.ref("messages")
+    .orderByChild("createdAt")
+    .limitToLast(100)
+    .on("child_added", snapshot => {
+      const msg = snapshot.val();
+      if (!msg) return;
+
+      const box = document.createElement("div");
+      box.className = "message";
+
+      const name = document.createElement("div");
+      name.className = "name";
+      name.textContent = msg.name || "Guest";
+
+      const text = document.createElement("div");
+      text.textContent = msg.text || "";
+
+      const time = document.createElement("div");
+      time.className = "time";
+      time.textContent = msg.createdAt
+        ? new Date(msg.createdAt).toLocaleTimeString()
+        : "";
+
+      box.appendChild(name);
+      box.appendChild(text);
+      box.appendChild(time);
+      list.appendChild(box);
+
+      list.scrollTop = list.scrollHeight;
+    }, error => {
+      document.getElementById("status").textContent = "Connection error";
+      console.error(error);
+    });
+}
+
+async function sendMessage() {
+  const input = document.getElementById("messageInput");
+  const btn = document.getElementById("sendBtn");
+  const message = input.value.trim();
+
+  if (!message || !currentUser) return;
+
+  btn.disabled = true;
+
+  try {
+    await db.ref("messages").push({
+      uid: currentUser.uid,
+      name: currentName,
+      text: message,
+      createdAt: firebase.database.ServerValue.TIMESTAMP
+    });
+
+    input.value = "";
+  } catch (error) {
+    alert("Message not sent: " + error.message);
+  } finally {
+    btn.disabled = false;
+  }
+}
+</script>
+
 </body>
 </html>
