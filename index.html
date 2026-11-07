@@ -171,7 +171,10 @@ button:disabled {
   </button>
   <div id="notice">Free public chat room</div>
 </div>
-
+<button id="googleBtn" onclick="googleLogin()"
+style="background:#ffffff;color:#222;">
+Continue with Google
+</button>
 <div id="chat">
   <div class="chat-top">
     <strong id="welcome">Chat Room</strong>
@@ -303,7 +306,34 @@ async function sendMessage() {
     alert("Message not sent: " + error.message);
   } finally {
     btn.disabled = false;
+  } async function googleLogin() {
+  const provider = new firebase.auth.GoogleAuthProvider();
+
+  try {
+    await auth.signInWithRedirect(provider);
+  } catch (error) {
+    alert("Google Login Error: " + error.message);
   }
+}
+
+auth.getRedirectResult()
+  .then(function(result) {
+    if (result.user) {
+      currentUser = result.user;
+      currentName = result.user.displayName || "User";
+
+      document.getElementById("login").style.display = "none";
+      document.getElementById("chat").style.display = "flex";
+      document.getElementById("welcome").textContent =
+        "Hello, " + currentName;
+      document.getElementById("status").textContent = "● Online";
+
+      loadMessages();
+    }
+  })
+  .catch(function(error) {
+    alert("Google Login Error: " + error.message);
+  });
 }
 </script>
 
