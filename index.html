@@ -160,17 +160,32 @@ button:disabled {
   <h1>💬 LiveChat</h1>
   <p>Connect with people around the world</p>
 </header>
-
 <div id="login">
   <h2>Welcome to LiveChat</h2>
-  <p>Enter your name to join the conversation.</p>
+  <p>Enter your name and phone number.</p>
+
   <input id="username" maxlength="24"
     placeholder="Your name">
-  <button id="joinBtn" onclick="joinChat()">
-    Join Chat
+
+  <input id="phoneNumber" type="tel"
+    placeholder="+923001234567">
+
+  <div id="recaptcha-container"></div>
+
+  <button id="sendOtpBtn" onclick="sendOTP()">
+    Send OTP
   </button>
+
+  <input id="otpCode" type="text"
+    inputmode="numeric" placeholder="Enter OTP">
+
+  <button id="verifyOtpBtn" onclick="verifyOTP()">
+    Verify OTP & Join
+  </button>
+
   <div id="notice">Free public chat room</div>
 </div>
+
 <button id="googleBtn" onclick="googleLogin()"
 style="background:#ffffff;color:#222;">
 Continue with Google
