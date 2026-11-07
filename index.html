@@ -230,7 +230,63 @@ const db = firebase.database();
 
 let currentUser = null;
 let currentName = "";
+let phoneConfirmation = null;
 
+window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier(
+  'recaptcha-container',
+  {
+    size: 'normal',
+    callback: function() {
+      console.log("reCAPTCHA verified");
+    }
+  }
+);
+
+async function sendOTP() {
+  const phone = document.getElementById("phoneNumber").value.trim();
+  const name = document.getElementById("username").value.trim();
+
+  if (!name || !phone) {
+    alert("Please enter your name and phone number.");
+    return;
+  }
+
+  try {
+    phoneConfirmation = await auth.signInWithPhoneNumber(
+      phone,
+      window.recaptchaVerifier
+    );
+    alert("OTP sent successfully!");
+  } catch (error) {
+    alert("OTP Error: " + error.message);
+    window.recaptchaVerifier.clear();
+  }
+}
+
+async function verifyOTP() {
+  const code = document.getElementById("otpCode").value.trim();
+  const name = document.getElementById("username").value.trim();
+
+  if (!phoneConfirmation || !code || !name) {
+    alert("Enter your name and OTP first.");
+    return;
+  }
+
+  try {
+    const result = await phoneConfirmation.confirm(code);
+    currentUser = result.user;
+    currentName = name;
+
+    document.getElementById("login").style.display = "none";
+    document.getElementById("chat").style.display = "flex";
+    document.getElementById("welcome").textContent = "Hello, " + name;
+    document.getElementById("status").textContent = "● Online";
+
+    loadMessages();
+  } catch (error) {
+    alert("OTP verification failed: " + error.message);
+  }
+}
 async function joinChat() {
   const name = document.getElementById("username").value.trim();
   const btn = document.getElementById("joinBtn");
