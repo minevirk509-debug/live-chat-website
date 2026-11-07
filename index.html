@@ -1,220 +1,90 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LiveChat - Connect Instantly</title>
-
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#08111f">
+<title>Zenvix — Connect freely</title>
 <style>
-* { box-sizing: border-box; }
-
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #0b1220;
-  color: white;
-}
-
-.container {
-  max-width: 600px;
-  height: 100dvh;
-  margin: auto;
-  display: flex;
-  flex-direction: column;
-  padding: 14px;
-}
-
-header {
-  background: #17243a;
-  padding: 18px;
-  border-radius: 16px;
-  margin-bottom: 12px;
-  text-align: center;
-}
-
-header h1 {
-  margin: 0;
-  color: #38bdf8;
-}
-
-header p {
-  color: #aabbd0;
-  margin-bottom: 0;
-}
-
-#login {
-  background: #17243a;
-  padding: 22px;
-  border-radius: 16px;
-  margin: auto 0;
-}
-
-input, button {
-  width: 100%;
-  padding: 14px;
-  border-radius: 10px;
-  border: none;
-  font-size: 16px;
-  margin-top: 10px;
-}
-
-input {
-  background: #26364e;
-  color: white;
-  outline: none;
-}
-
-button {
-  background: #0284c7;
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-button:disabled {
-  opacity: .5;
-}
-
-#chat {
-  display: none;
-  flex: 1;
-  min-height: 0;
-  flex-direction: column;
-  background: #17243a;
-  border-radius: 16px;
-  overflow: hidden;
-}
-
-.chat-top {
-  padding: 14px;
-  border-bottom: 1px solid #34445c;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-#status {
-  color: #4ade80;
-  font-size: 13px;
-}
-
-#messages {
-  flex: 1;
-  overflow-y: auto;
-  padding: 14px;
-}
-
-.message {
-  background: #26364e;
-  padding: 12px;
-  border-radius: 12px;
-  margin-bottom: 10px;
-  overflow-wrap: anywhere;
-}
-
-.message .name {
-  color: #38bdf8;
-  font-weight: bold;
-  margin-bottom: 6px;
-}
-
-.message .time {
-  color: #91a2b9;
-  font-size: 11px;
-  text-align: right;
-  margin-top: 7px;
-}
-
-.send-area {
-  display: flex;
-  gap: 8px;
-  padding: 12px;
-  border-top: 1px solid #34445c;
-}
-
-.send-area input {
-  margin: 0;
-  min-width: 0;
-}
-
-.send-area button {
-  width: 85px;
-  margin: 0;
-}
-
-#notice {
-  text-align: center;
-  color: #aabbd0;
-  padding: 12px;
-  font-size: 13px;
-}
-
+:root{--bg:#08111f;--panel:#142238;--panel2:#1b2d47;--text:#f4f7ff;--muted:#a8b7cc;--accent:#19a7e0;--accent2:#7c5cff;--line:#2a3d59;--danger:#ff6b79}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 15% 0%,#173b5a 0,transparent 34%),radial-gradient(circle at 100% 30%,#25205b 0,transparent 30%),var(--bg);color:var(--text);font:16px system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}
+button,input{font:inherit}button{border:0;cursor:pointer;font-weight:700}button:disabled{opacity:.5;cursor:not-allowed}
+.shell{max-width:1100px;margin:auto;padding:18px}.brand{display:flex;align-items:center;gap:14px;padding:20px;border:1px solid #ffffff16;border-radius:24px;background:linear-gradient(120deg,#1a2b45eF,#14213aeF);box-shadow:0 18px 55px #0005}
+.logo{width:58px;height:58px;border-radius:18px;display:grid;place-items:center;font-size:30px;background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 8px 25px #19a7e055}.brand h1{margin:0;font-size:clamp(25px,5vw,38px);letter-spacing:-1px}.brand p{margin:3px 0 0;color:var(--muted)}
+.card{background:#142238ed;border:1px solid #ffffff14;border-radius:24px;padding:24px;box-shadow:0 16px 45px #0004}
+.auth-wrap{max-width:520px;margin:50px auto}.muted{color:var(--muted)}.field{width:100%;padding:15px 16px;border:1px solid var(--line);border-radius:14px;background:#0d192b;color:var(--text);outline:none;margin:8px 0}.field:focus{border-color:var(--accent)}.btn{padding:14px 18px;border-radius:14px;background:linear-gradient(110deg,#078ec8,#1675d1);color:white}.btn.secondary{background:#263a57;color:var(--text);border:1px solid var(--line)}.btn.google{background:#fff;color:#202124;width:100%;margin-top:10px}.btn.full{width:100%;margin-top:10px}.row{display:flex;gap:10px;align-items:center}.row>*{min-width:0}.hidden{display:none!important}
+.app{display:grid;grid-template-columns:260px 1fr;gap:16px;margin-top:18px}.side{align-self:start}.profile{display:flex;gap:12px;align-items:center;margin-bottom:18px}.avatar{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,var(--accent),var(--accent2));font-weight:800}.navbtn{display:flex;width:100%;text-align:left;gap:12px;align-items:center;padding:13px 14px;margin:5px 0;border-radius:13px;background:transparent;color:var(--muted)}.navbtn.active,.navbtn:hover{background:#233956;color:white}.section-title{font-size:12px;text-transform:uppercase;letter-spacing:1.4px;color:var(--muted);margin:20px 10px 8px}.main{min-height:570px;display:flex;flex-direction:column}.topline{display:flex;justify-content:space-between;align-items:center;gap:10px;border-bottom:1px solid var(--line);padding-bottom:15px}.topline h2{margin:0}.status{font-size:13px;color:#7ee0b0}.messages{flex:1;min-height:300px;max-height:55vh;overflow:auto;padding:16px 2px;display:flex;flex-direction:column;gap:12px}.msg{max-width:85%;padding:11px 14px;border-radius:16px;background:#203652;overflow-wrap:anywhere}.msg.mine{align-self:flex-end;background:#075f91}.msg .meta{font-size:11px;color:#c2d2e7;margin-bottom:5px}.composer{display:flex;gap:9px;border-top:1px solid var(--line);padding-top:14px}.composer input{flex:1;min-width:0}.empty{margin:auto;text-align:center;color:var(--muted);padding:30px}.small{font-size:12px}.notice{padding:12px;border-radius:12px;background:#392f19;color:#ffe2a0;font-size:13px;margin-top:14px}.room-list{display:flex;flex-direction:column;gap:6px}.room{padding:11px;border-radius:12px;background:#1b2d47;color:white;text-align:left}.room.selected{outline:1px solid var(--accent)}.toolbar{display:flex;gap:8px;flex-wrap:wrap}.toolbar .btn{padding:10px 13px}.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:#263a57;border:1px solid var(--line);padding:12px 18px;border-radius:12px;max-width:90%;z-index:10}
+@media(max-width:720px){.shell{padding:12px}.app{grid-template-columns:1fr}.side{display:flex;gap:8px;overflow:auto;padding:10px}.side .profile,.side .section-title,.side .room-list,.side .side-note{display:none}.navbtn{width:auto;white-space:nowrap;margin:0}.main{min-height:62vh}.messages{max-height:48vh}.auth-wrap{margin:24px auto}}
 </style>
 </head>
-
 <body>
-<div class="container">
+<div class="shell">
+  <header class="brand">
+    <div class="logo">✦</div>
+    <div><h1>Zenvix</h1><p>Connect with people. Share your world.</p></div>
+  </header>
 
-<header>
-  <h1>💬 LiveChat</h1>
-  <p>Connect with people around the world</p>
-</header>
-<div id="login">
-  <h2>Welcome to LiveChat</h2>
-  <p>Enter your name and phone number.</p>
+  <section id="loginView" class="auth-wrap card">
+    <h2>Welcome to Zenvix</h2>
+    <p class="muted">Sign in to join conversations and communities.</p>
+    <input id="displayName" class="field" maxlength="24" placeholder="Your display name" autocomplete="name">
+    <button id="googleBtn" class="btn google">Continue with Google</button>
+    <button id="guestBtn" class="btn full">Continue as guest</button>
+    <p class="small muted">Phone OTP is temporarily unavailable while Firebase billing is not enabled.</p>
+    <div id="loginError" class="notice hidden"></div>
+  </section>
 
-  <input id="username" maxlength="24"
-    placeholder="Your name">
+  <section id="appView" class="app hidden">
+    <aside class="side card">
+      <div class="profile"><div class="avatar" id="avatar">Z</div><div><strong id="profileName">Guest</strong><div class="small status">● Signed in</div></div></div>
+      <div class="section-title">Workspace</div>
+      <button class="navbtn active" data-view="public">🌐 Public chat</button>
+      <button class="navbtn" data-view="groups">👥 Groups</button>
+      <button class="navbtn" data-view="private">✉️ Private chat</button>
+      <div class="section-title">Your groups</div>
+      <div id="groupList" class="room-list"></div>
+      <div class="side-note small muted" style="margin-top:18px">Be respectful. Never share passwords or private information.</div>
+      <button id="logoutBtn" class="navbtn" style="margin-top:16px">↪ Sign out</button>
+    </aside>
 
-  <input id="phoneNumber" type="tel"
-    placeholder="+923001234567">
+    <main class="main card">
+      <div class="topline">
+        <div><h2 id="viewTitle">Public chat</h2><div id="viewSubtitle" class="small muted">A shared room for everyone</div></div>
+        <span id="connectionStatus" class="status">Connecting…</span>
+      </div>
 
-  <div id="recaptcha-container"></div>
+      <section id="publicPanel" class="panel">
+        <div id="publicMessages" class="messages"><div class="empty">Welcome! Start the conversation.</div></div>
+        <form id="publicForm" class="composer"><input id="publicInput" class="field" maxlength="500" placeholder="Write a message…" autocomplete="off"><button class="btn">Send</button></form>
+      </section>
 
-  <button id="sendOtpBtn" onclick="sendOTP()">
-    Send OTP
-  </button>
+      <section id="groupsPanel" class="panel hidden">
+        <div class="notice">Create a group or open one you belong to. Group database permissions will be enabled in the next Firebase setup step.</div>
+        <div class="row" style="margin-top:12px"><input id="newGroupName" class="field" maxlength="40" placeholder="New group name"><button id="createGroupBtn" class="btn">Create</button></div>
+        <div id="groupsMessages" class="messages"><div class="empty">Choose or create a group.</div></div>
+        <form id="groupForm" class="composer"><input id="groupInput" class="field" maxlength="500" placeholder="Message this group…" autocomplete="off"><button class="btn">Send</button></form>
+      </section>
 
-  <input id="otpCode" type="text"
-    inputmode="numeric" placeholder="Enter OTP">
-
-  <button id="verifyOtpBtn" onclick="verifyOTP()">
-    Verify OTP & Join
-  </button>
-
-  <div id="notice">Free public chat room</div>
+      <section id="privatePanel" class="panel hidden">
+        <div class="notice">Private chat uses the other member's Firebase user ID. We'll finish secure private-chat permissions in Firebase next.</div>
+        <input id="privateUid" class="field" placeholder="Enter the other person's user ID">
+        <button id="openPrivateBtn" class="btn">Open private chat</button>
+        <div id="privateMessages" class="messages"><div class="empty">Enter a user ID to start a private conversation.</div></div>
+        <form id="privateForm" class="composer"><input id="privateInput" class="field" maxlength="500" placeholder="Private message…" autocomplete="off"><button class="btn">Send</button></form>
+      </section>
+    </main>
+  </section>
+  <p class="small muted" style="text-align:center;margin:18px">Zenvix • Built for friendly conversations</p>
 </div>
-
-<button id="googleBtn" onclick="googleLogin()"
-style="background:#ffffff;color:#222;">
-Continue with Google
-</button>
-<div id="chat">
-  <div class="chat-top">
-    <strong id="welcome">Chat Room</strong>
-    <span id="status">Connecting...</span>
-  </div>
-
-<div id="messages"></div>
-
-  <div class="send-area">
-    <input id="messageInput" maxlength="500"
-      placeholder="Type your message..."
-      onkeydown="if(event.key==='Enter') sendMessage()">
-    <button id="sendBtn" onclick="sendMessage()">Send</button>
-  </div>
-</div>
-
-</div>
+<div id="toast" class="toast hidden"></div>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-
 <script>
+/* Firebase project configuration */
 const firebaseConfig = {
-  apiKey: "AIzaSyCIgG9MMxLlvuMM9MavvMTrAQPuYZ6a2Ds",
+  apiKey: "AIzaSyCIgG9MMxLlvUM9MavvMTrAQPuYZ6a2Ds",
   authDomain: "livechat2026-51a85.firebaseapp.com",
   databaseURL: "https://livechat2026-51a85-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "livechat2026-51a85",
@@ -224,190 +94,117 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
-
 const auth = firebase.auth();
 const db = firebase.database();
 
-let currentUser = null;
-let currentName = "";
-let phoneConfirmation = null;
+let me = null, displayName = "", activeGroup = null, privateUid = null;
+let publicListener = null, groupListener = null, privateListener = null;
 
-window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier(
-  'recaptcha-container',
-  {
-    size: 'normal',
-    callback: function() {
-      console.log("reCAPTCHA verified");
-    }
-  }
-);
-
-async function sendOTP() {
-  const phone = document.getElementById("phoneNumber").value.trim();
-  const name = document.getElementById("username").value.trim();
-
-  if (!name || !phone) {
-    alert("Please enter your name and phone number.");
-    return;
-  }
-
-  try {
-    phoneConfirmation = await auth.signInWithPhoneNumber(
-      phone,
-      window.recaptchaVerifier
-    );
-    alert("OTP sent successfully!");
-  } catch (error) {
-    alert("OTP Error: " + error.message);
-    window.recaptchaVerifier.clear();
-  }
+const $ = id => document.getElementById(id);
+function toast(message){ $("toast").textContent=message; $("toast").classList.remove("hidden"); setTimeout(()=> $("toast").classList.add("hidden"),3500); }
+function showError(message){ $("loginError").textContent=message; $("loginError").classList.remove("hidden"); }
+function safeText(value){ return String(value ?? "").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+function initials(name){return (name||"Z").trim().slice(0,1).toUpperCase();}
+function showApp(user, name){
+  me=user; displayName=(name||user.displayName||"Guest").slice(0,24);
+  $("loginView").classList.add("hidden"); $("appView").classList.remove("hidden");
+  $("profileName").textContent=displayName; $("avatar").textContent=initials(displayName);
+  $("connectionStatus").textContent="● Signed in";
+  db.ref("users/"+me.uid).update({uid:me.uid,name:displayName,updatedAt:firebase.database.ServerValue.TIMESTAMP}).catch(()=>{});
+  startPublicChat();
 }
-
-async function verifyOTP() {
-  const code = document.getElementById("otpCode").value.trim();
-  const name = document.getElementById("username").value.trim();
-
-  if (!phoneConfirmation || !code || !name) {
-    alert("Enter your name and OTP first.");
-    return;
-  }
-
-  try {
-    const result = await phoneConfirmation.confirm(code);
-    currentUser = result.user;
-    currentName = name;
-
-    document.getElementById("login").style.display = "none";
-    document.getElementById("chat").style.display = "flex";
-    document.getElementById("welcome").textContent = "Hello, " + name;
-    document.getElementById("status").textContent = "● Online";
-
-    loadMessages();
-  } catch (error) {
-    alert("OTP verification failed: " + error.message);
-  }
+async function saveNameAndEnter(user){
+  const typed=$("displayName").value.trim();
+  const name=typed || user.displayName || "Guest";
+  try{await db.ref("users/"+user.uid).update({uid:user.uid,name:name.slice(0,24),updatedAt:firebase.database.ServerValue.TIMESTAMP});}catch(e){}
+  showApp(user,name);
 }
-async function joinChat() {
-  const name = document.getElementById("username").value.trim();
-  const btn = document.getElementById("joinBtn");
-
-  if (!name || name.length > 24) {
-    alert("Please enter a name (maximum 24 characters).");
-    return;
+$("googleBtn").addEventListener("click",async()=>{
+  $("loginError").classList.add("hidden");
+  const provider=new firebase.auth.GoogleAuthProvider();
+  provider.setCustomParameters({prompt:"select_account"});
+  try{const result=await auth.signInWithPopup(provider);await saveNameAndEnter(result.user);}
+  catch(error){
+    if(error.code==="auth/popup-blocked" || error.code==="auth/operation-not-supported-in-this-environment"){
+      try{await auth.signInWithRedirect(provider);}catch(e){showError(e.message);}
+    } else showError(error.message+" ("+error.code+")");
   }
+});
+$("guestBtn").addEventListener("click",async()=>{
+  $("loginError").classList.add("hidden");
+  try{const result=await auth.signInAnonymously();await saveNameAndEnter(result.user);}
+  catch(error){showError(error.message+" ("+error.code+")");}
+});
+auth.getRedirectResult().then(async result=>{if(result.user) await saveNameAndEnter(result.user);}).catch(e=>showError(e.message));
+auth.onAuthStateChanged(user=>{if(user && !me){showApp(user,user.displayName||"Guest");}});
+$("logoutBtn").addEventListener("click",async()=>{stopListeners();me=null;await auth.signOut();$("appView").classList.add("hidden");$("loginView").classList.remove("hidden");});
 
-  btn.disabled = true;
-  btn.textContent = "Joining...";
-
-  try {
-    const result = await auth.signInAnonymously();
-    currentUser = result.user;
-    currentName = name;
-
-    document.getElementById("login").style.display = "none";
-    document.getElementById("chat").style.display = "flex";
-    document.getElementById("welcome").textContent = "Hello, " + name;
-    document.getElementById("status").textContent = "● Online";
-
-    loadMessages();
-  } catch (error) {
-    alert("Could not join: " + error.message);
-    btn.disabled = false;
-    btn.textContent = "Join Chat";
-  }
-}
-
-function loadMessages() {
-  const list = document.getElementById("messages");
-
-  db.ref("messages")
-    .orderByChild("createdAt")
-    .limitToLast(100)
-    .on("child_added", snapshot => {
-      const msg = snapshot.val();
-      if (!msg) return;
-
-      const box = document.createElement("div");
-      box.className = "message";
-
-      const name = document.createElement("div");
-      name.className = "name";
-      name.textContent = msg.name || "Guest";
-
-      const text = document.createElement("div");
-      text.textContent = msg.text || "";
-
-      const time = document.createElement("div");
-      time.className = "time";
-      time.textContent = msg.createdAt
-        ? new Date(msg.createdAt).toLocaleTimeString()
-        : "";
-
-      box.appendChild(name);
-      box.appendChild(text);
-      box.appendChild(time);
-      list.appendChild(box);
-
-      list.scrollTop = list.scrollHeight;
-    }, error => {
-      document.getElementById("status").textContent = "Connection error";
-      console.error(error);
-    });
-}
-
-async function sendMessage() {
-  const input = document.getElementById("messageInput");
-  const btn = document.getElementById("sendBtn");
-  const message = input.value.trim();
-
-  if (!message || !currentUser) return;
-
-  btn.disabled = true;
-
-  try {
-    await db.ref("messages").push({
-      uid: currentUser.uid,
-      name: currentName,
-      text: message,
-      createdAt: firebase.database.ServerValue.TIMESTAMP
-    });
-
-    input.value = "";
-  } catch (error) {
-    alert("Message not sent: " + error.message);
-  } finally {
-    btn.disabled = false;
-  } async function googleLogin() {
-    alert("Google button is working");
-  const provider = new firebase.auth.GoogleAuthProvider();
-
-  try {
-    await auth.signInWithRedirect(provider);
-  } catch (error) {
-    alert("Google Login Error: " + error.message);
-  }
-}
-
-auth.getRedirectResult()
-  .then(function(result) {
-    if (result.user) {
-      currentUser = result.user;
-      currentName = result.user.displayName || "User";
-
-      document.getElementById("login").style.display = "none";
-      document.getElementById("chat").style.display = "flex";
-      document.getElementById("welcome").textContent =
-        "Hello, " + currentName;
-      document.getElementById("status").textContent = "● Online";
-
-      loadMessages();
-    }
-  })
-  .catch(function(error) {
-    alert("Google Login Error: " + error.message);
+function renderMessages(container,snapshot){
+  container.innerHTML="";
+  if(!snapshot.exists()){container.innerHTML='<div class="empty">No messages yet. Say hello!</div>';return;}
+  const items=[]; snapshot.forEach(child=>items.push({id:child.key,...child.val()}));
+  items.sort((a,b)=>(a.createdAt||0)-(b.createdAt||0)).slice(-150).forEach(m=>{
+    const div=document.createElement("div");div.className="msg"+(m.uid===me.uid?" mine":"");
+    const date=m.createdAt?new Date(m.createdAt).toLocaleString():"";
+    div.innerHTML='<div class="meta">'+safeText(m.name||"Member")+' · '+safeText(date)+'</div><div>'+safeText(m.text)+'</div>';
+    container.appendChild(div);
   });
+  container.scrollTop=container.scrollHeight;
 }
-</script>
+function stopListeners(){
+  if(publicListener){db.ref("messages").off("value",publicListener);publicListener=null;}
+  if(groupListener && activeGroup){db.ref("groupMessages/"+activeGroup).off("value",groupListener);groupListener=null;}
+  if(privateListener && privateUid){db.ref(privatePath()).off("value",privateListener);privateListener=null;}
+}
+function startPublicChat(){
+  if(publicListener)db.ref("messages").off("value",publicListener);
+  publicListener=s=>renderMessages($("publicMessages"),s);
+  db.ref("messages").limitToLast(150).on("value",publicListener,e=>{$("connectionStatus").textContent="Database access needs setup";toast("Firebase rules need an update for this feature.");});
+}
+async function sendTo(path,text){
+  const clean=text.trim();if(!clean)return;
+  if(clean.length>500){toast("Message is too long.");return;}
+  try{await db.ref(path).push({uid:me.uid,name:displayName,text:clean,createdAt:Date.now()});}
+  catch(e){toast("Firebase permission blocked this feature. We'll configure its rules next.");}
+}
+$("publicForm").addEventListener("submit",e=>{e.preventDefault();const v=$("publicInput").value;$("publicInput").value="";sendTo("messages",v);});
+function setView(view){
+  document.querySelectorAll(".navbtn[data-view]").forEach(b=>b.classList.toggle("active",b.dataset.view===view));
+  ["public","groups","private"].forEach(v=>$ (v+"Panel").classList.toggle("hidden",v!==view));
+  $("viewTitle").textContent=view==="public"?"Public chat":view==="groups"?"Groups":"Private chat";
+  $("viewSubtitle").textContent=view==="public"?"A shared room for everyone":view==="groups"?"Your communities":"One-to-one conversations";
+}
+document.querySelectorAll(".navbtn[data-view]").forEach(b=>b.addEventListener("click",()=>setView(b.dataset.view)));
 
+$("createGroupBtn").addEventListener("click",async()=>{
+  const name=$("newGroupName").value.trim();if(!name){toast("Enter a group name first.");return;}
+  try{
+    const ref=db.ref("groups").push();await ref.set({name:name.slice(0,40),createdBy:me.uid,createdAt:Date.now()});
+    await db.ref("groupMembers/"+ref.key+"/"+me.uid).set(true);
+    $("newGroupName").value="";await loadGroups();openGroup(ref.key,name);
+  }catch(e){toast("Group database rules are not enabled yet. We'll add them next.");}
+});
+async function loadGroups(){
+  try{
+    const snap=await db.ref("groupMembers").once("value");$("groupList").innerHTML="";
+    snap.forEach(g=>{if(g.child(me.uid).exists()){db.ref("groups/"+g.key).once("value").then(s=>{if(!s.exists())return;const b=document.createElement("button");b.className="room";b.textContent="👥 "+s.val().name;b.onclick=()=>openGroup(g.key,s.val().name);$("groupList").appendChild(b);});}});
+  }catch(e){}
+}
+function openGroup(id,name){
+  activeGroup=id;setView("groups");$("viewTitle").textContent=name;
+  if(groupListener)db.ref("groupMessages/"+id).off("value",groupListener);
+  groupListener=s=>renderMessages($("groupsMessages"),s);
+  db.ref("groupMessages/"+id).limitToLast(100).on("value",groupListener,()=>toast("Group access awaits Firebase rules."));
+}
+$("groupForm").addEventListener("submit",e=>{e.preventDefault();if(!activeGroup){toast("Create or select a group first.");return;}const v=$("groupInput").value;$("groupInput").value="";sendTo("groupMessages/"+activeGroup,v);});
+function privatePath(){return "privateChats/"+[me.uid,privateUid].sort().join("_");}
+$("openPrivateBtn").addEventListener("click",()=>{
+  const id=$("privateUid").value.trim();if(!id||id===me.uid){toast("Enter another member's user ID.");return;}
+  privateUid=id;if(privateListener)db.ref(privatePath()).off("value",privateListener);
+  privateListener=s=>renderMessages($("privateMessages"),s);
+  db.ref(privatePath()).limitToLast(100).on("value",privateListener,()=>toast("Private chat rules need to be enabled in Firebase."));
+});
+$("privateForm").addEventListener("submit",e=>{e.preventDefault();if(!privateUid){toast("Open a private chat first.");return;}const v=$("privateInput").value;$("privateInput").value="";sendTo(privatePath(),v);});
+</script>
 </body>
 </html>
