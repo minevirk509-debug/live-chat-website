@@ -25,7 +25,7 @@ body.light{--bg:#edf2fa;--text:#142238;--muted:#58677c;--line:#d5dfec;background
 </main></section><p class="small muted" style="text-align:center">Zenvix • Connect freely</p></div><div id="toast" class="toast hidden"></div>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <script>
-const firebaseConfig={apiKey:"AIzaSyCIgG9MMxLlvUM9MavvMTrAQPuYZ6a2Ds",authDomain:"livechat2026-51a85.firebaseapp.com",databaseURL:"https://livechat2026-51a85-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"livechat2026-51a85",storageBucket:"livechat2026-51a85.firebasestorage.app",messagingSenderId:"467836802450",appId:"1:467836802450:web:c9c48f316fcf3bf4d4dd4b"};
+const firebaseConfig={apiKey: "AIzaSyCIgG9MMxLlvUM9MavvMTrAQPuYZ6a2Ds",authDomain:"livechat2026-51a85.firebaseapp.com",databaseURL:"https://livechat2026-51a85-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"livechat2026-51a85",storageBucket:"livechat2026-51a85.firebasestorage.app",messagingSenderId:"467836802450",appId:"1:467836802450:web:c9c48f316fcf3bf4d4dd4b"};
 firebase.initializeApp(firebaseConfig);const auth=firebase.auth(),db=firebase.database();let me=null,name="";const $=x=>document.getElementById(x);
 function toast(t){$("toast").textContent=t;$("toast").classList.remove("hidden");setTimeout(()=>$("toast").classList.add("hidden"),2800)}
 function error(t){$("error").textContent=t;$("error").classList.remove("hidden")}
