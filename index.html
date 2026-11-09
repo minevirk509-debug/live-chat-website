@@ -8,6 +8,7 @@
 
   <style>
     * { box-sizing: border-box; }
+
     body {
       margin: 0;
       min-height: 100vh;
@@ -15,11 +16,13 @@
       color: white;
       font-family: Arial, sans-serif;
     }
+
     .container {
       width: min(700px, 100%);
       margin: auto;
       padding: 20px;
     }
+
     .panel {
       background: #1b2940;
       border: 1px solid #30415e;
@@ -27,7 +30,12 @@
       padding: 20px;
       margin-top: 20px;
     }
-    h1 { text-align: center; color: #71d6ff; }
+
+    h1 {
+      text-align: center;
+      color: #71d6ff;
+    }
+
     input, button {
       width: 100%;
       padding: 13px;
@@ -36,16 +44,37 @@
       border-radius: 9px;
       font-size: 16px;
     }
-    input { background: #f1f5f9; color: #111; }
+
+    input {
+      background: #f1f5f9;
+      color: #111;
+    }
+
     button {
       background: #168bd0;
       color: white;
       font-weight: bold;
       cursor: pointer;
     }
-    button.google { background: #fff; color: #222; }
-    button.logout { background: #9b3545; }
-    #chatPanel, #appPanel { display: none; }
+
+    button.google {
+      background: #fff;
+      color: #222;
+    }
+
+    button.logout {
+      background: #9b3545;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    #chatPanel, #appPanel {
+      display: none;
+    }
+
     #messages {
       height: 340px;
       overflow-y: auto;
@@ -53,6 +82,7 @@
       border-radius: 10px;
       padding: 12px;
     }
+
     .message {
       background: #263954;
       padding: 10px;
@@ -60,40 +90,74 @@
       border-radius: 9px;
       overflow-wrap: anywhere;
     }
-    .message strong { color: #71d6ff; }
-    .small { color: #b8c3d6; font-size: 13px; }
-    #status { color: #ffd166; text-align: center; }
+
+    .message strong {
+      color: #71d6ff;
+    }
+
+    .small {
+      color: #b8c3d6;
+      font-size: 13px;
+      overflow-wrap: anywhere;
+    }
+
+    #status {
+      color: #ffd166;
+      text-align: center;
+      overflow-wrap: anywhere;
+    }
   </style>
 </head>
 
 <body>
   <main class="container">
     <h1>ZENVIX</h1>
-    <p style="text-align:center">Your world. Your people. Your space.</p>
+    <p style="text-align:center">
+      Your world. Your people. Your space.
+    </p>
 
     <section class="panel" id="loginPanel">
       <h2>Welcome to Zenvix</h2>
-      <input id="displayName" maxlength="50"
-             placeholder="Enter your name">
 
-      <button id="guestButton">Continue as Guest</button>
+      <input
+        id="displayName"
+        maxlength="50"
+        placeholder="Enter your name"
+      >
+
+      <button id="guestButton">
+        Continue as Guest
+      </button>
+
       <button id="googleButton" class="google">
         Continue with Google
       </button>
+
       <p id="loginStatus" class="small"></p>
     </section>
 
     <section class="panel" id="appPanel">
       <p id="welcome"></p>
-      <button id="logoutButton" class="logout">Logout</button>
+      <button id="logoutButton" class="logout">
+        Logout
+      </button>
     </section>
 
     <section class="panel" id="chatPanel">
       <h2>Public Chat</h2>
+
       <div id="messages"></div>
-      <input id="messageInput" maxlength="2000"
-             placeholder="Write your message...">
-      <button id="sendButton">Send Message</button>
+
+      <input
+        id="messageInput"
+        maxlength="2000"
+        placeholder="Write your message..."
+      >
+
+      <button id="sendButton">
+        Send Message
+      </button>
+
       <p id="chatStatus" class="small"></p>
     </section>
 
@@ -125,6 +189,7 @@
 
     let currentUser = null;
     let currentName = "";
+    let messagesQuery = null;
     let messagesListener = null;
 
     function showError(element, error) {
@@ -133,44 +198,113 @@
         (error.code ? " (" + error.code + ")" : "");
     }
 
+    function showLogin() {
+      $("loginPanel").style.display = "block";
+      $("appPanel").style.display = "none";
+      $("chatPanel").style.display = "none";
+    }
+
+    function showApp() {
+      $("loginPanel").style.display = "none";
+      $("appPanel").style.display = "block";
+      $("chatPanel").style.display = "block";
+    }
+
+    function stopMessages() {
+      if (messagesQuery && messagesListener) {
+        messagesQuery.off("value", messagesListener);
+      }
+
+      messagesQuery = null;
+      messagesListener = null;
+    }
+
+    // Guest Login
     $("guestButton").onclick = async () => {
       const name = $("displayName").value.trim();
 
       if (!name) {
-        $("loginStatus").textContent = "Please enter your name.";
+        $("loginStatus").textContent =
+          "Please enter your name.";
         return;
       }
 
-      localStorage.setItem("zenvixGuestName", name);
-      $("loginStatus").textContent = "Connecting...";
+      $("guestButton").disabled = true;
+      $("loginStatus").textContent = "Connecting as Guest...";
 
       try {
+        await auth.setPersistence(
+          firebase.auth.Auth.Persistence.LOCAL
+        );
+
+        localStorage.setItem("zenvixGuestName", name);
+
+        if (auth.currentUser) {
+          await auth.signOut();
+        }
+
         await auth.signInAnonymously();
+
       } catch (error) {
         showError("loginStatus", error);
+      } finally {
+        $("guestButton").disabled = false;
       }
     };
 
+    // Google Login
     $("googleButton").onclick = async () => {
-      $("loginStatus").textContent = "Opening Google Login...";
+      $("googleButton").disabled = true;
+      $("loginStatus").textContent =
+        "Opening Google Login. Please wait...";
 
       try {
-        const provider = new firebase.auth.GoogleAuthProvider();
+        await auth.setPersistence(
+          firebase.auth.Auth.Persistence.LOCAL
+        );
+
+        // End an old Guest session before Google Login.
+        if (auth.currentUser && auth.currentUser.isAnonymous) {
+          await auth.signOut();
+        }
+
+        const provider =
+          new firebase.auth.GoogleAuthProvider();
+
         provider.setCustomParameters({
           prompt: "select_account"
         });
+
         await auth.signInWithRedirect(provider);
+
       } catch (error) {
         showError("loginStatus", error);
+        $("googleButton").disabled = false;
       }
     };
 
+    // Check the result after returning from Google.
+    auth.getRedirectResult()
+      .then(result => {
+        if (result && result.user) {
+          $("loginStatus").textContent =
+            "Google Login successful.";
+        }
+      })
+      .catch(error => {
+        showError("loginStatus", error);
+        $("googleButton").disabled = false;
+      });
+
+    // Login state
     auth.onAuthStateChanged(async user => {
+      stopMessages();
+
       if (!user) {
         currentUser = null;
-        $("loginPanel").style.display = "block";
-        $("appPanel").style.display = "none";
-        $("chatPanel").style.display = "none";
+        currentName = "";
+        showLogin();
+        $("status").textContent = "";
         return;
       }
 
@@ -180,29 +314,36 @@
         ? (localStorage.getItem("zenvixGuestName") || "Guest")
         : (user.displayName || "Zenvix Member");
 
-      $("loginPanel").style.display = "none";
-      $("appPanel").style.display = "block";
-      $("chatPanel").style.display = "block";
-      $("welcome").textContent = "Welcome, " + currentName;
+      showApp();
+
+      $("welcome").textContent =
+        "Welcome, " + currentName;
 
       try {
         await db.ref("users/" + user.uid).update({
           uid: user.uid,
           name: currentName,
-          updatedAt: firebase.database.ServerValue.TIMESTAMP
+          updatedAt:
+            firebase.database.ServerValue.TIMESTAMP
         });
 
-        $("status").textContent = "Connected to Zenvix.";
+        $("status").textContent =
+          user.isAnonymous
+            ? "Connected as Guest."
+            : "Connected with Google.";
+
         startMessages();
+
       } catch (error) {
         showError("status", error);
       }
     });
 
+    // Public Chat messages
     function startMessages() {
-      if (messagesListener) {
-        db.ref("messages").off("value", messagesListener);
-      }
+      stopMessages();
+
+      messagesQuery = db.ref("messages").limitToLast(100);
 
       messagesListener = snapshot => {
         const box = $("messages");
@@ -222,6 +363,7 @@
 
           const time = document.createElement("div");
           time.className = "small";
+
           time.textContent = msg.timestamp
             ? new Date(msg.timestamp).toLocaleString()
             : "";
@@ -233,18 +375,20 @@
         box.scrollTop = box.scrollHeight;
       };
 
-      db.ref("messages")
-        .limitToLast(100)
-        .on("value", messagesListener, error => {
-          showError("chatStatus", error);
-        });
+      messagesQuery.on(
+        "value",
+        messagesListener,
+        error => showError("chatStatus", error)
+      );
     }
 
+    // Send message
     async function sendMessage() {
       const text = $("messageInput").value.trim();
 
       if (!currentUser || !text) return;
 
+      $("sendButton").disabled = true;
       $("chatStatus").textContent = "Sending...";
 
       try {
@@ -252,29 +396,41 @@
           uid: currentUser.uid,
           name: currentName,
           text: text,
-          timestamp: firebase.database.ServerValue.TIMESTAMP
+          timestamp:
+            firebase.database.ServerValue.TIMESTAMP
         });
 
         $("messageInput").value = "";
         $("chatStatus").textContent = "Message sent.";
+
       } catch (error) {
         showError("chatStatus", error);
+      } finally {
+        $("sendButton").disabled = false;
       }
     }
 
     $("sendButton").onclick = sendMessage;
 
-    $("messageInput").addEventListener("keydown", event => {
-      if (event.key === "Enter") sendMessage();
-    });
+    $("messageInput").addEventListener(
+      "keydown",
+      event => {
+        if (event.key === "Enter") {
+          sendMessage();
+        }
+      }
+    );
 
+    // Logout
     $("logoutButton").onclick = async () => {
       try {
-        if (messagesListener) {
-          db.ref("messages").off("value", messagesListener);
-          messagesListener = null;
-        }
+        stopMessages();
         await auth.signOut();
+        currentUser = null;
+        currentName = "";
+        showLogin();
+        $("status").textContent = "You have logged out.";
+
       } catch (error) {
         showError("status", error);
       }
