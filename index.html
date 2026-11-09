@@ -489,3 +489,188 @@
   </script>
 </body>
 </html>
+
+<!-- ===================================== -->
+<!-- 01. ZENVIX PROFESSIONAL DESIGN -->
+<!-- ===================================== -->
+
+<style>
+/* 02. Main dashboard design */
+
+body {
+  background:
+    radial-gradient(circle at top left, #19375b 0%, transparent 38%),
+    linear-gradient(135deg, #080f1d, #101c30 60%, #0b1423);
+}
+
+.container {
+  max-width: 850px;
+  padding: 18px;
+}
+
+h1 {
+  font-size: 38px;
+  letter-spacing: 3px;
+  text-shadow: 0 0 20px rgba(113,214,255,.3);
+}
+
+.container > p {
+  color: #a9bad0;
+}
+
+/* 03. Professional panels */
+
+.panel {
+  background: rgba(27,41,64,.94);
+  border: 1px solid rgba(113,214,255,.16);
+  border-radius: 20px;
+  box-shadow: 0 12px 35px rgba(0,0,0,.22);
+  padding: 22px;
+  margin-top: 18px;
+}
+
+/* 04. Dashboard welcome section */
+
+#appPanel {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg,#1d3858,#17263e);
+}
+
+#appPanel::before {
+  content: "Z";
+  position: absolute;
+  right: 18px;
+  top: -35px;
+  font-size: 150px;
+  font-weight: bold;
+  color: rgba(113,214,255,.06);
+  pointer-events: none;
+}
+
+#welcome {
+  font-size: 23px;
+  font-weight: bold;
+  color: #ffffff;
+  position: relative;
+}
+
+/* 05. Public chat heading */
+
+#chatPanel h2 {
+  font-size: 25px;
+  color: #71d6ff;
+  border-bottom: 1px solid #30415e;
+  padding-bottom: 14px;
+}
+
+/* 06. Message area */
+
+#messages {
+  height: 390px;
+  background: #0c1627;
+  border: 1px solid #2b3e59;
+  border-radius: 15px;
+  padding: 12px;
+}
+
+.message {
+  background: linear-gradient(135deg,#263954,#20334d);
+  border: 1px solid rgba(113,214,255,.08);
+  border-radius: 13px;
+  padding: 13px;
+  margin: 10px 0;
+  box-shadow: 0 4px 12px rgba(0,0,0,.12);
+}
+
+.message strong {
+  color: #71d6ff;
+  font-size: 15px;
+}
+
+.message .small {
+  text-align: right;
+  margin-top: 7px;
+  color: #91a5bf;
+}
+
+/* 07. Inputs */
+
+input {
+  border: 1px solid #d6e2f0;
+  outline: none;
+  border-radius: 12px;
+  padding: 15px;
+}
+
+input:focus {
+  border: 2px solid #39b9f0;
+  box-shadow: 0 0 0 3px rgba(57,185,240,.12);
+}
+
+/* 08. Buttons */
+
+button {
+  border-radius: 12px;
+  padding: 14px;
+  transition: transform .15s ease, opacity .15s ease;
+}
+
+button:active {
+  transform: scale(.98);
+  opacity: .85;
+}
+
+#sendButton {
+  background: linear-gradient(135deg,#168bd0,#0875b8);
+  box-shadow: 0 5px 15px rgba(22,139,208,.2);
+}
+
+#logoutButton {
+  position: relative;
+  z-index: 1;
+}
+
+/* 09. Connection status */
+
+#status {
+  background: rgba(30,150,100,.12);
+  border: 1px solid rgba(70,210,150,.18);
+  border-radius: 10px;
+  padding: 10px;
+  font-size: 13px;
+}
+
+/* 10. Mobile screen adjustments */
+
+@media (max-width: 480px) {
+  .container {
+    padding: 12px;
+  }
+
+  h1 {
+    font-size: 32px;
+  }
+
+  .panel {
+    padding: 16px;
+    border-radius: 17px;
+  }
+
+  #messages {
+    height: 350px;
+  }
+
+  #welcome {
+    font-size: 20px;
+  }
+
+  #chatPanel h2 {
+    font-size: 22px;
+  }
+}
+</style>
+
+<!-- ===================================== -->
+<!-- 11. END OF ZENVIX DESIGN ADDITION -->
+<!-- ===================================== -->
