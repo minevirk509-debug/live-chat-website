@@ -3,46 +3,282 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Zenvix</title>
 
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
+    * { box-sizing: border-box; }
     body {
       margin: 0;
       min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
       background: #101827;
       color: white;
       font-family: Arial, sans-serif;
     }
-
-    .welcome {
-      text-align: center;
-      padding: 30px;
+    .container {
+      width: min(700px, 100%);
+      margin: auto;
+      padding: 20px;
     }
-
-    h1 {
-      font-size: 42px;
-      margin-bottom: 10px;
+    .panel {
+      background: #1b2940;
+      border: 1px solid #30415e;
+      border-radius: 16px;
+      padding: 20px;
+      margin-top: 20px;
     }
-
-    p {
-      color: #b8c3d6;
+    h1 { text-align: center; color: #71d6ff; }
+    input, button {
+      width: 100%;
+      padding: 13px;
+      margin-top: 10px;
+      border: 0;
+      border-radius: 9px;
       font-size: 16px;
     }
+    input { background: #f1f5f9; color: #111; }
+    button {
+      background: #168bd0;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button.google { background: #fff; color: #222; }
+    button.logout { background: #9b3545; }
+    #chatPanel, #appPanel { display: none; }
+    #messages {
+      height: 340px;
+      overflow-y: auto;
+      background: #101827;
+      border-radius: 10px;
+      padding: 12px;
+    }
+    .message {
+      background: #263954;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 9px;
+      overflow-wrap: anywhere;
+    }
+    .message strong { color: #71d6ff; }
+    .small { color: #b8c3d6; font-size: 13px; }
+    #status { color: #ffd166; text-align: center; }
   </style>
 </head>
 
 <body>
-  <div class="welcome">
+  <main class="container">
     <h1>ZENVIX</h1>
-    <p>Your world. Your people. Your space.</p>
-  </div>
+    <p style="text-align:center">Your world. Your people. Your space.</p>
+
+    <section class="panel" id="loginPanel">
+      <h2>Welcome to Zenvix</h2>
+      <input id="displayName" maxlength="50"
+             placeholder="Enter your name">
+
+      <button id="guestButton">Continue as Guest</button>
+      <button id="googleButton" class="google">
+        Continue with Google
+      </button>
+      <p id="loginStatus" class="small"></p>
+    </section>
+
+    <section class="panel" id="appPanel">
+      <p id="welcome"></p>
+      <button id="logoutButton" class="logout">Logout</button>
+    </section>
+
+    <section class="panel" id="chatPanel">
+      <h2>Public Chat</h2>
+      <div id="messages"></div>
+      <input id="messageInput" maxlength="2000"
+             placeholder="Write your message...">
+      <button id="sendButton">Send Message</button>
+      <p id="chatStatus" class="small"></p>
+    </section>
+
+    <p id="status"></p>
+  </main>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCIgG9MMxLlvuMM9MavvMTrAQPuYZ6a2Ds",
+      authDomain: "livechat2026-51a85.firebaseapp.com",
+      databaseURL: "https://livechat2026-51a85-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "livechat2026-51a85",
+      storageBucket: "livechat2026-51a85.firebasestorage.app",
+      messagingSenderId: "467836802450",
+      appId: "1:467836802450:web:c9c48f316fcf3bf4d4dd4b",
+      measurementId: "G-LXL179GDDP"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+
+    const auth = firebase.auth();
+    const db = firebase.database();
+
+    const $ = id => document.getElementById(id);
+
+    let currentUser = null;
+    let currentName = "";
+    let messagesListener = null;
+
+    function showError(element, error) {
+      $(element).textContent =
+        (error.message || "Something went wrong") +
+        (error.code ? " (" + error.code + ")" : "");
+    }
+
+    $("guestButton").onclick = async () => {
+      const name = $("displayName").value.trim();
+
+      if (!name) {
+        $("loginStatus").textContent = "Please enter your name.";
+        return;
+      }
+
+      localStorage.setItem("zenvixGuestName", name);
+      $("loginStatus").textContent = "Connecting...";
+
+      try {
+        await auth.signInAnonymously();
+      } catch (error) {
+        showError("loginStatus", error);
+      }
+    };
+
+    $("googleButton").onclick = async () => {
+      $("loginStatus").textContent = "Opening Google Login...";
+
+      try {
+        const provider = new firebase.auth.GoogleAuthProvider();
+        provider.setCustomParameters({
+          prompt: "select_account"
+        });
+        await auth.signInWithRedirect(provider);
+      } catch (error) {
+        showError("loginStatus", error);
+      }
+    };
+
+    auth.onAuthStateChanged(async user => {
+      if (!user) {
+        currentUser = null;
+        $("loginPanel").style.display = "block";
+        $("appPanel").style.display = "none";
+        $("chatPanel").style.display = "none";
+        return;
+      }
+
+      currentUser = user;
+
+      currentName = user.isAnonymous
+        ? (localStorage.getItem("zenvixGuestName") || "Guest")
+        : (user.displayName || "Zenvix Member");
+
+      $("loginPanel").style.display = "none";
+      $("appPanel").style.display = "block";
+      $("chatPanel").style.display = "block";
+      $("welcome").textContent = "Welcome, " + currentName;
+
+      try {
+        await db.ref("users/" + user.uid).update({
+          uid: user.uid,
+          name: currentName,
+          updatedAt: firebase.database.ServerValue.TIMESTAMP
+        });
+
+        $("status").textContent = "Connected to Zenvix.";
+        startMessages();
+      } catch (error) {
+        showError("status", error);
+      }
+    });
+
+    function startMessages() {
+      if (messagesListener) {
+        db.ref("messages").off("value", messagesListener);
+      }
+
+      messagesListener = snapshot => {
+        const box = $("messages");
+        box.innerHTML = "";
+
+        snapshot.forEach(child => {
+          const msg = child.val() || {};
+
+          const item = document.createElement("div");
+          item.className = "message";
+
+          const name = document.createElement("strong");
+          name.textContent = msg.name || "Member";
+
+          const content = document.createElement("div");
+          content.textContent = msg.text || "";
+
+          const time = document.createElement("div");
+          time.className = "small";
+          time.textContent = msg.timestamp
+            ? new Date(msg.timestamp).toLocaleString()
+            : "";
+
+          item.append(name, content, time);
+          box.appendChild(item);
+        });
+
+        box.scrollTop = box.scrollHeight;
+      };
+
+      db.ref("messages")
+        .limitToLast(100)
+        .on("value", messagesListener, error => {
+          showError("chatStatus", error);
+        });
+    }
+
+    async function sendMessage() {
+      const text = $("messageInput").value.trim();
+
+      if (!currentUser || !text) return;
+
+      $("chatStatus").textContent = "Sending...";
+
+      try {
+        await db.ref("messages").push({
+          uid: currentUser.uid,
+          name: currentName,
+          text: text,
+          timestamp: firebase.database.ServerValue.TIMESTAMP
+        });
+
+        $("messageInput").value = "";
+        $("chatStatus").textContent = "Message sent.";
+      } catch (error) {
+        showError("chatStatus", error);
+      }
+    }
+
+    $("sendButton").onclick = sendMessage;
+
+    $("messageInput").addEventListener("keydown", event => {
+      if (event.key === "Enter") sendMessage();
+    });
+
+    $("logoutButton").onclick = async () => {
+      try {
+        if (messagesListener) {
+          db.ref("messages").off("value", messagesListener);
+          messagesListener = null;
+        }
+        await auth.signOut();
+      } catch (error) {
+        showError("status", error);
+      }
+    };
+  </script>
 </body>
 </html>
