@@ -58,7 +58,7 @@
     }
 
     button.google {
-      background: #fff;
+      background: white;
       color: #222;
     }
 
@@ -99,12 +99,25 @@
       color: #b8c3d6;
       font-size: 13px;
       overflow-wrap: anywhere;
+      line-height: 1.5;
     }
 
     #status {
       color: #ffd166;
       text-align: center;
       overflow-wrap: anywhere;
+    }
+
+    #diagnostics {
+      background: #101827;
+      border-radius: 9px;
+      padding: 12px;
+      margin-top: 15px;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      font-size: 13px;
+      line-height: 1.6;
+      color: #b8e8ff;
     }
   </style>
 </head>
@@ -134,6 +147,9 @@
       </button>
 
       <p id="loginStatus" class="small"></p>
+
+      <h3>Login Diagnostics</h3>
+      <div id="diagnostics">Zenvix started. Waiting for login...</div>
     </section>
 
     <section class="panel" id="appPanel">
@@ -192,10 +208,24 @@
     let messagesQuery = null;
     let messagesListener = null;
 
+    function diagnostic(message) {
+      const box = $("diagnostics");
+      const time = new Date().toLocaleTimeString();
+
+      box.textContent +=
+        "\n[" + time + "] " + message;
+
+      box.scrollTop = box.scrollHeight;
+    }
+
     function showError(element, error) {
+      const code = error.code || "No error code";
+      const message = error.message || "Unknown error";
+
       $(element).textContent =
-        (error.message || "Something went wrong") +
-        (error.code ? " (" + error.code + ")" : "");
+        "Error: " + code + " - " + message;
+
+      diagnostic("ERROR: " + code + " - " + message);
     }
 
     function showLogin() {
@@ -219,7 +249,7 @@
       messagesListener = null;
     }
 
-    // Guest Login
+    // GUEST LOGIN
     $("guestButton").onclick = async () => {
       const name = $("displayName").value.trim();
 
@@ -230,20 +260,17 @@
       }
 
       $("guestButton").disabled = true;
-      $("loginStatus").textContent = "Connecting as Guest...";
+      $("loginStatus").textContent =
+        "Connecting as Guest...";
+
+      diagnostic("Guest Login button clicked.");
 
       try {
-        await auth.setPersistence(
-          firebase.auth.Auth.Persistence.LOCAL
-        );
-
         localStorage.setItem("zenvixGuestName", name);
 
-        if (auth.currentUser) {
-          await auth.signOut();
-        }
-
         await auth.signInAnonymously();
+
+        diagnostic("Guest authentication request completed.");
 
       } catch (error) {
         showError("loginStatus", error);
@@ -252,59 +279,57 @@
       }
     };
 
-    // Google Login
-    $("googleButton").onclick = async () => {
+    // GOOGLE LOGIN - POPUP METHOD
+    $("googleButton").onclick = () => {
       $("googleButton").disabled = true;
       $("loginStatus").textContent =
-        "Opening Google Login. Please wait...";
+        "Opening Google account selection...";
 
-      try {
-        await auth.setPersistence(
-          firebase.auth.Auth.Persistence.LOCAL
-        );
+      diagnostic("Google Login button clicked.");
+      diagnostic("Starting Google sign-in with popup.");
 
-        // End an old Guest session before Google Login.
-        if (auth.currentUser && auth.currentUser.isAnonymous) {
-          await auth.signOut();
-        }
+      const provider =
+        new firebase.auth.GoogleAuthProvider();
 
-        const provider =
-          new firebase.auth.GoogleAuthProvider();
-
-        provider.setCustomParameters({
-          prompt: "select_account"
-        });
-
-        await auth.signInWithRedirect(provider);
-
-      } catch (error) {
-        showError("loginStatus", error);
-        $("googleButton").disabled = false;
-      }
-    };
-
-    // Check the result after returning from Google.
-    auth.getRedirectResult()
-      .then(result => {
-        if (result && result.user) {
-          $("loginStatus").textContent =
-            "Google Login successful.";
-        }
-      })
-      .catch(error => {
-        showError("loginStatus", error);
-        $("googleButton").disabled = false;
+      provider.setCustomParameters({
+        prompt: "select_account"
       });
 
-    // Login state
+      auth.signInWithPopup(provider)
+        .then(result => {
+          diagnostic("Google popup returned successfully.");
+
+          if (result.user) {
+            diagnostic(
+              "Firebase received user: " +
+              (result.user.email || result.user.uid)
+            );
+
+            $("loginStatus").textContent =
+              "Google Login successful.";
+          }
+        })
+        .catch(error => {
+          showError("loginStatus", error);
+        })
+        .finally(() => {
+          $("googleButton").disabled = false;
+        });
+    };
+
+    // AUTHENTICATION STATE
     auth.onAuthStateChanged(async user => {
       stopMessages();
 
       if (!user) {
         currentUser = null;
         currentName = "";
+
         showLogin();
+
         $("status").textContent = "";
+        diagnostic("Firebase auth state: No user signed in.");
+
         return;
       }
 
@@ -313,6 +338,16 @@
       currentName = user.isAnonymous
         ? (localStorage.getItem("zenvixGuestName") || "Guest")
         : (user.displayName || "Zenvix Member");
+
+      diagnostic(
+        "Firebase auth state: User signed in. " +
+        "Type: " +
+        (user.isAnonymous ? "Guest" : "Google/Registered")
+      );
+
+      if (user.email) {
+        diagnostic("Account email: " + user.email);
+      }
 
       showApp();
 
@@ -332,14 +367,19 @@
             ? "Connected as Guest."
             : "Connected with Google.";
 
+        diagnostic("User profile saved to database.");
+
         startMessages();
 
       } catch (error) {
         showError("status", error);
       }
+    }, error => {
+      showError("loginStatus", error);
+      diagnostic("Authentication state listener failed.");
     });
 
-    // Public Chat messages
+    // PUBLIC CHAT
     function startMessages() {
       stopMessages();
 
@@ -380,9 +420,11 @@
         messagesListener,
         error => showError("chatStatus", error)
       );
+
+      diagnostic("Public Chat listener started.");
     }
 
-    // Send message
+    // SEND MESSAGE
     async function sendMessage() {
       const text = $("messageInput").value.trim();
 
@@ -421,20 +463,29 @@
       }
     );
 
-    // Logout
+    // LOGOUT
     $("logoutButton").onclick = async () => {
       try {
         stopMessages();
+
         await auth.signOut();
+
         currentUser = null;
         currentName = "";
+
         showLogin();
-        $("status").textContent = "You have logged out.";
+
+        $("status").textContent =
+          "You have logged out.";
+
+        diagnostic("User logged out.");
 
       } catch (error) {
         showError("status", error);
       }
     };
+
+    diagnostic("Firebase initialized.");
   </script>
 </body>
 </html>
