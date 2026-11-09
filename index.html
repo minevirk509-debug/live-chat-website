@@ -999,5 +999,148 @@ button:active {
 <!-- 07. END DASHBOARD ADDITION -->
 <!-- ====================================== -->
 
+<!-- ZENVIX PROFILE & LIVE STATUS -->
+<style>
+#zx-profile-card {
+  background: linear-gradient(145deg, #172554, #111827);
+  border: 1px solid #334155;
+  border-radius: 18px;
+  padding: 18px;
+  margin: 18px 0;
+  color: white;
+  font-family: Arial, sans-serif;
+}
+#zx-profile-card .zx-profile-title {
+  font-size: 19px;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+#zx-profile-card .zx-profile-row {
+  margin: 10px 0;
+  color: #dbeafe;
+  overflow-wrap: anywhere;
+}
+#zx-profile-card .zx-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #064e3b;
+  color: #a7f3d0;
+  border-radius: 20px;
+  padding: 7px 12px;
+  font-size: 13px;
+  margin-top: 8px;
+}
+#zx-profile-card .zx-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #22c55e;
+}
+#zx-profile-card .zx-lastseen {
+  color: #94a3b8;
+  font-size: 12px;
+  margin-top: 12px;
+}
+</style>
+
+<script>
+(function () {
+  if (window.zxProfileStarted) return;
+  window.zxProfileStarted = true;
+
+  const auth = firebase.auth();
+  const db = firebase.database();
+
+  function showProfile(user) {
+    if (!user) return;
+
+    const dashboard = document.getElementById("zenvixDashboard");
+    const appPanel = document.getElementById("appPanel");
+    const parent = dashboard || appPanel;
+
+    if (!parent) return;
+
+    let card = document.getElementById("zx-profile-card");
+
+    if (!card) {
+      card = document.createElement("div");
+      card.id = "zx-profile-card";
+      card.innerHTML = `
+        <div class="zx-profile-title">My Profile</div>
+        <div class="zx-profile-row" id="zx-profile-name"></div>
+        <div class="zx-profile-row" id="zx-profile-email"></div>
+        <div class="zx-status">
+          <span class="zx-dot"></span>
+          <span id="zx-profile-status">Connecting...</span>
+        </div>
+        <div class="zx-lastseen" id="zx-profile-lastseen"></div>
+      `;
+
+      const welcome = parent.querySelector("#welcome");
+      if (welcome && welcome.parentNode === parent) {
+        welcome.insertAdjacentElement("afterend", card);
+      } else {
+        parent.appendChild(card);
+      }
+    }
+
+    const name =
+      user.displayName ||
+      localStorage.getItem("zenvixGuestName") ||
+      "Zenvix User";
+
+    document.getElementById("zx-profile-name").textContent =
+      "Name: " + name;
+
+    document.getElementById("zx-profile-email").textContent =
+      "Email: " + (user.email || "Guest Account");
+
+    const userRef = db.ref("users/" + user.uid);
+
+    db.ref(".info/connected").on("value", function (snapshot) {
+      if (snapshot.val() !== true) return;
+
+      userRef.onDisconnect().update({
+        online: false,
+        lastSeen: firebase.database.ServerValue.TIMESTAMP
+      }).then(function () {
+        return userRef.update({
+          displayName: name,
+          email: user.email || "",
+          online: true
+        });
+      }).catch(function (error) {
+        console.error("Zenvix presence error:", error);
+      });
+    });
+
+    userRef.on("value", function (snapshot) {
+      const data = snapshot.val() || {};
+      const status = document.getElementById("zx-profile-status");
+      const lastSeen = document.getElementById("zx-profile-lastseen");
+
+      if (data.online === true) {
+        status.textContent = "Online";
+        lastSeen.textContent = "You are currently active.";
+      } else {
+        status.textContent = "Offline";
+        if (data.lastSeen) {
+          lastSeen.textContent =
+            "Last seen: " + new Date(data.lastSeen).toLocaleString();
+        } else {
+          lastSeen.textContent = "Last seen: Not available";
+        }
+      }
+    });
+  }
+
+  auth.onAuthStateChanged(function (user) {
+    if (user) showProfile(user);
+  });
+})();
+</script>
+<!-- END ZENVIX PROFILE & LIVE STATUS -->
+
 </body>
 </html>
