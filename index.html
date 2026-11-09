@@ -679,5 +679,325 @@ button:active {
   display: none !important;
 }
 </style>
+
+<!-- ====================================== -->
+<!-- 01. ZENVIX PROFESSIONAL DASHBOARD -->
+<!-- ====================================== -->
+
+<style>
+/* 02. Dashboard main area */
+
+#zenvixDashboard {
+  margin-top: 20px;
+  color: #ffffff;
+}
+
+.zx-hero {
+  padding: 22px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #12669b, #18314f 75%);
+  border: 1px solid rgba(113,214,255,.25);
+  margin-bottom: 18px;
+}
+
+.zx-hero h2 {
+  margin: 0 0 8px;
+  color: #ffffff;
+  font-size: 25px;
+}
+
+.zx-hero p {
+  margin: 0;
+  color: #d5eaff;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.zx-section-title {
+  font-size: 17px;
+  color: #71d6ff;
+  margin: 22px 0 12px;
+}
+
+.zx-profile {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  background: #101e32;
+  border: 1px solid #304866;
+  border-radius: 15px;
+}
+
+.zx-avatar {
+  width: 52px;
+  height: 52px;
+  min-width: 52px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg,#168bd0,#71d6ff);
+  color: #081827;
+  font-size: 23px;
+  font-weight: bold;
+}
+
+.zx-profile-info {
+  min-width: 0;
+}
+
+.zx-profile-info strong {
+  display: block;
+  font-size: 16px;
+  overflow-wrap: anywhere;
+}
+
+.zx-profile-info span {
+  display: block;
+  margin-top: 5px;
+  color: #aebed2;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+.zx-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.zx-card {
+  min-height: 125px;
+  padding: 16px;
+  border-radius: 15px;
+  background: linear-gradient(145deg,#203a59,#17283f);
+  border: 1px solid #304866;
+}
+
+.zx-card-icon {
+  font-size: 25px;
+  margin-bottom: 10px;
+}
+
+.zx-card strong {
+  display: block;
+  font-size: 15px;
+  color: #ffffff;
+}
+
+.zx-card p {
+  color: #aebed2;
+  font-size: 12px;
+  line-height: 1.5;
+  margin: 7px 0 0;
+}
+
+.zx-coming {
+  display: inline-block;
+  margin-top: 10px;
+  color: #ffd166;
+  font-size: 11px;
+  font-weight: bold;
+}
+
+.zx-community-button {
+  width: 100%;
+  margin-top: 15px;
+  background: linear-gradient(135deg,#168bd0,#0875b8);
+  border-radius: 12px;
+  padding: 15px;
+  color: white;
+  font-weight: bold;
+}
+
+.zx-note {
+  color: #aebed2;
+  font-size: 12px;
+  line-height: 1.6;
+  margin-top: 18px;
+}
+
+/* 03. Mobile layout */
+
+@media (max-width: 420px) {
+  .zx-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 9px;
+  }
+
+  .zx-card {
+    padding: 12px;
+    min-height: 120px;
+  }
+
+  .zx-hero {
+    padding: 18px;
+  }
+
+  .zx-hero h2 {
+    font-size: 22px;
+  }
+}
+</style>
+
+<!-- ====================================== -->
+<!-- 04. DASHBOARD CONTENT -->
+<!-- ====================================== -->
+
+<script>
+(function () {
+  const appPanel = document.getElementById("appPanel");
+
+  if (!appPanel) {
+    console.error("Zenvix Dashboard: appPanel not found.");
+    return;
+  }
+
+  // Prevent adding the dashboard more than once.
+  if (document.getElementById("zenvixDashboard")) {
+    return;
+  }
+
+  const dashboardHTML = `
+    <section id="zenvixDashboard">
+
+      <div class="zx-hero">
+        <h2>Welcome to Zenvix 👋</h2>
+        <p>
+          Your world. Your people. Your space.
+          Connect with your community.
+        </p>
+      </div>
+
+      <h3 class="zx-section-title">My Account</h3>
+
+      <div class="zx-profile">
+        <div class="zx-avatar" id="zxAvatar">Z</div>
+
+        <div class="zx-profile-info">
+          <strong id="zxUserName">Zenvix Member</strong>
+          <span id="zxUserEmail">Your account</span>
+        </div>
+      </div>
+
+      <h3 class="zx-section-title">Explore Zenvix</h3>
+
+      <div class="zx-grid">
+
+        <div class="zx-card">
+          <div class="zx-card-icon">🌐</div>
+          <strong>Community</strong>
+          <p>Meet people and chat in the public room.</p>
+        </div>
+
+        <div class="zx-card">
+          <div class="zx-card-icon">👥</div>
+          <strong>Groups</strong>
+          <p>Group conversations and communities.</p>
+          <span class="zx-coming">COMING SOON</span>
+        </div>
+
+        <div class="zx-card">
+          <div class="zx-card-icon">💬</div>
+          <strong>Private Chat</strong>
+          <p>One-to-one personal messaging.</p>
+          <span class="zx-coming">COMING SOON</span>
+        </div>
+
+        <div class="zx-card">
+          <div class="zx-card-icon">👤</div>
+          <strong>My Profile</strong>
+          <p>Your account information and identity.</p>
+          <span class="zx-coming">BASIC PROFILE</span>
+        </div>
+
+      </div>
+
+      <button
+        type="button"
+        class="zx-community-button"
+        id="zxOpenCommunity"
+      >
+        Open Public Community Chat →
+      </button>
+
+      <p class="zx-note">
+        Zenvix is growing. More community features
+        will be added step by step.
+      </p>
+
+    </section>
+  `;
+
+  const welcome = document.getElementById("welcome");
+
+  if (welcome) {
+    welcome.insertAdjacentHTML("afterend", dashboardHTML);
+  } else {
+    appPanel.insertAdjacentHTML("afterbegin", dashboardHTML);
+  }
+
+  // 05. Show current Firebase account details.
+  function updateDashboardProfile() {
+    const user = firebase.auth().currentUser;
+
+    if (!user) return;
+
+    const name = user.isAnonymous
+      ? (localStorage.getItem("zenvixGuestName") || "Guest")
+      : (user.displayName || "Zenvix Member");
+
+    const email = user.email || (
+      user.isAnonymous ? "Guest Account" : "Google Account"
+    );
+
+    const nameBox = document.getElementById("zxUserName");
+    const emailBox = document.getElementById("zxUserEmail");
+    const avatarBox = document.getElementById("zxAvatar");
+
+    if (nameBox) nameBox.textContent = name;
+    if (emailBox) emailBox.textContent = email;
+
+    if (avatarBox) {
+      avatarBox.textContent =
+        name.charAt(0).toUpperCase();
+    }
+  }
+
+  updateDashboardProfile();
+
+  firebase.auth().onAuthStateChanged(function (user) {
+    if (user) updateDashboardProfile();
+  });
+
+  // 06. Open existing Public Chat.
+  const communityButton =
+    document.getElementById("zxOpenCommunity");
+
+  if (communityButton) {
+    communityButton.addEventListener("click", function () {
+      const chatPanel =
+        document.getElementById("chatPanel");
+
+      if (chatPanel) {
+        chatPanel.style.display = "block";
+
+        chatPanel.scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
+      }
+    });
+  }
+
+  console.log("Zenvix Dashboard loaded successfully.");
+})();
+</script>
+
+<!-- ====================================== -->
+<!-- 07. END DASHBOARD ADDITION -->
+<!-- ====================================== -->
+
 </body>
 </html>
