@@ -1139,133 +1139,344 @@ button:active {
     if (user) showProfile(user);
   });
 })();
-// ===== ZENVIX GROUP SYSTEM =====
 
-let activeGroupId = null;
+// ===== ZENVIX GROUP SYSTEM V3 =====
+(function () {
+  if (window.zxGroupsStarted) return;
+  window.zxGroupsStarted = true;
 
-function loadGroups() {
-  if (!me) return;
+  let groupListRef = null;
+  let groupMessagesRef = null;
 
-  db.ref("groups").on("value", snapshot => {
-    const box = $("groupitems");
-    box.innerHTML = "";
-
-    snapshot.forEach(child => {
-      const group = child.val();
-
-      if (!group.members || !group.members[me.uid]) return;
-
-      const item = document.createElement("button");
-      item.className = "btn";
-      item.style.display = "block";
-      item.style.width = "100%";
-      item.style.marginTop = "10px";
-      item.textContent = "👥 " + group.name;
-
-      item.onclick = () => openGroup(child.key, group.name);
-
-      box.appendChild(item);
-    });
-  });
-}
-
-$("create").onclick = async () => {
-  const groupName = $("groupname").value.trim();
-
-  if (!groupName) {
-    toast("Enter a group name first");
-    return;
+  function status(message) {
+    const el = document.getElementById("zxGroupStatus");
+    if (el) el.textContent = message;
   }
 
-  try {
-    const groupRef = db.ref("groups").push();
+  function makeInterface() {
+    const parent = document.getElementById("zenvixDashboard")
+      || document.getElementById("appPanel");
 
-    await groupRef.set({
-      name: groupName,
-      owner: me.uid,
-      createdAt: Date.now(),
-      members: {
-        [me.uid]: true
-      }
-    });
+    if (!parent || document.getElementById("zxGroupsArea")) return;
 
-    $("groupname").value = "";
-    toast("Group created successfully!");
+    const area = document.createElement("section");
+    area.id = "zxGroupsArea";
+    area.style.cssText =
+      "margin-top:22px;padding:18px;background:#101e32;border:1px solid #304866;border-radius:16px;";
 
-  } catch (e) {
-    toast("Group creation failed: " + e.message);
+    area.innerHTML = `
+      <h2 style="color:#71d6ff">👥 Zenvix Groups</h2>
+
+      <h3>Create Your Group</h3>
+      <input id="zxNewGroupName" maxlength="40"
+        placeholder="Enter group name">
+      <button type="button" id="zxCreateGroup">Create Group</button>
+
+      <hr style="border-color:#304866;margin:20px 0">
+
+      <h3>Join a Group</h3>
+      <input id="zxJoinGroupId"
+        placeholder="Paste Group ID here">
+      <button type="button" id="zxJoinGroup">Join Group</button>
+
+      <p id="zxGroupStatus" class="small"></p>
+
+      <h3 style="color:#71d6ff">My Groups</h3>
+      <div id="zxGroupList"></div>
+
+      <div id="zxGroupChat"></div>
+    `;
+
+    parent.appendChild(area);
+
+    document.getElementById("zxCreateGroup")
+      .onclick = createGroup;
+
+    document.getElementById("zxJoinGroup")
+      .onclick = joinGroup;
   }
-};
 
-function openGroup(id, groupName) {
-  activeGroupId = id;
+  async function createGroup() {
+    if (!currentUser) {
+      status("Please log in first.");
+      return;
+    }
 
-  let area = $("groupChatArea");
+    const input = document.getElementById("zxNewGroupName");
+    const groupName = input.value.trim();
 
-  if (!area) {
-    area = document.createElement("div");
-    area.id = "groupChatArea";
-    $("groups").appendChild(area);
-  }
-
-  area.innerHTML = `
-    <h3>👥 ${groupName}</h3>
-    <div id="groupMessages" class="messages"></div>
-    <form id="groupSend" class="composer">
-      <input id="groupMessage" class="field"
-        placeholder="Write a group message..." maxlength="500">
-      <button class="btn">Send</button>
-    </form>
-  `;
-
-  db.ref("groups/" + id + "/messages").limitToLast(100)
-    .on("value", snapshot => {
-      const box = $("groupMessages");
-      box.innerHTML = "";
-
-      snapshot.forEach(child => {
-        const msg = child.val();
-        const p = document.createElement("p");
-        p.textContent = msg.name + ": " + msg.text;
-        box.appendChild(p);
-      });
-    });
-
-  $("groupSend").onsubmit = async e => {
-    e.preventDefault();
-
-    const input = $("groupMessage");
-    const message = input.value.trim();
-
-    if (!message) return;
+    if (!groupName || groupName.length > 40) {
+      status("Enter a group name (maximum 40 characters).");
+      return;
+    }
 
     try {
-      await db.ref("groups/" + id + "/messages").push({
-        uid: me.uid,
-        name: name,
-        text: message,
-        createdAt: Date.now()
+      status("Creating your group...");
+
+      const ref = db.ref("groups").push();
+
+      await ref.set({
+        name: groupName,
+        owner: currentUser.uid,
+        createdAt: Date.now(),
+        members: {
+          [currentUser.uid]: true
+        }
       });
 
+      await db.ref(
+        "userGroups/" + currentUser.uid + "/" + ref.key
+      ).set(true);
+
       input.value = "";
-    } catch (e) {
-      toast("Message failed: " + e.message);
+      status("Group created successfully! Group ID: " + ref.key);
+
+      loadMyGroups();
+
+    } catch (error) {
+      status("Group creation error: " + error.message);
     }
-  };
-}
+  }
 
-// Load groups after login
-const oldEnter = enter;
+  async function joinGroup() {
+    if (!currentUser) {
+      status("Please log in first.");
+      return;
+    }
 
-enter = function(u, n) {
-  oldEnter(u, n);
-  loadGroups();
-};
+    const input = document.getElementById("zxJoinGroupId");
+    const groupId = input.value.trim();
 
-// ===== END GROUP SYSTEM =====
+    if (!groupId) {
+      status("Please enter a Group ID.");
+      return;
+    }
 
-</script>
-<!-- END ZENVIX PROFILE & LIVE STATUS -->
+    try {
+      status("Checking group...");
 
+      const ref = db.ref("groups/" + groupId);
+      const check = await ref.once("value");
+
+      if (!check.exists()) {
+        status("This Group ID was not found.");
+        return;
+      }
+
+      await ref.child("members/" + currentUser.uid).set(true);
+
+      await db.ref(
+        "userGroups/" + currentUser.uid + "/" + groupId
+      ).set(true);
+
+      input.value = "";
+      status("You successfully joined " + check.val().name);
+
+      loadMyGroups();
+
+    } catch (error) {
+      status("Could not join group: " + error.message);
+    }
+  }
+
+  function loadMyGroups() {
+    if (!currentUser) return;
+
+    if (groupListRef) groupListRef.off();
+
+    groupListRef = db.ref("userGroups/" + currentUser.uid);
+
+    groupListRef.on("value", async snapshot => {
+      const list = document.getElementById("zxGroupList");
+      if (!list) return;
+
+      list.innerHTML = "";
+
+      if (!snapshot.exists()) {
+        list.textContent = "No groups yet. Create or join a group.";
+        return;
+      }
+
+      const ids = [];
+      snapshot.forEach(child => ids.push(child.key));
+
+      for (const id of ids) {
+        try {
+          const groupSnapshot = await db.ref(
+            "groups/" + id
+          ).once("value");
+
+          if (!groupSnapshot.exists()) continue;
+
+          const group = groupSnapshot.val();
+
+          const card = document.createElement("div");
+          card.style.cssText =
+            "background:#20334d;padding:12px;margin:10px 0;border-radius:12px;";
+
+          const button = document.createElement("button");
+          button.type = "button";
+          button.textContent = "👥 " + group.name;
+          button.onclick = () => openGroup(id, group.name);
+
+          const idLabel = document.createElement("p");
+          idLabel.className = "small";
+          idLabel.textContent = "Group ID: " + id;
+
+          const copyButton = document.createElement("button");
+          copyButton.type = "button";
+          copyButton.textContent = "Copy Group ID";
+
+          copyButton.onclick = async () => {
+            try {
+              await navigator.clipboard.writeText(id);
+              status("Group ID copied!");
+            } catch (error) {
+              status("Copy failed. Select and copy the Group ID manually.");
+            }
+          };
+
+          card.append(button, idLabel, copyButton);
+          list.appendChild(card);
+
+        } catch (error) {
+          console.error("Group loading error:", error);
+        }
+      }
+    }, error => {
+      status("Group list error: " + error.message);
+    });
+  }
+
+  function openGroup(id, groupName) {
+    if (groupMessagesRef) {
+      groupMessagesRef.off();
+      groupMessagesRef = null;
+    }
+
+    const chat = document.getElementById("zxGroupChat");
+    if (!chat) return;
+
+    chat.innerHTML = `
+      <hr style="border-color:#304866;margin:20px 0">
+      <h3 style="color:#71d6ff"></h3>
+      <div id="zxGroupMessages"
+        style="height:280px;overflow-y:auto;background:#0c1627;padding:10px;border-radius:10px;">
+      </div>
+      <input id="zxGroupMessageInput"
+        maxlength="500" placeholder="Write a group message...">
+      <button type="button" id="zxGroupSend">Send Message</button>
+      <p id="zxGroupSendStatus" class="small"></p>
+    `;
+
+    chat.querySelector("h3").textContent = "👥 " + groupName;
+
+    const messages = document.getElementById("zxGroupMessages");
+
+    groupMessagesRef = db.ref(
+      "groups/" + id + "/messages"
+    ).limitToLast(100);
+
+    groupMessagesRef.on("value", snapshot => {
+      messages.innerHTML = "";
+
+      snapshot.forEach(child => {
+        const msg = child.val() || {};
+
+        const item = document.createElement("div");
+        item.className = "message";
+
+        const sender = document.createElement("strong");
+        sender.textContent = msg.name || "Member";
+
+        const content = document.createElement("div");
+        content.textContent = msg.text || "";
+
+        const time = document.createElement("div");
+        time.className = "small";
+        time.textContent = msg.createdAt
+          ? new Date(msg.createdAt).toLocaleString()
+          : "";
+
+        item.append(sender, content, time);
+        messages.appendChild(item);
+      });
+
+      messages.scrollTop = messages.scrollHeight;
+
+    }, error => {
+      document.getElementById("zxGroupSendStatus").textContent =
+        "Chat error: " + error.message;
+    });
+
+    async function sendMessage() {
+      const input = document.getElementById("zxGroupMessageInput");
+      const sendStatus = document.getElementById("zxGroupSendStatus");
+      const text = input.value.trim();
+
+      if (!text || !currentUser) return;
+
+      const button = document.getElementById("zxGroupSend");
+      button.disabled = true;
+      sendStatus.textContent = "Sending...";
+
+      try {
+        await db.ref(
+          "groups/" + id + "/messages"
+        ).push({
+          uid: currentUser.uid,
+          name: currentName || "Member",
+          text: text,
+          createdAt: Date.now()
+        });
+
+        input.value = "";
+        sendStatus.textContent = "Message sent.";
+
+      } catch (error) {
+        sendStatus.textContent = "Send failed: " + error.message;
+
+      } finally {
+        button.disabled = false;
+      }
+    }
+
+    document.getElementById("zxGroupSend").onclick = sendMessage;
+
+    document.getElementById("zxGroupMessageInput")
+      .addEventListener("keydown", event => {
+        if (event.key === "Enter") sendMessage();
+      });
+
+    chat.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  }
+
+  function stopGroups() {
+    if (groupListRef) groupListRef.off();
+    if (groupMessagesRef) groupMessagesRef.off();
+
+    groupListRef = null;
+    groupMessagesRef = null;
+  }
+
+  firebase.auth().onAuthStateChanged(user => {
+    if (user) {
+      makeInterface();
+      loadMyGroups();
+    } else {
+      stopGroups();
+
+      const area = document.getElementById("zxGroupsArea");
+      if (area) area.remove();
+    }
+  });
+
+  console.log("Zenvix Groups V3 ready.");
+})();
+
+// ===== END ZENVIX GROUP SYSTEM V3 =====
 </body>
 </html>
