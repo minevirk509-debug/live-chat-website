@@ -1509,5 +1509,235 @@ button:active {
 })();
 
 // ===== END ZENVIX GROUP SYSTEM V3 =====
+
+<script>
+(function () {
+  if (window.zxMembersStarted) return;
+  window.zxMembersStarted = true;
+
+  const auth = firebase.auth();
+  const db = firebase.database();
+
+  let membersRef = null;
+  let membersListener = null;
+  let connectedListener = null;
+
+  const style = document.createElement("style");
+  style.textContent = `
+    #zx-members-panel {
+      background: #111a32;
+      color: white;
+      padding: 18px;
+      margin: 18px 0;
+      border: 1px solid #29395d;
+      border-radius: 18px;
+      font-family: Arial, sans-serif;
+    }
+    #zx-members-panel h3 {
+      margin: 0 0 14px;
+      color: #fff;
+    }
+    .zx-member-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid #29395d;
+    }
+    .zx-member-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: #263b68;
+      display: grid;
+      place-items: center;
+      font-weight: bold;
+      color: white;
+    }
+    .zx-member-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .zx-member-name {
+      font-weight: bold;
+      overflow-wrap: anywhere;
+    }
+    .zx-member-status {
+      font-size: 12px;
+      margin-top: 5px;
+      color: #aab7d0;
+    }
+    .zx-online-dot {
+      display: inline-block;
+      width: 9px;
+      height: 9px;
+      background: #21df86;
+      border-radius: 50%;
+      margin-right: 5px;
+    }
+    .zx-offline-dot {
+      display: inline-block;
+      width: 9px;
+      height: 9px;
+      background: #8791a5;
+      border-radius: 50%;
+      margin-right: 5px;
+    }
+  `;
+  document.head.appendChild(style);
+
+  function makePanel() {
+    const parent =
+      document.getElementById("zenvixDashboard") ||
+      document.getElementById("appPanel");
+
+    if (!parent) return false;
+
+    if (document.getElementById("zx-members-panel")) return true;
+
+    const panel = document.createElement("div");
+    panel.id = "zx-members-panel";
+    panel.innerHTML = `
+      <h3>Online Members</h3>
+      <div id="zx-members-count">Connecting...</div>
+      <div id="zx-members-list"></div>
+    `;
+
+    parent.appendChild(panel);
+    return true;
+  }
+
+  function renderMembers(data) {
+    makePanel();
+
+    const list = document.getElementById("zx-members-list");
+    const count = document.getElementById("zx-members-count");
+
+    if (!list || !count) return;
+
+    list.innerHTML = "";
+
+    const members = Object.entries(data || {})
+      .map(([uid, profile]) => ({
+        uid: uid,
+        name: profile.displayName || "Zenvix User",
+        online: profile.online === true,
+        lastSeen: profile.lastSeen || null
+      }))
+      .sort((a, b) => Number(b.online) - Number(a.online));
+
+    const onlineCount = members.filter(m => m.online).length;
+    count.textContent =
+      onlineCount + " Online • " + members.length + " Members";
+
+    if (!members.length) {
+      list.textContent = "No members yet.";
+      return;
+    }
+
+    members.forEach(function (member) {
+      const item = document.createElement("div");
+      item.className = "zx-member-item";
+
+      const avatar = document.createElement("div");
+      avatar.className = "zx-member-avatar";
+      avatar.textContent = member.name.charAt(0).toUpperCase();
+
+      const info = document.createElement("div");
+      info.className = "zx-member-info";
+
+      const name = document.createElement("div");
+      name.className = "zx-member-name";
+      name.textContent = member.name;
+
+      const status = document.createElement("div");
+      status.className = "zx-member-status";
+
+      if (member.online) {
+        status.innerHTML =
+          '<span class="zx-online-dot"></span>Online';
+      } else {
+        status.innerHTML =
+          '<span class="zx-offline-dot"></span>Offline';
+
+        if (member.lastSeen) {
+          status.textContent =
+            "Last seen: " +
+            new Date(member.lastSeen).toLocaleString();
+        }
+      }
+
+      info.appendChild(name);
+      info.appendChild(status);
+      item.appendChild(avatar);
+      item.appendChild(info);
+      list.appendChild(item);
+    });
+  }
+
+  function startMembers() {
+    if (membersRef) return;
+
+    membersRef = db.ref("publicProfiles");
+    membersListener = membersRef.on("value", function (snapshot) {
+      renderMembers(snapshot.val());
+    }, function (error) {
+      console.error("Members error:", error);
+      const count = document.getElementById("zx-members-count");
+      if (count) count.textContent = "Could not load members.";
+    });
+  }
+
+  function startPresence(user) {
+    const name =
+      user.displayName ||
+      localStorage.getItem("zenvixGuestName") ||
+      "Zenvix User";
+
+    const userRef = db.ref("publicProfiles/" + user.uid);
+    const connectedRef = db.ref(".info/connected");
+
+    if (connectedListener) {
+      connectedRef.off("value", connectedListener);
+    }
+
+    connectedListener = function (snapshot) {
+      if (snapshot.val() !== true) return;
+
+      userRef.onDisconnect().update({
+        online: false,
+        lastSeen: firebase.database.ServerValue.TIMESTAMP
+      }).then(function () {
+        return userRef.update({
+          displayName: name,
+          online: true
+        });
+      }).catch(function (error) {
+        console.error("Presence error:", error);
+      });
+    };
+
+    connectedRef.on("value", connectedListener);
+  }
+
+  auth.onAuthStateChanged(function (user) {
+    if (!user) return;
+
+    startPresence(user);
+    startMembers();
+    makePanel();
+
+    const observer = new MutationObserver(function () {
+      makePanel();
+    });
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
+  });
+})();
+</script>
+
 </body>
 </html>
