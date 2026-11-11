@@ -1045,12 +1045,16 @@ button:active {
 </style>
 
 <script>
+
 (function () {
   if (window.zxProfileStarted) return;
   window.zxProfileStarted = true;
 
   const auth = firebase.auth();
   const db = firebase.database();
+
+  let presenceStartedFor = null;
+  let profileObserver = null;
 
   function showProfile(user) {
     if (!user) return;
@@ -1098,7 +1102,38 @@ button:active {
 
     const userRef = db.ref("users/" + user.uid);
 
-    db.ref(".info/connected").on("value", function (snapshot) {
+    userRef.on("value", function (snapshot) {
+      const data = snapshot.val() || {};
+      const status = document.getElementById("zx-profile-status");
+      const lastSeen = document.getElementById("zx-profile-lastseen");
+
+      if (!status || !lastSeen) return;
+
+      if (data.online === true) {
+        status.textContent = "Online";
+        lastSeen.textContent = "You are currently active.";
+      } else {
+        status.textContent = "Offline";
+        lastSeen.textContent = data.lastSeen
+          ? "Last seen: " + new Date(data.lastSeen).toLocaleString()
+          : "Last seen: Not available";
+      }
+    });
+  }
+
+  function startPresence(user) {
+    if (presenceStartedFor === user.uid) return;
+    presenceStartedFor = user.uid;
+
+    const name =
+      user.displayName ||
+      localStorage.getItem("zenvixGuestName") ||
+      "Zenvix User";
+
+    const userRef = db.ref("users/" + user.uid);
+    const connectedRef = db.ref(".info/connected");
+
+    connectedRef.on("value", function (snapshot) {
       if (snapshot.val() !== true) return;
 
       userRef.onDisconnect().update({
@@ -1114,31 +1149,27 @@ button:active {
         console.error("Zenvix presence error:", error);
       });
     });
-
-    userRef.on("value", function (snapshot) {
-      const data = snapshot.val() || {};
-      const status = document.getElementById("zx-profile-status");
-      const lastSeen = document.getElementById("zx-profile-lastseen");
-
-      if (data.online === true) {
-        status.textContent = "Online";
-        lastSeen.textContent = "You are currently active.";
-      } else {
-        status.textContent = "Offline";
-        if (data.lastSeen) {
-          lastSeen.textContent =
-            "Last seen: " + new Date(data.lastSeen).toLocaleString();
-        } else {
-          lastSeen.textContent = "Last seen: Not available";
-        }
-      }
-    });
   }
 
   auth.onAuthStateChanged(function (user) {
-    if (user) showProfile(user);
+    if (!user) return;
+
+    startPresence(user);
+    showProfile(user);
+
+    if (profileObserver) profileObserver.disconnect();
+
+    profileObserver = new MutationObserver(function () {
+      showProfile(user);
+    });
+
+    profileObserver.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
   });
 })();
+
 
 // ===== ZENVIX GROUP SYSTEM V3 =====
 (function () {
