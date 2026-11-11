@@ -1139,6 +1139,131 @@ button:active {
     if (user) showProfile(user);
   });
 })();
+// ===== ZENVIX GROUP SYSTEM =====
+
+let activeGroupId = null;
+
+function loadGroups() {
+  if (!me) return;
+
+  db.ref("groups").on("value", snapshot => {
+    const box = $("groupitems");
+    box.innerHTML = "";
+
+    snapshot.forEach(child => {
+      const group = child.val();
+
+      if (!group.members || !group.members[me.uid]) return;
+
+      const item = document.createElement("button");
+      item.className = "btn";
+      item.style.display = "block";
+      item.style.width = "100%";
+      item.style.marginTop = "10px";
+      item.textContent = "👥 " + group.name;
+
+      item.onclick = () => openGroup(child.key, group.name);
+
+      box.appendChild(item);
+    });
+  });
+}
+
+$("create").onclick = async () => {
+  const groupName = $("groupname").value.trim();
+
+  if (!groupName) {
+    toast("Enter a group name first");
+    return;
+  }
+
+  try {
+    const groupRef = db.ref("groups").push();
+
+    await groupRef.set({
+      name: groupName,
+      owner: me.uid,
+      createdAt: Date.now(),
+      members: {
+        [me.uid]: true
+      }
+    });
+
+    $("groupname").value = "";
+    toast("Group created successfully!");
+
+  } catch (e) {
+    toast("Group creation failed: " + e.message);
+  }
+};
+
+function openGroup(id, groupName) {
+  activeGroupId = id;
+
+  let area = $("groupChatArea");
+
+  if (!area) {
+    area = document.createElement("div");
+    area.id = "groupChatArea";
+    $("groups").appendChild(area);
+  }
+
+  area.innerHTML = `
+    <h3>👥 ${groupName}</h3>
+    <div id="groupMessages" class="messages"></div>
+    <form id="groupSend" class="composer">
+      <input id="groupMessage" class="field"
+        placeholder="Write a group message..." maxlength="500">
+      <button class="btn">Send</button>
+    </form>
+  `;
+
+  db.ref("groups/" + id + "/messages").limitToLast(100)
+    .on("value", snapshot => {
+      const box = $("groupMessages");
+      box.innerHTML = "";
+
+      snapshot.forEach(child => {
+        const msg = child.val();
+        const p = document.createElement("p");
+        p.textContent = msg.name + ": " + msg.text;
+        box.appendChild(p);
+      });
+    });
+
+  $("groupSend").onsubmit = async e => {
+    e.preventDefault();
+
+    const input = $("groupMessage");
+    const message = input.value.trim();
+
+    if (!message) return;
+
+    try {
+      await db.ref("groups/" + id + "/messages").push({
+        uid: me.uid,
+        name: name,
+        text: message,
+        createdAt: Date.now()
+      });
+
+      input.value = "";
+    } catch (e) {
+      toast("Message failed: " + e.message);
+    }
+  };
+}
+
+// Load groups after login
+const oldEnter = enter;
+
+enter = function(u, n) {
+  oldEnter(u, n);
+  loadGroups();
+};
+
+// ===== END GROUP SYSTEM =====
+
 </script>
 <!-- END ZENVIX PROFILE & LIVE STATUS -->
 
