@@ -2,1740 +2,859 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Zenvix</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ZENVIX</title>
 
-  <style>
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      background: #101827;
-      color: white;
-      font-family: Arial, sans-serif;
-    }
-
-    .container {
-      width: min(700px, 100%);
-      margin: auto;
-      padding: 20px;
-    }
-
-    .panel {
-      background: #1b2940;
-      border: 1px solid #30415e;
-      border-radius: 16px;
-      padding: 20px;
-      margin-top: 20px;
-    }
-
-    h1 {
-      text-align: center;
-      color: #71d6ff;
-    }
-
-    input, button {
-      width: 100%;
-      padding: 13px;
-      margin-top: 10px;
-      border: 0;
-      border-radius: 9px;
-      font-size: 16px;
-    }
-
-    input {
-      background: #f1f5f9;
-      color: #111;
-    }
-
-    button {
-      background: #168bd0;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    button.google {
-      background: white;
-      color: #222;
-    }
-
-    button.logout {
-      background: #9b3545;
-    }
-
-    button:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-
-    #chatPanel, #appPanel {
-      display: none;
-    }
-
-    #messages {
-      height: 340px;
-      overflow-y: auto;
-      background: #101827;
-      border-radius: 10px;
-      padding: 12px;
-    }
-
-    .message {
-      background: #263954;
-      padding: 10px;
-      margin: 8px 0;
-      border-radius: 9px;
-      overflow-wrap: anywhere;
-    }
-
-    .message strong {
-      color: #71d6ff;
-    }
-
-    .small {
-      color: #b8c3d6;
-      font-size: 13px;
-      overflow-wrap: anywhere;
-      line-height: 1.5;
-    }
-
-    #status {
-      color: #ffd166;
-      text-align: center;
-      overflow-wrap: anywhere;
-    }
-
-    #diagnostics {
-      background: #101827;
-      border-radius: 9px;
-      padding: 12px;
-      margin-top: 15px;
-      white-space: pre-wrap;
-      overflow-wrap: anywhere;
-      font-size: 13px;
-      line-height: 1.6;
-      color: #b8e8ff;
-    }
-  </style>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;min-height:100vh;color:white;
+ font-family:Arial,sans-serif;
+ background:radial-gradient(circle at top left,#19375b,transparent 38%),
+ linear-gradient(135deg,#080f1d,#101c30 60%,#0b1423);
+}
+.container{width:min(850px,100%);margin:auto;padding:16px}
+h1{text-align:center;color:#71d6ff;letter-spacing:3px;font-size:36px}
+.panel{
+ background:#1b2940;border:1px solid #304866;
+ border-radius:18px;padding:18px;margin-top:18px;
+}
+input,button{
+ width:100%;padding:14px;margin-top:10px;
+ border:0;border-radius:11px;font-size:16px;
+}
+input{background:#f1f5f9;color:#111}
+button{background:#168bd0;color:white;font-weight:bold;cursor:pointer}
+button:disabled{opacity:.5}
+.google{background:white;color:#222}
+.logout{background:#9b3545}
+#appPanel,#chatPanel{display:none}
+#messages{
+ height:350px;overflow-y:auto;background:#0c1627;
+ border-radius:12px;padding:12px;
+}
+.message{
+ background:#263954;padding:12px;margin:9px 0;
+ border-radius:10px;overflow-wrap:anywhere;
+}
+.message strong{color:#71d6ff}
+.small{color:#b8c3d6;font-size:13px;line-height:1.5;overflow-wrap:anywhere}
+#status,#loginStatus,#chatStatus,#groupStatus{overflow-wrap:anywhere}
+#diagnostics{
+ background:#101827;padding:12px;border-radius:10px;
+ white-space:pre-wrap;overflow-wrap:anywhere;
+ font-size:13px;color:#b8e8ff;line-height:1.6;
+}
+.zx-hero{
+ padding:20px;border-radius:16px;
+ background:linear-gradient(135deg,#12669b,#18314f);
+ margin:15px 0;
+}
+.zx-profile,.member{
+ display:flex;align-items:center;gap:12px;
+ padding:13px;background:#101e32;border-radius:13px;margin:10px 0;
+}
+.avatar{
+ width:45px;height:45px;min-width:45px;border-radius:50%;
+ display:grid;place-items:center;background:#168bd0;font-weight:bold;
+}
+.zx-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.zx-card{
+ background:#203a59;padding:15px;border-radius:13px;
+ border:1px solid #304866;min-height:105px;
+}
+.section-title{color:#71d6ff;margin-top:22px}
+#profileCard,#groupsArea,#membersPanel{
+ background:#101e32;border:1px solid #304866;
+ border-radius:15px;padding:16px;margin-top:18px;
+}
+.online{color:#21df86}
+.offline{color:#aab7d0}
+@media(max-width:450px){
+ .container{padding:12px}
+ h1{font-size:30px}
+ .panel{padding:15px}
+ .zx-grid{gap:8px}
+ .zx-card{padding:11px}
+}
+</style>
 </head>
 
 <body>
-  <main class="container">
-    <h1>ZENVIX</h1>
-    <p style="text-align:center">
-      Your world. Your people. Your space.
-    </p>
-
-    <section class="panel" id="loginPanel">
-      <h2>Welcome to Zenvix</h2>
-
-      <input
-        id="displayName"
-        maxlength="50"
-        placeholder="Enter your name"
-      >
-
-      <button id="guestButton">
-        Continue as Guest
-      </button>
-
-      <button id="googleButton" class="google">
-        Continue with Google
-      </button>
-
-      <p id="loginStatus" class="small"></p>
-
-      <h3>Login Diagnostics</h3>
-      <div id="diagnostics">Zenvix started. Waiting for login...</div>
-    </section>
-
-    <section class="panel" id="appPanel">
-      <p id="welcome"></p>
-      <button id="logoutButton" class="logout">
-        Logout
-      </button>
-    </section>
-
-    <section class="panel" id="chatPanel">
-      <h2>Public Chat</h2>
-
-      <div id="messages"></div>
-
-      <input
-        id="messageInput"
-        maxlength="2000"
-        placeholder="Write your message..."
-      >
-
-      <button id="sendButton">
-        Send Message
-      </button>
-
-      <p id="chatStatus" class="small"></p>
-    </section>
-
-    <p id="status"></p>
-  </main>
-
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyCIgG9MMxLlvuMM9MavvMTrAQPuYZ6a2Ds",
-      authDomain: "livechat2026-51a85.firebaseapp.com",
-      databaseURL: "https://livechat2026-51a85-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId: "livechat2026-51a85",
-      storageBucket: "livechat2026-51a85.firebasestorage.app",
-      messagingSenderId: "467836802450",
-      appId: "1:467836802450:web:c9c48f316fcf3bf4d4dd4b",
-      measurementId: "G-LXL179GDDP"
-    };
-
-    firebase.initializeApp(firebaseConfig);
-
-    const auth = firebase.auth();
-    const db = firebase.database();
-
-    const $ = id => document.getElementById(id);
-
-    let currentUser = null;
-    let currentName = "";
-    let messagesQuery = null;
-    let messagesListener = null;
-
-    function diagnostic(message) {
-      const box = $("diagnostics");
-      const time = new Date().toLocaleTimeString();
-
-      box.textContent +=
-        "\n[" + time + "] " + message;
-
-      box.scrollTop = box.scrollHeight;
-    }
-
-    function showError(element, error) {
-      const code = error.code || "No error code";
-      const message = error.message || "Unknown error";
-
-      $(element).textContent =
-        "Error: " + code + " - " + message;
-
-      diagnostic("ERROR: " + code + " - " + message);
-    }
-
-    function showLogin() {
-      $("loginPanel").style.display = "block";
-      $("appPanel").style.display = "none";
-      $("chatPanel").style.display = "none";
-    }
-
-    function showApp() {
-      $("loginPanel").style.display = "none";
-      $("appPanel").style.display = "block";
-      $("chatPanel").style.display = "block";
-    }
-
-    function stopMessages() {
-      if (messagesQuery && messagesListener) {
-        messagesQuery.off("value", messagesListener);
-      }
-
-      messagesQuery = null;
-      messagesListener = null;
-    }
-
-    // GUEST LOGIN
-    $("guestButton").onclick = async () => {
-      const name = $("displayName").value.trim();
-
-      if (!name) {
-        $("loginStatus").textContent =
-          "Please enter your name.";
-        return;
-      }
-
-      $("guestButton").disabled = true;
-      $("loginStatus").textContent =
-        "Connecting as Guest...";
-
-      diagnostic("Guest Login button clicked.");
-
-      try {
-        localStorage.setItem("zenvixGuestName", name);
-
-        await auth.signInAnonymously();
-
-        diagnostic("Guest authentication request completed.");
-
-      } catch (error) {
-        showError("loginStatus", error);
-      } finally {
-        $("guestButton").disabled = false;
-      }
-    };
-
-    // GOOGLE LOGIN - POPUP METHOD
-    $("googleButton").onclick = () => {
-      $("googleButton").disabled = true;
-      $("loginStatus").textContent =
-        "Opening Google account selection...";
-
-      diagnostic("Google Login button clicked.");
-      diagnostic("Starting Google sign-in with popup.");
-
-      const provider =
-        new firebase.auth.GoogleAuthProvider();
-
-      provider.setCustomParameters({
-        prompt: "select_account"
-      });
-
-      auth.signInWithPopup(provider)
-        .then(result => {
-          diagnostic("Google popup returned successfully.");
-
-          if (result.user) {
-            diagnostic(
-              "Firebase received user: " +
-              (result.user.email || result.user.uid)
-            );
-
-            $("loginStatus").textContent =
-              "Google Login successful.";
-          }
-        })
-        .catch(error => {
-          showError("loginStatus", error);
-        })
-        .finally(() => {
-          $("googleButton").disabled = false;
-        });
-    };
-
-    // AUTHENTICATION STATE
-    auth.onAuthStateChanged(async user => {
-      stopMessages();
-
-      if (!user) {
-        currentUser = null;
-        currentName = "";
-
-        showLogin();
-
-        $("status").textContent = "";
-        diagnostic("Firebase auth state: No user signed in.");
-
-        return;
-      }
-
-      currentUser = user;
-
-      currentName = user.isAnonymous
-        ? (localStorage.getItem("zenvixGuestName") || "Guest")
-        : (user.displayName || "Zenvix Member");
-
-      diagnostic(
-        "Firebase auth state: User signed in. " +
-        "Type: " +
-        (user.isAnonymous ? "Guest" : "Google/Registered")
-      );
-
-      if (user.email) {
-        diagnostic("Account email: " + user.email);
-      }
-
-      showApp();
-
-      $("welcome").textContent =
-        "Welcome, " + currentName;
-
-      try {
-        await db.ref("users/" + user.uid).update({
-          uid: user.uid,
-          name: currentName,
-          updatedAt:
-            firebase.database.ServerValue.TIMESTAMP
-        });
-
-        $("status").textContent =
-          user.isAnonymous
-            ? "Connected as Guest."
-            : "Connected with Google.";
-
-        diagnostic("User profile saved to database.");
-
-        startMessages();
-
-      } catch (error) {
-        showError("status", error);
-      }
-    }, error => {
-      showError("loginStatus", error);
-      diagnostic("Authentication state listener failed.");
-    });
-
-    // PUBLIC CHAT
-    function startMessages() {
-      stopMessages();
-
-      messagesQuery = db.ref("messages").limitToLast(100);
-
-      messagesListener = snapshot => {
-        const box = $("messages");
-        box.innerHTML = "";
-
-        snapshot.forEach(child => {
-          const msg = child.val() || {};
-
-          const item = document.createElement("div");
-          item.className = "message";
-
-          const name = document.createElement("strong");
-          name.textContent = msg.name || "Member";
-
-          const content = document.createElement("div");
-          content.textContent = msg.text || "";
-
-          const time = document.createElement("div");
-          time.className = "small";
-
-          time.textContent = msg.timestamp
-            ? new Date(msg.timestamp).toLocaleString()
-            : "";
-
-          item.append(name, content, time);
-          box.appendChild(item);
-        });
-
-        box.scrollTop = box.scrollHeight;
-      };
-
-      messagesQuery.on(
-        "value",
-        messagesListener,
-        error => showError("chatStatus", error)
-      );
-
-      diagnostic("Public Chat listener started.");
-    }
-
-    // SEND MESSAGE
-    async function sendMessage() {
-      const text = $("messageInput").value.trim();
-
-      if (!currentUser || !text) return;
-
-      $("sendButton").disabled = true;
-      $("chatStatus").textContent = "Sending...";
-
-      try {
-        await db.ref("messages").push({
-          uid: currentUser.uid,
-          name: currentName,
-          text: text,
-          timestamp:
-            firebase.database.ServerValue.TIMESTAMP
-        });
-
-        $("messageInput").value = "";
-        $("chatStatus").textContent = "Message sent.";
-
-      } catch (error) {
-        showError("chatStatus", error);
-      } finally {
-        $("sendButton").disabled = false;
-      }
-    }
-
-    $("sendButton").onclick = sendMessage;
-
-    $("messageInput").addEventListener(
-      "keydown",
-      event => {
-        if (event.key === "Enter") {
-          sendMessage();
-        }
-      }
-    );
-
-    // LOGOUT
-    $("logoutButton").onclick = async () => {
-      try {
-        stopMessages();
-
-        await auth.signOut();
-
-        currentUser = null;
-        currentName = "";
-
-        showLogin();
-
-        $("status").textContent =
-          "You have logged out.";
-
-        diagnostic("User logged out.");
-
-      } catch (error) {
-        showError("status", error);
-      }
-    };
-
-    diagnostic("Firebase initialized.");
-  </script>
-
-<!-- ===================================== -->
-<!-- 01. ZENVIX PROFESSIONAL DESIGN -->
-<!-- ===================================== -->
-
-<style>
-/* 02. Main dashboard design */
-
-body {
-  background:
-    radial-gradient(circle at top left, #19375b 0%, transparent 38%),
-    linear-gradient(135deg, #080f1d, #101c30 60%, #0b1423);
-}
-
-.container {
-  max-width: 850px;
-  padding: 18px;
-}
-
-h1 {
-  font-size: 38px;
-  letter-spacing: 3px;
-  text-shadow: 0 0 20px rgba(113,214,255,.3);
-}
-
-.container > p {
-  color: #a9bad0;
-}
-
-/* 03. Professional panels */
-
-.panel {
-  background: rgba(27,41,64,.94);
-  border: 1px solid rgba(113,214,255,.16);
-  border-radius: 20px;
-  box-shadow: 0 12px 35px rgba(0,0,0,.22);
-  padding: 22px;
-  margin-top: 18px;
-}
-
-/* 04. Dashboard welcome section */
-
-#appPanel {
-  position: relative;
-  overflow: hidden;
-  background: linear-gradient(135deg,#1d3858,#17263e);
-}
-
-#appPanel::before {
-  content: "Z";
-  position: absolute;
-  right: 18px;
-  top: -35px;
-  font-size: 150px;
-  font-weight: bold;
-  color: rgba(113,214,255,.06);
-  pointer-events: none;
-}
-
-#welcome {
-  font-size: 23px;
-  font-weight: bold;
-  color: #ffffff;
-  position: relative;
-}
-
-/* 05. Public chat heading */
-
-#chatPanel h2 {
-  font-size: 25px;
-  color: #71d6ff;
-  border-bottom: 1px solid #30415e;
-  padding-bottom: 14px;
-}
-
-/* 06. Message area */
-
-#messages {
-  height: 390px;
-  background: #0c1627;
-  border: 1px solid #2b3e59;
-  border-radius: 15px;
-  padding: 12px;
-}
-
-.message {
-  background: linear-gradient(135deg,#263954,#20334d);
-  border: 1px solid rgba(113,214,255,.08);
-  border-radius: 13px;
-  padding: 13px;
-  margin: 10px 0;
-  box-shadow: 0 4px 12px rgba(0,0,0,.12);
-}
-
-.message strong {
-  color: #71d6ff;
-  font-size: 15px;
-}
-
-.message .small {
-  text-align: right;
-  margin-top: 7px;
-  color: #91a5bf;
-}
-
-/* 07. Inputs */
-
-input {
-  border: 1px solid #d6e2f0;
-  outline: none;
-  border-radius: 12px;
-  padding: 15px;
-}
-
-input:focus {
-  border: 2px solid #39b9f0;
-  box-shadow: 0 0 0 3px rgba(57,185,240,.12);
-}
-
-/* 08. Buttons */
-
-button {
-  border-radius: 12px;
-  padding: 14px;
-  transition: transform .15s ease, opacity .15s ease;
-}
-
-button:active {
-  transform: scale(.98);
-  opacity: .85;
-}
-
-#sendButton {
-  background: linear-gradient(135deg,#168bd0,#0875b8);
-  box-shadow: 0 5px 15px rgba(22,139,208,.2);
-}
-
-#logoutButton {
-  position: relative;
-  z-index: 1;
-}
-
-/* 09. Connection status */
-
-#status {
-  background: rgba(30,150,100,.12);
-  border: 1px solid rgba(70,210,150,.18);
-  border-radius: 10px;
-  padding: 10px;
-  font-size: 13px;
-}
-
-/* 10. Mobile screen adjustments */
-
-@media (max-width: 480px) {
-  .container {
-    padding: 12px;
-  }
-
-  h1 {
-    font-size: 32px;
-  }
-
-  .panel {
-    padding: 16px;
-    border-radius: 17px;
-  }
-
-  #messages {
-    height: 350px;
-  }
-
-  #welcome {
-    font-size: 20px;
-  }
-
-  #chatPanel h2 {
-    font-size: 22px;
-  }
-}
-</style>
-
-<!-- ===================================== -->
-<!-- 11. END OF ZENVIX DESIGN ADDITION -->
-<!-- ===================================== -->
-<!-- 01. REMOVE DECORATIVE Z -->
-<style>
-#appPanel::before {
-  content: none !important;
-  display: none !important;
-}
-</style>
-
-<!-- ====================================== -->
-<!-- 01. ZENVIX PROFESSIONAL DASHBOARD -->
-<!-- ====================================== -->
-
-<style>
-/* 02. Dashboard main area */
-
-#zenvixDashboard {
-  margin-top: 20px;
-  color: #ffffff;
-}
-
-.zx-hero {
-  padding: 22px;
-  border-radius: 18px;
-  background: linear-gradient(135deg, #12669b, #18314f 75%);
-  border: 1px solid rgba(113,214,255,.25);
-  margin-bottom: 18px;
-}
-
-.zx-hero h2 {
-  margin: 0 0 8px;
-  color: #ffffff;
-  font-size: 25px;
-}
-
-.zx-hero p {
-  margin: 0;
-  color: #d5eaff;
-  font-size: 14px;
-  line-height: 1.5;
-}
-
-.zx-section-title {
-  font-size: 17px;
-  color: #71d6ff;
-  margin: 22px 0 12px;
-}
-
-.zx-profile {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 16px;
-  background: #101e32;
-  border: 1px solid #304866;
-  border-radius: 15px;
-}
-
-.zx-avatar {
-  width: 52px;
-  height: 52px;
-  min-width: 52px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg,#168bd0,#71d6ff);
-  color: #081827;
-  font-size: 23px;
-  font-weight: bold;
-}
-
-.zx-profile-info {
-  min-width: 0;
-}
-
-.zx-profile-info strong {
-  display: block;
-  font-size: 16px;
-  overflow-wrap: anywhere;
-}
-
-.zx-profile-info span {
-  display: block;
-  margin-top: 5px;
-  color: #aebed2;
-  font-size: 12px;
-  overflow-wrap: anywhere;
-}
-
-.zx-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-}
-
-.zx-card {
-  min-height: 125px;
-  padding: 16px;
-  border-radius: 15px;
-  background: linear-gradient(145deg,#203a59,#17283f);
-  border: 1px solid #304866;
-}
-
-.zx-card-icon {
-  font-size: 25px;
-  margin-bottom: 10px;
-}
-
-.zx-card strong {
-  display: block;
-  font-size: 15px;
-  color: #ffffff;
-}
-
-.zx-card p {
-  color: #aebed2;
-  font-size: 12px;
-  line-height: 1.5;
-  margin: 7px 0 0;
-}
-
-.zx-coming {
-  display: inline-block;
-  margin-top: 10px;
-  color: #ffd166;
-  font-size: 11px;
-  font-weight: bold;
-}
-
-.zx-community-button {
-  width: 100%;
-  margin-top: 15px;
-  background: linear-gradient(135deg,#168bd0,#0875b8);
-  border-radius: 12px;
-  padding: 15px;
-  color: white;
-  font-weight: bold;
-}
-
-.zx-note {
-  color: #aebed2;
-  font-size: 12px;
-  line-height: 1.6;
-  margin-top: 18px;
-}
-
-/* 03. Mobile layout */
-
-@media (max-width: 420px) {
-  .zx-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 9px;
-  }
-
-  .zx-card {
-    padding: 12px;
-    min-height: 120px;
-  }
-
-  .zx-hero {
-    padding: 18px;
-  }
-
-  .zx-hero h2 {
-    font-size: 22px;
-  }
-}
-</style>
-
-<!-- ====================================== -->
-<!-- 04. DASHBOARD CONTENT -->
-<!-- ====================================== -->
+<main class="container">
+<h1>ZENVIX</h1>
+<p style="text-align:center;color:#a9bad0">
+Your world. Your people. Your space.
+</p>
+
+<section class="panel" id="loginPanel">
+<h2>Welcome to Zenvix</h2>
+<input id="displayName" maxlength="50" placeholder="Enter your name">
+<button id="guestButton">Continue as Guest</button>
+<button id="googleButton" class="google">Continue with Google</button>
+<p id="loginStatus" class="small"></p>
+<h3>Login Diagnostics</h3>
+<div id="diagnostics">Zenvix started. Preparing Firebase...</div>
+</section>
+
+<section class="panel" id="appPanel">
+<p id="welcome"></p>
+<button id="logoutButton" class="logout">Logout</button>
+<div id="dashboard"></div>
+<div id="profileCard"></div>
+<div id="groupsArea"></div>
+<div id="membersPanel"></div>
+</section>
+
+<section class="panel" id="chatPanel">
+<h2 style="color:#71d6ff">Public Community Chat</h2>
+<div id="messages"></div>
+<input id="messageInput" maxlength="2000" placeholder="Write your message...">
+<button id="sendButton">Send Message</button>
+<p id="chatStatus" class="small"></p>
+</section>
+
+<p id="status" class="small"></p>
+</main>
 
 <script>
-(function () {
-  const appPanel = document.getElementById("appPanel");
+/* ==================================
+   ZENVIX SAFE STARTUP
+================================== */
 
-  if (!appPanel) {
-    console.error("Zenvix Dashboard: appPanel not found.");
-    return;
+const $ = id => document.getElementById(id);
+
+let auth = null;
+let db = null;
+let currentUser = null;
+let currentName = "";
+let messagesQuery = null;
+let messagesListener = null;
+let groupListRef = null;
+let groupMessagesRef = null;
+let profileRef = null;
+let membersRef = null;
+
+function diagnostic(message){
+ const box = $("diagnostics");
+ if(!box) return;
+ box.textContent += "\n["+
+ new Date().toLocaleTimeString()+"] "+message;
+ box.scrollTop = box.scrollHeight;
+}
+
+function showError(element,error){
+ const message = error && error.message
+  ? error.message : String(error);
+ const code = error && error.code ? error.code : "ERROR";
+
+ if($(element)) $(element).textContent =
+  "Error: "+code+" - "+message;
+
+ diagnostic("ERROR: "+code+" - "+message);
+}
+
+function loadScript(url){
+ return new Promise((resolve,reject)=>{
+  const script=document.createElement("script");
+  script.src=url;
+  script.async=true;
+  script.onload=()=>resolve();
+  script.onerror=()=>reject(
+   new Error("Firebase file could not load: "+url)
+  );
+  document.head.appendChild(script);
+ });
+}
+
+/* Buttons respond even while Firebase loads. */
+
+$("guestButton").onclick=async()=>{
+ const name=$("displayName").value.trim();
+
+ if(!name){
+  $("loginStatus").textContent="Please enter your name.";
+  return;
+ }
+ if(!auth){
+  $("loginStatus").textContent="Firebase is still loading. Please wait.";
+  return;
+ }
+
+ $("guestButton").disabled=true;
+ $("loginStatus").textContent="Connecting as Guest...";
+
+ try{
+  localStorage.setItem("zenvixGuestName",name);
+  await auth.signInAnonymously();
+  diagnostic("Guest login request completed.");
+ }catch(error){
+  showError("loginStatus",error);
+ }finally{
+  $("guestButton").disabled=false;
+ }
+};
+
+$("googleButton").onclick=async()=>{
+ if(!auth){
+  $("loginStatus").textContent="Firebase is still loading. Please wait.";
+  return;
+ }
+
+ $("googleButton").disabled=true;
+ $("loginStatus").textContent="Opening Google login...";
+
+ try{
+  const provider=new firebase.auth.GoogleAuthProvider();
+  provider.setCustomParameters({prompt:"select_account"});
+  await auth.signInWithPopup(provider);
+  diagnostic("Google login completed.");
+ }catch(error){
+  showError("loginStatus",error);
+ }finally{
+  $("googleButton").disabled=false;
+ }
+};
+
+/* ==================================
+   FIREBASE INITIALIZATION
+================================== */
+
+async function initializeZenvix(){
+ try{
+  diagnostic("Loading Firebase App...");
+
+  await loadScript(
+   "https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"
+  );
+
+  diagnostic("Loading Firebase Authentication...");
+
+  await loadScript(
+   "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"
+  );
+
+  diagnostic("Loading Firebase Database...");
+
+  await loadScript(
+   "https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"
+  );
+
+  const firebaseConfig={
+   apiKey:"AIzaSyCIgG9MMxLlvuMM9MavvMTrAQPuYZ6a2Ds",
+   authDomain:"livechat2026-51a85.firebaseapp.com",
+   databaseURL:"https://livechat2026-51a85-default-rtdb.asia-southeast1.firebasedatabase.app",
+   projectId:"livechat2026-51a85",
+   storageBucket:"livechat2026-51a85.firebasestorage.app",
+   messagingSenderId:"467836802450",
+   appId:"1:467836802450:web:c9c48f316fcf3bf4d4dd4b",
+   measurementId:"G-LXL179GDDP"
+  };
+
+  if(!firebase.apps.length){
+   firebase.initializeApp(firebaseConfig);
   }
 
-  // Prevent adding the dashboard more than once.
-  if (document.getElementById("zenvixDashboard")) {
-    return;
-  }
+  auth=firebase.auth();
+  db=firebase.database();
 
-  const dashboardHTML = `
-    <section id="zenvixDashboard">
+  diagnostic("Firebase initialized successfully.");
 
-      <div class="zx-hero">
-        <h2>Welcome to Zenvix 👋</h2>
-        <p>
-          Your world. Your people. Your space.
-          Connect with your community.
-        </p>
-      </div>
+  auth.onAuthStateChanged(handleAuthState,error=>{
+   showError("loginStatus",error);
+  });
 
-      <h3 class="zx-section-title">My Account</h3>
+ }catch(error){
+  showError("loginStatus",error);
+  diagnostic("Startup stopped. Check internet and Firebase files.");
+ }
+}
 
-      <div class="zx-profile">
-        <div class="zx-avatar" id="zxAvatar">Z</div>
+/* ==================================
+   AUTHENTICATION
+================================== */
 
-        <div class="zx-profile-info">
-          <strong id="zxUserName">Zenvix Member</strong>
-          <span id="zxUserEmail">Your account</span>
-        </div>
-      </div>
+function showLogin(){
+ $("loginPanel").style.display="block";
+ $("appPanel").style.display="none";
+ $("chatPanel").style.display="none";
+}
 
-      <h3 class="zx-section-title">Explore Zenvix</h3>
+function showApp(){
+ $("loginPanel").style.display="none";
+ $("appPanel").style.display="block";
+ $("chatPanel").style.display="block";
+}
 
-      <div class="zx-grid">
+async function handleAuthState(user){
+ stopMessages();
 
-        <div class="zx-card">
-          <div class="zx-card-icon">🌐</div>
-          <strong>Community</strong>
-          <p>Meet people and chat in the public room.</p>
-        </div>
+ if(!user){
+  currentUser=null;
+  currentName="";
+  showLogin();
+  diagnostic("No user signed in.");
+  return;
+ }
 
-        <div class="zx-card">
-          <div class="zx-card-icon">👥</div>
-          <strong>Groups</strong>
-          <p>Group conversations and communities.</p>
-          <span class="zx-coming">COMING SOON</span>
-        </div>
+ currentUser=user;
 
-        <div class="zx-card">
-          <div class="zx-card-icon">💬</div>
-          <strong>Private Chat</strong>
-          <p>One-to-one personal messaging.</p>
-          <span class="zx-coming">COMING SOON</span>
-        </div>
+ currentName=user.isAnonymous
+  ? localStorage.getItem("zenvixGuestName") || "Guest"
+  : user.displayName || "Zenvix Member";
 
-        <div class="zx-card">
-          <div class="zx-card-icon">👤</div>
-          <strong>My Profile</strong>
-          <p>Your account information and identity.</p>
-          <span class="zx-coming">BASIC PROFILE</span>
-        </div>
+ showApp();
 
-      </div>
+ $("welcome").textContent="Welcome, "+currentName;
+ $("status").textContent="Signed in. Connecting to Zenvix...";
 
-      <button
-        type="button"
-        class="zx-community-button"
-        id="zxOpenCommunity"
-      >
-        Open Public Community Chat →
-      </button>
+ diagnostic("User signed in: "+(user.isAnonymous?"Guest":"Google"));
 
-      <p class="zx-note">
-        Zenvix is growing. More community features
-        will be added step by step.
-      </p>
+ try{
+  await db.ref("users/"+user.uid).update({
+   uid:user.uid,
+   name:currentName,
+   updatedAt:firebase.database.ServerValue.TIMESTAMP
+  });
 
-    </section>
+  $("status").textContent="Connected to Zenvix.";
+  diagnostic("User profile saved.");
+
+  buildDashboard();
+  startProfile(user);
+  startPresence(user);
+  startMessages();
+  startGroups();
+  startMembers();
+
+ }catch(error){
+  showError("status",error);
+ }
+}
+
+/* ==================================
+   DASHBOARD
+================================== */
+
+function buildDashboard(){
+ $("dashboard").innerHTML=`
+  <div class="zx-hero">
+   <h2>Welcome to Zenvix 👋</h2>
+   <p>Your world. Your people. Your space.</p>
+  </div>
+
+  <h3 class="section-title">My Account</h3>
+  <div class="zx-profile">
+   <div class="avatar" id="dashAvatar">Z</div>
+   <div>
+    <strong id="dashName"></strong>
+    <div class="small" id="dashEmail"></div>
+   </div>
+  </div>
+
+  <h3 class="section-title">Explore Zenvix</h3>
+  <div class="zx-grid">
+   <div class="zx-card">🌐<br><strong>Community</strong><p class="small">Public chat room</p></div>
+   <div class="zx-card">👥<br><strong>Groups</strong><p class="small">Create and join groups</p></div>
+   <div class="zx-card">💬<br><strong>Private Chat</strong><p class="small">Coming soon</p></div>
+   <div class="zx-card">👤<br><strong>My Profile</strong><p class="small">Your account information</p></div>
+  </div>
+  <button id="openCommunity">Open Public Community Chat</button>
+ `;
+
+ $("dashName").textContent=currentName;
+ $("dashEmail").textContent=currentUser.email || "Guest Account";
+ $("dashAvatar").textContent=currentName.charAt(0).toUpperCase();
+
+ $("openCommunity").onclick=()=>{
+  $("chatPanel").scrollIntoView({behavior:"smooth"});
+ };
+}
+
+/* ==================================
+   PROFILE
+================================== */
+
+function startProfile(user){
+ profileRef=db.ref("publicProfiles/"+user.uid);
+
+ profileRef.on("value",snapshot=>{
+  const data=snapshot.val()||{};
+  const online=data.online===true;
+
+  $("profileCard").innerHTML=`
+   <h3 style="color:#71d6ff">My Profile</h3>
+   <p>Name: ${escapeText(currentName)}</p>
+   <p>Email: ${escapeText(user.email||"Guest Account")}</p>
+   <p class="${online?"online":"offline"}">
+    ● ${online?"Online":"Offline"}
+   </p>
+   <p class="small">${data.lastSeen
+    ?"Last seen: "+new Date(data.lastSeen).toLocaleString()
+    :"You are currently active."}</p>
   `;
+ },error=>console.error("Profile error:",error));
+}
 
-  const welcome = document.getElementById("welcome");
+function escapeText(value){
+ const div=document.createElement("div");
+ div.textContent=String(value);
+ return div.innerHTML;
+}
 
-  if (welcome) {
-    welcome.insertAdjacentHTML("afterend", dashboardHTML);
-  } else {
-    appPanel.insertAdjacentHTML("afterbegin", dashboardHTML);
-  }
+/* ==================================
+   ONLINE PRESENCE
+================================== */
 
-  // 05. Show current Firebase account details.
-  function updateDashboardProfile() {
-    const user = firebase.auth().currentUser;
+function startPresence(user){
+ const ref=db.ref("publicProfiles/"+user.uid);
+ const connected=db.ref(".info/connected");
 
-    if (!user) return;
+ connected.on("value",snapshot=>{
+  if(snapshot.val()!==true) return;
 
-    const name = user.isAnonymous
-      ? (localStorage.getItem("zenvixGuestName") || "Guest")
-      : (user.displayName || "Zenvix Member");
+  ref.onDisconnect().update({
+   online:false,
+   lastSeen:firebase.database.ServerValue.TIMESTAMP
+  }).then(()=>{
+   return ref.update({
+    displayName:currentName,
+    online:true
+   });
+  }).catch(error=>{
+   console.error("Presence error:",error);
+  });
+ });
+}
 
-    const email = user.email || (
-      user.isAnonymous ? "Guest Account" : "Google Account"
-    );
+/* ==================================
+   PUBLIC CHAT
+================================== */
 
-    const nameBox = document.getElementById("zxUserName");
-    const emailBox = document.getElementById("zxUserEmail");
-    const avatarBox = document.getElementById("zxAvatar");
+function stopMessages(){
+ if(messagesQuery&&messagesListener){
+  messagesQuery.off("value",messagesListener);
+ }
+ messagesQuery=null;
+ messagesListener=null;
+}
 
-    if (nameBox) nameBox.textContent = name;
-    if (emailBox) emailBox.textContent = email;
+function startMessages(){
+ stopMessages();
 
-    if (avatarBox) {
-      avatarBox.textContent =
-        name.charAt(0).toUpperCase();
-    }
-  }
+ messagesQuery=db.ref("messages").limitToLast(100);
 
-  updateDashboardProfile();
+ messagesListener=snapshot=>{
+  const box=$("messages");
+  box.innerHTML="";
 
-  firebase.auth().onAuthStateChanged(function (user) {
-    if (user) updateDashboardProfile();
+  snapshot.forEach(child=>{
+   const msg=child.val()||{};
+   const item=document.createElement("div");
+   item.className="message";
+
+   const name=document.createElement("strong");
+   name.textContent=msg.name||"Member";
+
+   const content=document.createElement("div");
+   content.textContent=msg.text||"";
+
+   const time=document.createElement("div");
+   time.className="small";
+   time.textContent=msg.timestamp
+    ?new Date(msg.timestamp).toLocaleString():"";
+
+   item.append(name,content,time);
+   box.appendChild(item);
   });
 
-  // 06. Open existing Public Chat.
-  const communityButton =
-    document.getElementById("zxOpenCommunity");
+  box.scrollTop=box.scrollHeight;
+ };
 
-  if (communityButton) {
-    communityButton.addEventListener("click", function () {
-      const chatPanel =
-        document.getElementById("chatPanel");
-
-      if (chatPanel) {
-        chatPanel.style.display = "block";
-
-        chatPanel.scrollIntoView({
-          behavior: "smooth",
-          block: "start"
-        });
-      }
-    });
-  }
-
-  console.log("Zenvix Dashboard loaded successfully.");
-})();
-</script>
-
-<!-- ====================================== -->
-<!-- 07. END DASHBOARD ADDITION -->
-<!-- ====================================== -->
-
-<!-- ZENVIX PROFILE & LIVE STATUS -->
-<style>
-#zx-profile-card {
-  background: linear-gradient(145deg, #172554, #111827);
-  border: 1px solid #334155;
-  border-radius: 18px;
-  padding: 18px;
-  margin: 18px 0;
-  color: white;
-  font-family: Arial, sans-serif;
+ messagesQuery.on("value",messagesListener,error=>{
+  showError("chatStatus",error);
+ });
 }
-#zx-profile-card .zx-profile-title {
-  font-size: 19px;
-  font-weight: bold;
-  margin-bottom: 15px;
-}
-#zx-profile-card .zx-profile-row {
-  margin: 10px 0;
-  color: #dbeafe;
-  overflow-wrap: anywhere;
-}
-#zx-profile-card .zx-status {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: #064e3b;
-  color: #a7f3d0;
-  border-radius: 20px;
-  padding: 7px 12px;
-  font-size: 13px;
-  margin-top: 8px;
-}
-#zx-profile-card .zx-dot {
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: #22c55e;
-}
-#zx-profile-card .zx-lastseen {
-  color: #94a3b8;
-  font-size: 12px;
-  margin-top: 12px;
-}
-</style>
 
-<script>
-
-(function () {
-  if (window.zxProfileStarted) return;
-  window.zxProfileStarted = true;
-
-  const auth = firebase.auth();
-  const db = firebase.database();
-
-  let presenceStartedFor = null;
-  let profileObserver = null;
-
-  function showProfile(user) {
-    if (!user) return;
-
-    const dashboard = document.getElementById("zenvixDashboard");
-    const appPanel = document.getElementById("appPanel");
-    const parent = dashboard || appPanel;
-
-    if (!parent) return;
-
-    let card = document.getElementById("zx-profile-card");
-
-    if (!card) {
-      card = document.createElement("div");
-      card.id = "zx-profile-card";
-      card.innerHTML = `
-        <div class="zx-profile-title">My Profile</div>
-        <div class="zx-profile-row" id="zx-profile-name"></div>
-        <div class="zx-profile-row" id="zx-profile-email"></div>
-        <div class="zx-status">
-          <span class="zx-dot"></span>
-          <span id="zx-profile-status">Connecting...</span>
-        </div>
-        <div class="zx-lastseen" id="zx-profile-lastseen"></div>
-      `;
-
-      const welcome = parent.querySelector("#welcome");
-      if (welcome && welcome.parentNode === parent) {
-        welcome.insertAdjacentElement("afterend", card);
-      } else {
-        parent.appendChild(card);
-      }
-    }
-
-    const name =
-      user.displayName ||
-      localStorage.getItem("zenvixGuestName") ||
-      "Zenvix User";
-
-    document.getElementById("zx-profile-name").textContent =
-      "Name: " + name;
-
-    document.getElementById("zx-profile-email").textContent =
-      "Email: " + (user.email || "Guest Account");
-
-    const userRef = db.ref("users/" + user.uid);
-
-    userRef.on("value", function (snapshot) {
-      const data = snapshot.val() || {};
-      const status = document.getElementById("zx-profile-status");
-      const lastSeen = document.getElementById("zx-profile-lastseen");
-
-      if (!status || !lastSeen) return;
-
-      if (data.online === true) {
-        status.textContent = "Online";
-        lastSeen.textContent = "You are currently active.";
-      } else {
-        status.textContent = "Offline";
-        lastSeen.textContent = data.lastSeen
-          ? "Last seen: " + new Date(data.lastSeen).toLocaleString()
-          : "Last seen: Not available";
-      }
-    });
-  }
-
-  function startPresence(user) {
-    if (presenceStartedFor === user.uid) return;
-    presenceStartedFor = user.uid;
-
-    const name =
-      user.displayName ||
-      localStorage.getItem("zenvixGuestName") ||
-      "Zenvix User";
-
-    const userRef = db.ref("users/" + user.uid);
-    const connectedRef = db.ref(".info/connected");
-
-    connectedRef.on("value", function (snapshot) {
-      if (snapshot.val() !== true) return;
-
-      userRef.onDisconnect().update({
-        online: false,
-        lastSeen: firebase.database.ServerValue.TIMESTAMP
-      }).then(function () {
-        return userRef.update({
-          displayName: name,
-          email: user.email || "",
-          online: true
-        });
-      }).catch(function (error) {
-        console.error("Zenvix presence error:", error);
-      });
-    });
-  }
-
-  auth.onAuthStateChanged(function (user) {
-    if (!user) return;
-
-    startPresence(user);
-    showProfile(user);
-
-    if (profileObserver) profileObserver.disconnect();
-
-    profileObserver = new MutationObserver(function () {
-      showProfile(user);
-    });
-
-    profileObserver.observe(document.body, {
-      childList: true,
-      subtree: true
-    });
-  });
-})();
-
-
-// ===== ZENVIX GROUP SYSTEM V3 =====
-(function () {
-  if (window.zxGroupsStarted) return;
-  window.zxGroupsStarted = true;
-
-  let groupListRef = null;
-  let groupMessagesRef = null;
-
-  function status(message) {
-    const el = document.getElementById("zxGroupStatus");
-    if (el) el.textContent = message;
-  }
-
-  function makeInterface() {
-    const parent = document.getElementById("zenvixDashboard")
-      || document.getElementById("appPanel");
-
-    if (!parent || document.getElementById("zxGroupsArea")) return;
-
-    const area = document.createElement("section");
-    area.id = "zxGroupsArea";
-    area.style.cssText =
-      "margin-top:22px;padding:18px;background:#101e32;border:1px solid #304866;border-radius:16px;";
-
-    area.innerHTML = `
-      <h2 style="color:#71d6ff">👥 Zenvix Groups</h2>
-
-      <h3>Create Your Group</h3>
-      <input id="zxNewGroupName" maxlength="40"
-        placeholder="Enter group name">
-      <button type="button" id="zxCreateGroup">Create Group</button>
-
-      <hr style="border-color:#304866;margin:20px 0">
-
-      <h3>Join a Group</h3>
-      <input id="zxJoinGroupId"
-        placeholder="Paste Group ID here">
-      <button type="button" id="zxJoinGroup">Join Group</button>
-
-      <p id="zxGroupStatus" class="small"></p>
-
-      <h3 style="color:#71d6ff">My Groups</h3>
-      <div id="zxGroupList"></div>
-
-      <div id="zxGroupChat"></div>
-    `;
-
-    parent.appendChild(area);
-
-    document.getElementById("zxCreateGroup")
-      .onclick = createGroup;
-
-    document.getElementById("zxJoinGroup")
-      .onclick = joinGroup;
-  }
-
-  async function createGroup() {
-    if (!currentUser) {
-      status("Please log in first.");
-      return;
-    }
-
-    const input = document.getElementById("zxNewGroupName");
-    const groupName = input.value.trim();
-
-    if (!groupName || groupName.length > 40) {
-      status("Enter a group name (maximum 40 characters).");
-      return;
-    }
-
-    try {
-      status("Creating your group...");
-
-      const ref = db.ref("groups").push();
-
-      await ref.set({
-        name: groupName,
-        owner: currentUser.uid,
-        createdAt: Date.now(),
-        members: {
-          [currentUser.uid]: true
-        }
-      });
-
-      await db.ref(
-        "userGroups/" + currentUser.uid + "/" + ref.key
-      ).set(true);
-
-      input.value = "";
-      status("Group created successfully! Group ID: " + ref.key);
-
-      loadMyGroups();
-
-    } catch (error) {
-      status("Group creation error: " + error.message);
-    }
-  }
-
-  async function joinGroup() {
-    if (!currentUser) {
-      status("Please log in first.");
-      return;
-    }
-
-    const input = document.getElementById("zxJoinGroupId");
-    const groupId = input.value.trim();
-
-    if (!groupId) {
-      status("Please enter a Group ID.");
-      return;
-    }
-
-    try {
-      status("Checking group...");
-
-      const ref = db.ref("groups/" + groupId);
-      const check = await ref.once("value");
-
-      if (!check.exists()) {
-        status("This Group ID was not found.");
-        return;
-      }
-
-      await ref.child("members/" + currentUser.uid).set(true);
-
-      await db.ref(
-        "userGroups/" + currentUser.uid + "/" + groupId
-      ).set(true);
-
-      input.value = "";
-      status("You successfully joined " + check.val().name);
-
-      loadMyGroups();
-
-    } catch (error) {
-      status("Could not join group: " + error.message);
-    }
-  }
-
-  function loadMyGroups() {
-    if (!currentUser) return;
-
-    if (groupListRef) groupListRef.off();
-
-    groupListRef = db.ref("userGroups/" + currentUser.uid);
-
-    groupListRef.on("value", async snapshot => {
-      const list = document.getElementById("zxGroupList");
-      if (!list) return;
-
-      list.innerHTML = "";
-
-      if (!snapshot.exists()) {
-        list.textContent = "No groups yet. Create or join a group.";
-        return;
-      }
-
-      const ids = [];
-      snapshot.forEach(child => ids.push(child.key));
-
-      for (const id of ids) {
-        try {
-          const groupSnapshot = await db.ref(
-            "groups/" + id
-          ).once("value");
-
-          if (!groupSnapshot.exists()) continue;
-
-          const group = groupSnapshot.val();
-
-          const card = document.createElement("div");
-          card.style.cssText =
-            "background:#20334d;padding:12px;margin:10px 0;border-radius:12px;";
-
-          const button = document.createElement("button");
-          button.type = "button";
-          button.textContent = "👥 " + group.name;
-          button.onclick = () => openGroup(id, group.name);
-
-          const idLabel = document.createElement("p");
-          idLabel.className = "small";
-          idLabel.textContent = "Group ID: " + id;
-
-          const copyButton = document.createElement("button");
-          copyButton.type = "button";
-          copyButton.textContent = "Copy Group ID";
-
-          copyButton.onclick = async () => {
-            try {
-              await navigator.clipboard.writeText(id);
-              status("Group ID copied!");
-            } catch (error) {
-              status("Copy failed. Select and copy the Group ID manually.");
-            }
-          };
-
-          card.append(button, idLabel, copyButton);
-          list.appendChild(card);
-
-        } catch (error) {
-          console.error("Group loading error:", error);
-        }
-      }
-    }, error => {
-      status("Group list error: " + error.message);
-    });
-  }
-
-  function openGroup(id, groupName) {
-    if (groupMessagesRef) {
-      groupMessagesRef.off();
-      groupMessagesRef = null;
-    }
-
-    const chat = document.getElementById("zxGroupChat");
-    if (!chat) return;
-
-    chat.innerHTML = `
-      <hr style="border-color:#304866;margin:20px 0">
-      <h3 style="color:#71d6ff"></h3>
-      <div id="zxGroupMessages"
-        style="height:280px;overflow-y:auto;background:#0c1627;padding:10px;border-radius:10px;">
-      </div>
-      <input id="zxGroupMessageInput"
-        maxlength="500" placeholder="Write a group message...">
-      <button type="button" id="zxGroupSend">Send Message</button>
-      <p id="zxGroupSendStatus" class="small"></p>
-    `;
-
-    chat.querySelector("h3").textContent = "👥 " + groupName;
-
-    const messages = document.getElementById("zxGroupMessages");
-
-    groupMessagesRef = db.ref(
-      "groups/" + id + "/messages"
-    ).limitToLast(100);
-
-    groupMessagesRef.on("value", snapshot => {
-      messages.innerHTML = "";
-
-      snapshot.forEach(child => {
-        const msg = child.val() || {};
-
-        const item = document.createElement("div");
-        item.className = "message";
-
-        const sender = document.createElement("strong");
-        sender.textContent = msg.name || "Member";
-
-        const content = document.createElement("div");
-        content.textContent = msg.text || "";
-
-        const time = document.createElement("div");
-        time.className = "small";
-        time.textContent = msg.createdAt
-          ? new Date(msg.createdAt).toLocaleString()
-          : "";
-
-        item.append(sender, content, time);
-        messages.appendChild(item);
-      });
-
-      messages.scrollTop = messages.scrollHeight;
-
-    }, error => {
-      document.getElementById("zxGroupSendStatus").textContent =
-        "Chat error: " + error.message;
-    });
-
-    async function sendMessage() {
-      const input = document.getElementById("zxGroupMessageInput");
-      const sendStatus = document.getElementById("zxGroupSendStatus");
-      const text = input.value.trim();
-
-      if (!text || !currentUser) return;
-
-      const button = document.getElementById("zxGroupSend");
-      button.disabled = true;
-      sendStatus.textContent = "Sending...";
-
-      try {
-        await db.ref(
-          "groups/" + id + "/messages"
-        ).push({
-          uid: currentUser.uid,
-          name: currentName || "Member",
-          text: text,
-          createdAt: Date.now()
-        });
-
-        input.value = "";
-        sendStatus.textContent = "Message sent.";
-
-      } catch (error) {
-        sendStatus.textContent = "Send failed: " + error.message;
-
-      } finally {
-        button.disabled = false;
-      }
-    }
-
-    document.getElementById("zxGroupSend").onclick = sendMessage;
-
-    document.getElementById("zxGroupMessageInput")
-      .addEventListener("keydown", event => {
-        if (event.key === "Enter") sendMessage();
-      });
-
-    chat.scrollIntoView({
-      behavior: "smooth",
-      block: "start"
-    });
-  }
-
-  function stopGroups() {
-    if (groupListRef) groupListRef.off();
-    if (groupMessagesRef) groupMessagesRef.off();
-
-    groupListRef = null;
-    groupMessagesRef = null;
-  }
-
-  firebase.auth().onAuthStateChanged(user => {
-    if (user) {
-      makeInterface();
-      loadMyGroups();
-    } else {
-      stopGroups();
-
-      const area = document.getElementById("zxGroupsArea");
-      if (area) area.remove();
-    }
+async function sendMessage(){
+ const text=$("messageInput").value.trim();
+ if(!currentUser||!text) return;
+
+ $("sendButton").disabled=true;
+ $("chatStatus").textContent="Sending...";
+
+ try{
+  await db.ref("messages").push({
+   uid:currentUser.uid,
+   name:currentName,
+   text:text,
+   timestamp:firebase.database.ServerValue.TIMESTAMP
   });
 
-  console.log("Zenvix Groups V3 ready.");
-})();
+  $("messageInput").value="";
+  $("chatStatus").textContent="Message sent.";
 
-// ===== END ZENVIX GROUP SYSTEM V3 =====
-(function () {
-  if (window.zxMembersStarted) return;
-  window.zxMembersStarted = true;
+ }catch(error){
+  showError("chatStatus",error);
+ }finally{
+  $("sendButton").disabled=false;
+ }
+}
 
-  const auth = firebase.auth();
-  const db = firebase.database();
+$("sendButton").onclick=sendMessage;
+$("messageInput").addEventListener("keydown",event=>{
+ if(event.key==="Enter") sendMessage();
+});
 
-  let membersRef = null;
-  let membersListener = null;
-  let connectedListener = null;
+/* ==================================
+   GROUP SYSTEM
+================================== */
 
-  const style = document.createElement("style");
-  style.textContent = `
-    #zx-members-panel {
-      background: #111a32;
-      color: white;
-      padding: 18px;
-      margin: 18px 0;
-      border: 1px solid #29395d;
-      border-radius: 18px;
-      font-family: Arial, sans-serif;
-    }
-    #zx-members-panel h3 {
-      margin: 0 0 14px;
-      color: #fff;
-    }
-    .zx-member-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 0;
-      border-bottom: 1px solid #29395d;
-    }
-    .zx-member-avatar {
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      background: #263b68;
-      display: grid;
-      place-items: center;
-      font-weight: bold;
-      color: white;
-    }
-    .zx-member-info {
-      flex: 1;
-      min-width: 0;
-    }
-    .zx-member-name {
-      font-weight: bold;
-      overflow-wrap: anywhere;
-    }
-    .zx-member-status {
-      font-size: 12px;
-      margin-top: 5px;
-      color: #aab7d0;
-    }
-    .zx-online-dot {
-      display: inline-block;
-      width: 9px;
-      height: 9px;
-      background: #21df86;
-      border-radius: 50%;
-      margin-right: 5px;
-    }
-    .zx-offline-dot {
-      display: inline-block;
-      width: 9px;
-      height: 9px;
-      background: #8791a5;
-      border-radius: 50%;
-      margin-right: 5px;
-    }
-  `;
-  document.head.appendChild(style);
+function startGroups(){
+ $("groupsArea").innerHTML=`
+  <h2 style="color:#71d6ff">👥 Zenvix Groups</h2>
 
-  function makePanel() {
-    const parent =
-      document.getElementById("zenvixDashboard") ||
-      document.getElementById("appPanel");
+  <h3>Create Your Group</h3>
+  <input id="newGroupName" maxlength="40" placeholder="Enter group name">
+  <button id="createGroup">Create Group</button>
 
-    if (!parent) return false;
+  <hr style="border-color:#304866;margin:20px 0">
 
-    if (document.getElementById("zx-members-panel")) return true;
+  <h3>Join a Group</h3>
+  <input id="joinGroupId" placeholder="Paste Group ID here">
+  <button id="joinGroup">Join Group</button>
 
-    const panel = document.createElement("div");
-    panel.id = "zx-members-panel";
-    panel.innerHTML = `
-      <h3>Online Members</h3>
-      <div id="zx-members-count">Connecting...</div>
-      <div id="zx-members-list"></div>
-    `;
+  <p id="groupStatus" class="small"></p>
+  <h3 style="color:#71d6ff">My Groups</h3>
+  <div id="groupList"></div>
+  <div id="groupChat"></div>
+ `;
 
-    parent.appendChild(panel);
-    return true;
+ $("createGroup").onclick=createGroup;
+ $("joinGroup").onclick=joinGroup;
+
+ loadMyGroups();
+}
+
+function groupStatus(message){
+ if($("groupStatus")) $("groupStatus").textContent=message;
+}
+
+async function createGroup(){
+ if(!currentUser) return;
+
+ const input=$("newGroupName");
+ const name=input.value.trim();
+
+ if(!name||name.length>40){
+  groupStatus("Enter a group name up to 40 characters.");
+  return;
+ }
+
+ try{
+  groupStatus("Creating group...");
+
+  const ref=db.ref("groups").push();
+
+  await ref.set({
+   name:name,
+   owner:currentUser.uid,
+   createdAt:Date.now(),
+   members:{[currentUser.uid]:true}
+  });
+
+  await db.ref("userGroups/"+currentUser.uid+"/"+ref.key).set(true);
+
+  input.value="";
+  groupStatus("Group created. ID: "+ref.key);
+  loadMyGroups();
+
+ }catch(error){
+  groupStatus("Create error: "+error.message);
+ }
+}
+
+async function joinGroup(){
+ if(!currentUser) return;
+
+ const id=$("joinGroupId").value.trim();
+ if(!id){
+  groupStatus("Please enter a Group ID.");
+  return;
+ }
+
+ try{
+  groupStatus("Joining group...");
+
+  const ref=db.ref("groups/"+id);
+
+  /* First request membership, then read group.
+     This matches member-only group read rules. */
+
+  await ref.child("members/"+currentUser.uid).set(true);
+
+  const check=await ref.once("value");
+
+  if(!check.exists()){
+   groupStatus("Group not found.");
+   return;
   }
 
-  function renderMembers(data) {
-    makePanel();
+  await db.ref("userGroups/"+currentUser.uid+"/"+id).set(true);
 
-    const list = document.getElementById("zx-members-list");
-    const count = document.getElementById("zx-members-count");
+  $("joinGroupId").value="";
+  groupStatus("Successfully joined "+(check.val().name||"group"));
+  loadMyGroups();
 
-    if (!list || !count) return;
+ }catch(error){
+  groupStatus("Could not join group: "+error.message);
+ }
+}
 
-    list.innerHTML = "";
+function loadMyGroups(){
+ if(!currentUser) return;
 
-    const members = Object.entries(data || {})
-      .map(([uid, profile]) => ({
-        uid: uid,
-        name: profile.displayName || "Zenvix User",
-        online: profile.online === true,
-        lastSeen: profile.lastSeen || null
-      }))
-      .sort((a, b) => Number(b.online) - Number(a.online));
+ if(groupListRef) groupListRef.off();
 
-    const onlineCount = members.filter(m => m.online).length;
-    count.textContent =
-      onlineCount + " Online • " + members.length + " Members";
+ groupListRef=db.ref("userGroups/"+currentUser.uid);
 
-    if (!members.length) {
-      list.textContent = "No members yet.";
-      return;
-    }
+ groupListRef.on("value",async snapshot=>{
+  const list=$("groupList");
+  if(!list) return;
 
-    members.forEach(function (member) {
-      const item = document.createElement("div");
-      item.className = "zx-member-item";
+  list.innerHTML="";
 
-      const avatar = document.createElement("div");
-      avatar.className = "zx-member-avatar";
-      avatar.textContent = member.name.charAt(0).toUpperCase();
-
-      const info = document.createElement("div");
-      info.className = "zx-member-info";
-
-      const name = document.createElement("div");
-      name.className = "zx-member-name";
-      name.textContent = member.name;
-
-      const status = document.createElement("div");
-      status.className = "zx-member-status";
-
-      if (member.online) {
-        status.innerHTML =
-          '<span class="zx-online-dot"></span>Online';
-      } else {
-        status.innerHTML =
-          '<span class="zx-offline-dot"></span>Offline';
-
-        if (member.lastSeen) {
-          status.textContent =
-            "Last seen: " +
-            new Date(member.lastSeen).toLocaleString();
-        }
-      }
-
-      info.appendChild(name);
-      info.appendChild(status);
-      item.appendChild(avatar);
-      item.appendChild(info);
-      list.appendChild(item);
-    });
+  if(!snapshot.exists()){
+   list.textContent="No groups yet. Create or join a group.";
+   return;
   }
 
-  function startMembers() {
-    if (membersRef) return;
+  const ids=[];
+  snapshot.forEach(child=>ids.push(child.key));
 
-    membersRef = db.ref("publicProfiles");
-    membersListener = membersRef.on("value", function (snapshot) {
-      renderMembers(snapshot.val());
-    }, function (error) {
-      console.error("Members error:", error);
-      const count = document.getElementById("zx-members-count");
-      if (count) count.textContent = "Could not load members.";
-    });
-  }
+  for(const id of ids){
+   try{
+    const snap=await db.ref("groups/"+id).once("value");
+    if(!snap.exists()) continue;
 
-  function startPresence(user) {
-    const name =
-      user.displayName ||
-      localStorage.getItem("zenvixGuestName") ||
-      "Zenvix User";
+    const group=snap.val()||{};
 
-    const userRef = db.ref("publicProfiles/" + user.uid);
-    const connectedRef = db.ref(".info/connected");
+    const card=document.createElement("div");
+    card.className="message";
 
-    if (connectedListener) {
-      connectedRef.off("value", connectedListener);
-    }
+    const open=document.createElement("button");
+    open.textContent="👥 "+(group.name||"Group");
+    open.onclick=()=>openGroup(id,group.name||"Group");
 
-    connectedListener = function (snapshot) {
-      if (snapshot.val() !== true) return;
+    const label=document.createElement("p");
+    label.className="small";
+    label.textContent="Group ID: "+id;
 
-      userRef.onDisconnect().update({
-        online: false,
-        lastSeen: firebase.database.ServerValue.TIMESTAMP
-      }).then(function () {
-        return userRef.update({
-          displayName: name,
-          online: true
-        });
-      }).catch(function (error) {
-        console.error("Presence error:", error);
-      });
+    const copy=document.createElement("button");
+    copy.textContent="Copy Group ID";
+    copy.onclick=async()=>{
+     try{
+      await navigator.clipboard.writeText(id);
+      groupStatus("Group ID copied.");
+     }catch(error){
+      groupStatus("Copy unavailable. Please copy the ID manually.");
+     }
     };
 
-    connectedRef.on("value", connectedListener);
+    card.append(open,label,copy);
+    list.appendChild(card);
+
+   }catch(error){
+    console.error("Group read error:",error);
+   }
+  }
+ },error=>groupStatus("Group list error: "+error.message));
+}
+
+function openGroup(id,name){
+ if(groupMessagesRef) groupMessagesRef.off();
+
+ $("groupChat").innerHTML=`
+  <hr style="border-color:#304866;margin:20px 0">
+  <h3 style="color:#71d6ff"></h3>
+  <div id="groupMessages" style="height:260px;overflow-y:auto;background:#0c1627;padding:10px;border-radius:10px"></div>
+  <input id="groupMessageInput" maxlength="500" placeholder="Write a group message...">
+  <button id="groupSend">Send Message</button>
+  <p id="groupSendStatus" class="small"></p>
+ `;
+
+ $("groupChat").querySelector("h3").textContent="👥 "+name;
+
+ const box=$("groupMessages");
+
+ groupMessagesRef=db.ref("groups/"+id+"/messages").limitToLast(100);
+
+ groupMessagesRef.on("value",snapshot=>{
+  box.innerHTML="";
+
+  snapshot.forEach(child=>{
+   const msg=child.val()||{};
+   const item=document.createElement("div");
+   item.className="message";
+
+   const sender=document.createElement("strong");
+   sender.textContent=msg.name||"Member";
+
+   const content=document.createElement("div");
+   content.textContent=msg.text||"";
+
+   const time=document.createElement("div");
+   time.className="small";
+   time.textContent=msg.createdAt
+    ?new Date(msg.createdAt).toLocaleString():"";
+
+   item.append(sender,content,time);
+   box.appendChild(item);
+  });
+
+  box.scrollTop=box.scrollHeight;
+ },error=>{
+  $("groupSendStatus").textContent="Chat error: "+error.message;
+ });
+
+ async function sendGroupMessage(){
+  const input=$("groupMessageInput");
+  const text=input.value.trim();
+  if(!text||!currentUser) return;
+
+  $("groupSend").disabled=true;
+  $("groupSendStatus").textContent="Sending...";
+
+  try{
+   await db.ref("groups/"+id+"/messages").push({
+    uid:currentUser.uid,
+    name:currentName,
+    text:text,
+    createdAt:Date.now()
+   });
+
+   input.value="";
+   $("groupSendStatus").textContent="Message sent.";
+
+  }catch(error){
+   $("groupSendStatus").textContent="Send error: "+error.message;
+  }finally{
+   $("groupSend").disabled=false;
+  }
+ }
+
+ $("groupSend").onclick=sendGroupMessage;
+ $("groupMessageInput").addEventListener("keydown",event=>{
+  if(event.key==="Enter") sendGroupMessage();
+ });
+}
+
+/* ==================================
+   ONLINE MEMBERS
+================================== */
+
+function startMembers(){
+ if(membersRef) membersRef.off();
+
+ membersRef=db.ref("publicProfiles");
+
+ membersRef.on("value",snapshot=>{
+  const panel=$("membersPanel");
+  panel.innerHTML=`
+   <h3 style="color:#71d6ff">Online Members</h3>
+   <div id="memberCount"></div>
+   <div id="memberList"></div>
+  `;
+
+  const data=snapshot.val()||{};
+  const members=Object.entries(data).map(([uid,p])=>({
+   uid:uid,
+   name:p.displayName||"Zenvix User",
+   online:p.online===true,
+   lastSeen:p.lastSeen||null
+  })).sort((a,b)=>Number(b.online)-Number(a.online));
+
+  $("memberCount").textContent=
+   members.filter(m=>m.online).length+
+   " Online • "+members.length+" Members";
+
+  if(!members.length){
+   $("memberList").textContent="No members yet.";
+   return;
   }
 
-  auth.onAuthStateChanged(function (user) {
-    if (!user) return;
+  members.forEach(member=>{
+   const row=document.createElement("div");
+   row.className="member";
 
-    startPresence(user);
-    startMembers();
-    makePanel();
+   const avatar=document.createElement("div");
+   avatar.className="avatar";
+   avatar.textContent=member.name.charAt(0).toUpperCase();
 
-    const observer = new MutationObserver(function () {
-      makePanel();
-    });
+   const info=document.createElement("div");
+   const name=document.createElement("strong");
+   name.textContent=member.name;
 
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true
-    });
+   const status=document.createElement("div");
+   status.className="small";
+   status.textContent=member.online
+    ?"● Online"
+    :(member.lastSeen
+      ?"Offline • Last seen: "+new Date(member.lastSeen).toLocaleString()
+      :"Offline");
+
+   if(member.online) status.classList.add("online");
+
+   info.append(name,status);
+   row.append(avatar,info);
+   $("memberList").appendChild(row);
   });
-})();
-</script>
 
+ },error=>{
+  $("membersPanel").textContent="Members error: "+error.message;
+ });
+}
+
+/* ==================================
+   LOGOUT
+================================== */
+
+$("logoutButton").onclick=async()=>{
+ if(!auth) return;
+
+ try{
+  stopMessages();
+  if(groupListRef) groupListRef.off();
+  if(groupMessagesRef) groupMessagesRef.off();
+  if(profileRef) profileRef.off();
+  if(membersRef) membersRef.off();
+
+  await auth.signOut();
+
+  currentUser=null;
+  currentName="";
+  $("status").textContent="You have logged out.";
+
+ }catch(error){
+  showError("status",error);
+ }
+};
+
+/* Catch unexpected JavaScript errors */
+
+window.addEventListener("error",event=>{
+ diagnostic("JavaScript error: "+(event.message||"Unknown error"));
+});
+
+window.addEventListener("unhandledrejection",event=>{
+ const reason=event.reason;
+ diagnostic("Async error: "+(reason&&reason.message?reason.message:String(reason)));
+});
+
+/* Start after all button handlers are ready. */
+initializeZenvix();
+
+</script>
 </body>
 </html>
