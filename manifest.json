@@ -1,0 +1,11 @@
+{
+  "name": "ZENVIX",
+  "short_name": "ZENVIX",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#080d18",
+  "theme_color": "#080d18",
+  "description": "ZENVIX Social Live Chat"
+}
