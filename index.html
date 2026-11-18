@@ -5,111 +5,58 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ZENVIX</title>
-
 <style>
 *{box-sizing:border-box}
-body{
- margin:0;min-height:100vh;color:white;
- font-family:Arial,sans-serif;
- background:radial-gradient(circle at top left,#19375b,transparent 38%),
- linear-gradient(135deg,#080f1d,#101c30 60%,#0b1423);
-}
+body{margin:0;min-height:100vh;color:white;font-family:Arial,sans-serif;background:radial-gradient(circle at top left,#19375b,transparent 38%),linear-gradient(135deg,#080f1d,#101c30 60%,#0b1423)}
 .container{width:min(850px,100%);margin:auto;padding:16px}
 h1{text-align:center;color:#71d6ff;letter-spacing:3px;font-size:36px}
-.panel{
- background:#1b2940;border:1px solid #304866;
- border-radius:18px;padding:18px;margin-top:18px;
-}
-input,button{
- width:100%;padding:14px;margin-top:10px;
- border:0;border-radius:11px;font-size:16px;
-}
-input{background:#f1f5f9;color:#111}
+.panel{background:#1b2940;border:1px solid #304866;border-radius:18px;padding:18px;margin-top:18px}
+input,button,select{width:100%;padding:14px;margin-top:10px;border:0;border-radius:11px;font-size:16px}
+input,select{background:#f1f5f9;color:#111}
 button{background:#168bd0;color:white;font-weight:bold;cursor:pointer}
 button:disabled{opacity:.5}
 .google{background:white;color:#222}
 .logout{background:#9b3545}
 #appPanel,#chatPanel{display:none}
-#messages{
- height:350px;overflow-y:auto;background:#0c1627;
- border-radius:12px;padding:12px;
-}
-.message{
- background:#263954;padding:12px;margin:9px 0;
- border-radius:10px;overflow-wrap:anywhere;
-}
+#messages{height:350px;overflow-y:auto;background:#0c1627;border-radius:12px;padding:12px}
+.message{background:#263954;padding:12px;margin:9px 0;border-radius:10px;overflow-wrap:anywhere}
 .message strong{color:#71d6ff}
 .small{color:#b8c3d6;font-size:13px;line-height:1.5;overflow-wrap:anywhere}
 #status,#loginStatus,#chatStatus,#groupStatus{overflow-wrap:anywhere}
-#diagnostics{
- background:#101827;padding:12px;border-radius:10px;
- white-space:pre-wrap;overflow-wrap:anywhere;
- font-size:13px;color:#b8e8ff;line-height:1.6;
-}
-.zx-hero{
- padding:20px;border-radius:16px;
- background:linear-gradient(135deg,#12669b,#18314f);
- margin:15px 0;
-}
-.zx-profile,.member{
- display:flex;align-items:center;gap:12px;
- padding:13px;background:#101e32;border-radius:13px;margin:10px 0;
-}
-.avatar{
- width:45px;height:45px;min-width:45px;border-radius:50%;
- display:grid;place-items:center;background:#168bd0;font-weight:bold;
-}
+#diagnostics{background:#101827;padding:12px;border-radius:10px;white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px;color:#b8e8ff;line-height:1.6}
+.zx-hero{padding:20px;border-radius:16px;background:linear-gradient(135deg,#12669b,#18314f);margin:15px 0}
+.zx-profile,.member{display:flex;align-items:center;gap:12px;padding:13px;background:#101e32;border-radius:13px;margin:10px 0}
+.avatar{width:45px;height:45px;min-width:45px;border-radius:50%;display:grid;place-items:center;background:#168bd0;font-weight:bold}
 .zx-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.zx-card{
- background:#203a59;padding:15px;border-radius:13px;
- border:1px solid #304866;min-height:105px;
-}
+.zx-card{background:#203a59;padding:15px;border-radius:13px;border:1px solid #304866;min-height:105px}
 .section-title{color:#71d6ff;margin-top:22px}
-#profileCard,#groupsArea,#membersPanel,#privateInbox{
- background:#101e32;border:1px solid #304866;
- border-radius:15px;padding:16px;margin-top:18px;
-}
+#profileCard,#groupsArea,#membersPanel,#privateInbox,#gamingArea{background:#101e32;border:1px solid #304866;border-radius:15px;padding:16px;margin-top:18px}
 .online{color:#21df86}
 .offline{color:#aab7d0}
-.private-card{
- background:#203a59;border:1px solid #304866;
- border-radius:12px;padding:12px;margin:10px 0;
-}
+.private-card{background:#203a59;border:1px solid #304866;border-radius:12px;padding:12px;margin:10px 0}
 .private-card button{margin-top:6px}
-.private-window{
- background:#0c1627;border:1px solid #304866;
- border-radius:13px;padding:12px;margin-top:15px;
-}
-.private-messages{
- height:280px;overflow-y:auto;padding:8px;
-}
-.private-message{
- background:#263954;padding:11px;border-radius:10px;
- margin:8px 0;overflow-wrap:anywhere;
-}
+.private-window{background:#0c1627;border:1px solid #304866;border-radius:13px;padding:12px;margin-top:15px}
+.private-messages{height:280px;overflow-y:auto;padding:8px}
+.private-message{background:#263954;padding:11px;border-radius:10px;margin:8px 0;overflow-wrap:anywhere}
 .private-message.mine{background:#164b70}
-.private-top{
- display:flex;align-items:center;justify-content:space-between;
- gap:10px;flex-wrap:wrap;
-}
+.private-top{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
 .private-top button{width:auto;margin:0;padding:9px 13px}
+.game-hero{padding:20px;border-radius:16px;background:linear-gradient(135deg,#092e53,#34205b);border:1px solid #39709d}
+.game-card{background:#203a59;border:1px solid #304866;border-radius:13px;padding:13px;margin:10px 0}
+.live-dot{color:#ff5151;font-weight:bold}
+.live-preview{width:100%;max-height:340px;background:#050b14;border-radius:12px;margin-top:12px}
+.game-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.stop-live{background:#a52f45}
+.watch-button{background:#167c65}
 @media(max-width:450px){
- .container{padding:12px}
- h1{font-size:30px}
- .panel{padding:15px}
- .zx-grid{gap:8px}
- .zx-card{padding:11px}
- .member{flex-wrap:wrap}
+.container{padding:12px}h1{font-size:30px}.panel{padding:15px}.zx-grid{gap:8px}.zx-card{padding:11px}.member{flex-wrap:wrap}
 }
 </style>
 </head>
-
 <body>
 <main class="container">
 <h1>ZENVIX</h1>
-<p style="text-align:center;color:#a9bad0">
-Your world. Your people. Your space.
-</p>
+<p style="text-align:center;color:#a9bad0">Your world. Your people. Your space.</p>
 
 <section class="panel" id="loginPanel">
 <h2>Welcome to Zenvix</h2>
@@ -125,6 +72,7 @@ Your world. Your people. Your space.
 <p id="welcome"></p>
 <button id="logoutButton" class="logout">Logout</button>
 <div id="dashboard"></div>
+<div id="gamingArea"></div>
 <div id="profileCard"></div>
 <div id="privateInbox"></div>
 <div id="groupsArea"></div>
@@ -138,137 +86,65 @@ Your world. Your people. Your space.
 <button id="sendButton">Send Message</button>
 <p id="chatStatus" class="small"></p>
 </section>
-
 <p id="status" class="small"></p>
 </main>
 
 <script>
-/* ==================================
-   ZENVIX SAFE STARTUP
-================================== */
-
-const $ = id => document.getElementById(id);
-
-let auth = null;
-let db = null;
-let currentUser = null;
-let currentName = "";
-let messagesQuery = null;
-let messagesListener = null;
-let groupListRef = null;
-let groupMessagesRef = null;
-let profileRef = null;
-let membersRef = null;
-
-let privateInboxRef = null;
-let privateMessagesRef = null;
-let activePrivateChatId = null;
+const $=id=>document.getElementById(id);
+let auth=null,db=null,currentUser=null,currentName="";
+let messagesQuery=null,messagesListener=null;
+let groupListRef=null,groupMessagesRef=null,profileRef=null,membersRef=null;
+let privateInboxRef=null,privateMessagesRef=null,activePrivateChatId=null;
+let gamingRef=null,gamingListener=null;
+let localStream=null,activeStreamId=null;
 
 function diagnostic(message){
- const box = $("diagnostics");
- if(!box) return;
- box.textContent += "\n["+
- new Date().toLocaleTimeString()+"] "+message;
- box.scrollTop = box.scrollHeight;
+ const box=$("diagnostics");if(!box)return;
+ box.textContent+="\n["+new Date().toLocaleTimeString()+"] "+message;
+ box.scrollTop=box.scrollHeight;
 }
-
 function showError(element,error){
- const message = error && error.message
-  ? error.message : String(error);
- const code = error && error.code ? error.code : "ERROR";
-
- if($(element)) $(element).textContent =
-  "Error: "+code+" - "+message;
-
+ const message=error&&error.message?error.message:String(error);
+ const code=error&&error.code?error.code:"ERROR";
+ if($(element))$(element).textContent="Error: "+code+" - "+message;
  diagnostic("ERROR: "+code+" - "+message);
 }
-
 function loadScript(url){
  return new Promise((resolve,reject)=>{
   const script=document.createElement("script");
-  script.src=url;
-  script.async=true;
-  script.onload=()=>resolve();
-  script.onerror=()=>reject(
-   new Error("Firebase file could not load: "+url)
-  );
+  script.src=url;script.async=true;
+  script.onload=resolve;
+  script.onerror=()=>reject(new Error("Firebase file could not load: "+url));
   document.head.appendChild(script);
  });
 }
 
-/* Buttons respond even while Firebase loads. */
-
 $("guestButton").onclick=async()=>{
  const name=$("displayName").value.trim();
-
- if(!name){
-  $("loginStatus").textContent="Please enter your name.";
-  return;
- }
- if(!auth){
-  $("loginStatus").textContent="Firebase is still loading. Please wait.";
-  return;
- }
-
- $("guestButton").disabled=true;
- $("loginStatus").textContent="Connecting as Guest...";
-
- try{
-  localStorage.setItem("zenvixGuestName",name);
-  await auth.signInAnonymously();
-  diagnostic("Guest login request completed.");
- }catch(error){
-  showError("loginStatus",error);
- }finally{
-  $("guestButton").disabled=false;
- }
+ if(!name){$("loginStatus").textContent="Please enter your name.";return}
+ if(!auth){$("loginStatus").textContent="Firebase is still loading. Please wait.";return}
+ $("guestButton").disabled=true;$("loginStatus").textContent="Connecting as Guest...";
+ try{localStorage.setItem("zenvixGuestName",name);await auth.signInAnonymously()}
+ catch(error){showError("loginStatus",error)}
+ finally{$("guestButton").disabled=false}
 };
-
 $("googleButton").onclick=async()=>{
- if(!auth){
-  $("loginStatus").textContent="Firebase is still loading. Please wait.";
-  return;
- }
-
- $("googleButton").disabled=true;
- $("loginStatus").textContent="Opening Google login...";
-
+ if(!auth){$("loginStatus").textContent="Firebase is still loading.";return}
+ $("googleButton").disabled=true;$("loginStatus").textContent="Opening Google login...";
  try{
   const provider=new firebase.auth.GoogleAuthProvider();
   provider.setCustomParameters({prompt:"select_account"});
   await auth.signInWithPopup(provider);
-  diagnostic("Google login completed.");
- }catch(error){
-  showError("loginStatus",error);
- }finally{
-  $("googleButton").disabled=false;
- }
+ }catch(error){showError("loginStatus",error)}
+ finally{$("googleButton").disabled=false}
 };
-
-/* ==================================
-   FIREBASE INITIALIZATION
-================================== */
 
 async function initializeZenvix(){
  try{
-  diagnostic("Loading Firebase App...");
-
-  await loadScript(
-   "https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"
-  );
-
-  diagnostic("Loading Firebase Authentication...");
-
-  await loadScript(
-   "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"
-  );
-
-  diagnostic("Loading Firebase Database...");
-
-  await loadScript(
-   "https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"
-  );
-
+  diagnostic("Loading Firebase...");
+  await loadScript("https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js");
+  await loadScript("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js");
+  await loadScript("https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js");
   const firebaseConfig={
    apiKey:"AIzaSyCIgG9MMxLlvuMM9MavvMTrAQPuYZ6a2Ds",
    authDomain:"livechat2026-51a85.firebaseapp.com",
@@ -279,875 +155,450 @@ async function initializeZenvix(){
    appId:"1:467836802450:web:c9c48f316fcf3bf4d4dd4b",
    measurementId:"G-LXL179GDDP"
   };
-
-  if(!firebase.apps.length){
-   firebase.initializeApp(firebaseConfig);
-  }
-
-  auth=firebase.auth();
-  db=firebase.database();
-
+  if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
+  auth=firebase.auth();db=firebase.database();
   diagnostic("Firebase initialized successfully.");
-
-  auth.onAuthStateChanged(handleAuthState,error=>{
-   showError("loginStatus",error);
-  });
-
- }catch(error){
-  showError("loginStatus",error);
-  diagnostic("Startup stopped. Check internet and Firebase files.");
- }
+  auth.onAuthStateChanged(handleAuthState,error=>showError("loginStatus",error));
+ }catch(error){showError("loginStatus",error)}
 }
-
-/* ==================================
-   AUTHENTICATION
-================================== */
-
 function showLogin(){
- $("loginPanel").style.display="block";
- $("appPanel").style.display="none";
- $("chatPanel").style.display="none";
+ $("loginPanel").style.display="block";$("appPanel").style.display="none";$("chatPanel").style.display="none";
 }
-
 function showApp(){
- $("loginPanel").style.display="none";
- $("appPanel").style.display="block";
- $("chatPanel").style.display="block";
+ $("loginPanel").style.display="none";$("appPanel").style.display="block";$("chatPanel").style.display="block";
 }
-
 async function handleAuthState(user){
- stopMessages();
- stopPrivateChat();
-
- if(!user){
-  currentUser=null;
-  currentName="";
-  showLogin();
-  diagnostic("No user signed in.");
-  return;
- }
-
+ stopMessages();stopPrivateChat();stopGamingListener();
+ if(!user){currentUser=null;currentName="";showLogin();diagnostic("No user signed in.");return}
  currentUser=user;
-
- currentName=user.isAnonymous
-  ? localStorage.getItem("zenvixGuestName") || "Guest"
-  : user.displayName || "Zenvix Member";
-
- showApp();
-
- $("welcome").textContent="Welcome, "+currentName;
+ currentName=user.isAnonymous?localStorage.getItem("zenvixGuestName")||"Guest":user.displayName||"Zenvix Member";
+ showApp();$("welcome").textContent="Welcome, "+currentName;
  $("status").textContent="Signed in. Connecting to Zenvix...";
-
- diagnostic("User signed in: "+(user.isAnonymous?"Guest":"Google"));
-
+ diagnostic("User signed in.");
  try{
   await db.ref("users/"+user.uid).update({
-   uid:user.uid,
-   name:currentName,
-   updatedAt:firebase.database.ServerValue.TIMESTAMP
+   uid:user.uid,name:currentName,updatedAt:firebase.database.ServerValue.TIMESTAMP
   });
-
   $("status").textContent="Connected to Zenvix.";
-  diagnostic("User profile saved.");
-
-  buildDashboard();
-  startProfile(user);
-  startPresence(user);
-  startMessages();
-  startGroups();
-  startMembers();
-  startPrivateInbox();
-
- }catch(error){
-  showError("status",error);
- }
+  buildDashboard();startProfile(user);startPresence(user);startMessages();
+  startGroups();startMembers();startPrivateInbox();startGaming();
+ }catch(error){showError("status",error)}
 }
-
-/* ==================================
-   DASHBOARD
-================================== */
 
 function buildDashboard(){
  $("dashboard").innerHTML=`
-  <div class="zx-hero">
-   <h2>Welcome to Zenvix 👋</h2>
-   <p>Your world. Your people. Your space.</p>
-  </div>
-
-  <h3 class="section-title">My Account</h3>
-  <div class="zx-profile">
-   <div class="avatar" id="dashAvatar">Z</div>
-   <div>
-    <strong id="dashName"></strong>
-    <div class="small" id="dashEmail"></div>
-   </div>
-  </div>
-
-  <h3 class="section-title">Explore Zenvix</h3>
-  <div class="zx-grid">
-   <div class="zx-card">🌐<br><strong>Community</strong><p class="small">Public chat room</p></div>
-   <div class="zx-card">👥<br><strong>Groups</strong><p class="small">Create and join groups</p></div>
-   <div class="zx-card">🔒<br><strong>Private Inbox</strong><p class="small">Personal conversations</p></div>
-   <div class="zx-card">👤<br><strong>My Profile</strong><p class="small">Your account information</p></div>
-  </div>
-  <button id="openCommunity">Open Public Community Chat</button>
-  <button id="openInbox">Open Private Inbox</button>
- `;
-
+ <div class="zx-hero"><h2>Welcome to Zenvix 👋</h2><p>Your world. Your people. Your space.</p></div>
+ <h3 class="section-title">My Account</h3>
+ <div class="zx-profile"><div class="avatar" id="dashAvatar">Z</div><div><strong id="dashName"></strong><div class="small" id="dashEmail"></div></div></div>
+ <h3 class="section-title">Explore Zenvix</h3>
+ <div class="zx-grid">
+  <div class="zx-card">🌐<br><strong>Community</strong><p class="small">Public chat room</p></div>
+  <div class="zx-card">👥<br><strong>Groups</strong><p class="small">Create and join groups</p></div>
+  <div class="zx-card">🔒<br><strong>Private Inbox</strong><p class="small">Personal conversations</p></div>
+  <div class="zx-card">👤<br><strong>My Profile</strong><p class="small">Your account information</p></div>
+  <div class="zx-card" style="grid-column:1/-1;border-color:#238cc5">🎮<br><strong>Gaming Live</strong><p class="small">GTA, PUBG, Free Fire and more</p><button id="openGaming">Open Gaming Live</button></div>
+ </div>
+ <button id="openCommunity">Open Public Community Chat</button>
+ <button id="openInbox">Open Private Inbox</button>`;
  $("dashName").textContent=currentName;
- $("dashEmail").textContent=currentUser.email || "Guest Account";
+ $("dashEmail").textContent=currentUser.email||"Guest Account";
  $("dashAvatar").textContent=currentName.charAt(0).toUpperCase();
-
- $("openCommunity").onclick=()=>{
-  $("chatPanel").scrollIntoView({behavior:"smooth"});
- };
-
- $("openInbox").onclick=()=>{
-  $("privateInbox").scrollIntoView({behavior:"smooth"});
- };
+ $("openCommunity").onclick=()=>$("chatPanel").scrollIntoView({behavior:"smooth"});
+ $("openInbox").onclick=()=>$("privateInbox").scrollIntoView({behavior:"smooth"});
+ $("openGaming").onclick=()=>$("gamingArea").scrollIntoView({behavior:"smooth"});
+}
+function escapeText(value){
+ const div=document.createElement("div");div.textContent=String(value);return div.innerHTML;
 }
 
-/* ==================================
-   PROFILE
-================================== */
-
+/* PROFILE */
 function startProfile(user){
  profileRef=db.ref("publicProfiles/"+user.uid);
-
  profileRef.on("value",snapshot=>{
-  const data=snapshot.val()||{};
-  const online=data.online===true;
-
+  const data=snapshot.val()||{},online=data.online===true;
   $("profileCard").innerHTML=`
-   <h3 style="color:#71d6ff">My Profile</h3>
-   <p>Name: ${escapeText(currentName)}</p>
-   <p>Email: ${escapeText(user.email||"Guest Account")}</p>
-   <p class="${online?"online":"offline"}">
-    ● ${online?"Online":"Offline"}
-   </p>
-   <p class="small">${data.lastSeen
-    ?"Last seen: "+new Date(data.lastSeen).toLocaleString()
-    :"You are currently active."}</p>
-  `;
- },error=>console.error("Profile error:",error));
+  <h3 style="color:#71d6ff">My Profile</h3>
+  <p>Name: ${escapeText(currentName)}</p>
+  <p>Email: ${escapeText(user.email||"Guest Account")}</p>
+  <p class="${online?"online":"offline"}">● ${online?"Online":"Offline"}</p>
+  <p class="small">${data.lastSeen?"Last seen: "+new Date(data.lastSeen).toLocaleString():"You are currently active."}</p>`;
+ },error=>console.error(error));
 }
-
-function escapeText(value){
- const div=document.createElement("div");
- div.textContent=String(value);
- return div.innerHTML;
-}
-
-/* ==================================
-   ONLINE PRESENCE
-================================== */
-
 function startPresence(user){
  const ref=db.ref("publicProfiles/"+user.uid);
- const connected=db.ref(".info/connected");
-
- connected.on("value",snapshot=>{
-  if(snapshot.val()!==true) return;
-
-  ref.onDisconnect().update({
-   online:false,
-   lastSeen:firebase.database.ServerValue.TIMESTAMP
-  }).then(()=>{
-   return ref.update({
-    displayName:currentName,
-    online:true
-   });
-  }).catch(error=>{
-   console.error("Presence error:",error);
-  });
+ db.ref(".info/connected").on("value",snapshot=>{
+  if(snapshot.val()!==true)return;
+  ref.onDisconnect().update({online:false,lastSeen:firebase.database.ServerValue.TIMESTAMP})
+  .then(()=>ref.update({displayName:currentName,online:true}))
+  .catch(error=>console.error(error));
  });
 }
 
-/* ==================================
-   PUBLIC CHAT
-================================== */
-
+/* PUBLIC CHAT */
 function stopMessages(){
- if(messagesQuery&&messagesListener){
-  messagesQuery.off("value",messagesListener);
- }
- messagesQuery=null;
- messagesListener=null;
+ if(messagesQuery&&messagesListener)messagesQuery.off("value",messagesListener);
+ messagesQuery=null;messagesListener=null;
 }
-
 function startMessages(){
- stopMessages();
-
- messagesQuery=db.ref("messages").limitToLast(100);
-
+ stopMessages();messagesQuery=db.ref("messages").limitToLast(100);
  messagesListener=snapshot=>{
-  const box=$("messages");
-  box.innerHTML="";
-
+  const box=$("messages");box.innerHTML="";
   snapshot.forEach(child=>{
-   const msg=child.val()||{};
-   const item=document.createElement("div");
-   item.className="message";
-
-   const name=document.createElement("strong");
-   name.textContent=msg.name||"Member";
-
-   const content=document.createElement("div");
-   content.textContent=msg.text||"";
-
-   const time=document.createElement("div");
-   time.className="small";
-   time.textContent=msg.timestamp
-    ?new Date(msg.timestamp).toLocaleString():"";
-
-   item.append(name,content,time);
-   box.appendChild(item);
+   const msg=child.val()||{},item=document.createElement("div");item.className="message";
+   const name=document.createElement("strong");name.textContent=msg.name||"Member";
+   const content=document.createElement("div");content.textContent=msg.text||"";
+   const time=document.createElement("div");time.className="small";
+   time.textContent=msg.timestamp?new Date(msg.timestamp).toLocaleString():"";
+   item.append(name,content,time);box.appendChild(item);
   });
-
   box.scrollTop=box.scrollHeight;
  };
-
- messagesQuery.on("value",messagesListener,error=>{
-  showError("chatStatus",error);
- });
+ messagesQuery.on("value",messagesListener,error=>showError("chatStatus",error));
 }
-
 async function sendMessage(){
- const text=$("messageInput").value.trim();
- if(!currentUser||!text) return;
-
- $("sendButton").disabled=true;
- $("chatStatus").textContent="Sending...";
-
+ const text=$("messageInput").value.trim();if(!currentUser||!text)return;
+ $("sendButton").disabled=true;$("chatStatus").textContent="Sending...";
  try{
-  await db.ref("messages").push({
-   uid:currentUser.uid,
-   name:currentName,
-   text:text,
-   timestamp:firebase.database.ServerValue.TIMESTAMP
-  });
-
-  $("messageInput").value="";
-  $("chatStatus").textContent="Message sent.";
-
- }catch(error){
-  showError("chatStatus",error);
- }finally{
-  $("sendButton").disabled=false;
- }
+  await db.ref("messages").push({uid:currentUser.uid,name:currentName,text,timestamp:firebase.database.ServerValue.TIMESTAMP});
+  $("messageInput").value="";$("chatStatus").textContent="Message sent.";
+ }catch(error){showError("chatStatus",error)}
+ finally{$("sendButton").disabled=false}
 }
-
 $("sendButton").onclick=sendMessage;
-$("messageInput").addEventListener("keydown",event=>{
- if(event.key==="Enter") sendMessage();
-});
+$("messageInput").addEventListener("keydown",e=>{if(e.key==="Enter")sendMessage()});
 
-/* ==================================
-   PRIVATE INBOX
-================================== */
-
+/* PRIVATE INBOX */
 function stopPrivateChat(){
- if(privateMessagesRef){
-  privateMessagesRef.off();
-  privateMessagesRef=null;
- }
+ if(privateMessagesRef){privateMessagesRef.off();privateMessagesRef=null}
  activePrivateChatId=null;
 }
-
 function startPrivateInbox(){
  const panel=$("privateInbox");
-
- panel.innerHTML=`
-  <h2 style="color:#71d6ff">🔒 Private Inbox</h2>
-  <p class="small">Your personal conversations</p>
-  <p id="privateInboxStatus" class="small"></p>
-  <div id="privateChatList"></div>
-  <div id="privateChatWindow"></div>
- `;
-
- if(privateInboxRef) privateInboxRef.off();
-
+ panel.innerHTML=`<h2 style="color:#71d6ff">🔒 Private Inbox</h2><p class="small">Your personal conversations</p><p id="privateInboxStatus" class="small"></p><div id="privateChatList"></div><div id="privateChatWindow"></div>`;
+ if(privateInboxRef)privateInboxRef.off();
  privateInboxRef=db.ref("userChats/"+currentUser.uid);
-
  privateInboxRef.on("value",async snapshot=>{
-  const list=$("privateChatList");
-  if(!list) return;
-
-  list.innerHTML="";
-
-  if(!snapshot.exists()){
-   list.textContent="No private conversations yet. Choose an online or offline member below to start chatting.";
-   return;
-  }
-
-  const entries=[];
-  snapshot.forEach(child=>{
-   entries.push({
-    chatId:child.key
-   });
-  });
-
+  const list=$("privateChatList");if(!list)return;list.innerHTML="";
+  if(!snapshot.exists()){list.textContent="No private conversations yet. Choose a member below to start chatting.";return}
+  const entries=[];snapshot.forEach(child=>entries.push({chatId:child.key}));
   for(const entry of entries){
    try{
-    const membersSnap=await db.ref(
-     "privateChats/"+entry.chatId+"/members"
-    ).once("value");
-
-    const members=membersSnap.val()||{};
-    const otherUid=Object.keys(members).find(
-     uid=>uid!==currentUser.uid && members[uid]===true
-    );
-
-    if(!otherUid) continue;
-
-    const profileSnap=await db.ref(
-     "publicProfiles/"+otherUid
-    ).once("value");
-
-    const profile=profileSnap.val()||{};
-    const otherName=profile.displayName||"Zenvix Member";
-
-    const card=document.createElement("div");
-    card.className="private-card";
-
-    const name=document.createElement("strong");
-    name.textContent="💬 "+otherName;
-
-    const button=document.createElement("button");
-    button.textContent="Open Private Chat";
-    button.onclick=()=>openPrivateChat(otherUid,otherName);
-
-    card.append(name,button);
-    list.appendChild(card);
-
-   }catch(error){
-    console.error("Private inbox item error:",error);
-   }
+    const ms=await db.ref("privateChats/"+entry.chatId+"/members").once("value");
+    const members=ms.val()||{},otherUid=Object.keys(members).find(uid=>uid!==currentUser.uid&&members[uid]===true);
+    if(!otherUid)continue;
+    const ps=await db.ref("publicProfiles/"+otherUid).once("value");
+    const otherName=(ps.val()||{}).displayName||"Zenvix Member";
+    const card=document.createElement("div");card.className="private-card";
+    const name=document.createElement("strong");name.textContent="💬 "+otherName;
+    const button=document.createElement("button");button.textContent="Open Private Chat";button.onclick=()=>openPrivateChat(otherUid,otherName);
+    card.append(name,button);list.appendChild(card);
+   }catch(error){console.error(error)}
   }
- },error=>{
-  const status=$("privateInboxStatus");
-  if(status) status.textContent="Inbox error: "+error.message;
- });
+ },error=>{if($("privateInboxStatus"))$("privateInboxStatus").textContent=error.message});
 }
-
 async function openPrivateChat(otherUid,otherName){
- if(!currentUser || otherUid===currentUser.uid) return;
-
- const memberIds=[currentUser.uid,otherUid].sort();
- const chatId=memberIds.join("_");
-
- const windowBox=$("privateChatWindow");
- const status=$("privateInboxStatus");
-
- if(status) status.textContent="Opening private conversation...";
-
+ if(!currentUser||otherUid===currentUser.uid)return;
+ const chatId=[currentUser.uid,otherUid].sort().join("_");
+ const windowBox=$("privateChatWindow"),status=$("privateInboxStatus");
+ if(status)status.textContent="Opening private conversation...";
  try{
   const membersRef=db.ref("privateChats/"+chatId+"/members");
   const existing=await membersRef.once("value");
-
-  if(!existing.exists()){
-   await membersRef.set({
-    [currentUser.uid]:true,
-    [otherUid]:true
-   });
-  }else{
+  if(!existing.exists())await membersRef.set({[currentUser.uid]:true,[otherUid]:true});
+  else{
    const members=existing.val()||{};
-   if(members[currentUser.uid]!==true ||
-      members[otherUid]!==true){
-    throw new Error("This conversation does not have the expected members.");
-   }
+   if(members[currentUser.uid]!==true||members[otherUid]!==true)throw new Error("Unexpected chat members.");
   }
-
-  await db.ref(
-   "userChats/"+currentUser.uid+"/"+chatId
-  ).set(true);
-
-  await db.ref(
-   "userChats/"+otherUid+"/"+chatId
-  ).set(true);
-
-  stopPrivateChat();
-  activePrivateChatId=chatId;
-
-  windowBox.innerHTML=`
-   <div class="private-window">
-    <div class="private-top">
-     <h3 id="privateChatTitle" style="color:#71d6ff"></h3>
-     <button id="closePrivateChat" type="button">Close Chat</button>
-    </div>
-    <div id="privateMessages" class="private-messages"></div>
-    <input id="privateMessageInput" maxlength="2000"
-     placeholder="Write a private message...">
-    <button id="privateSendButton">Send Private Message</button>
-    <p id="privateChatStatus" class="small"></p>
-   </div>
-  `;
-
+  await db.ref("userChats/"+currentUser.uid+"/"+chatId).set(true);
+  await db.ref("userChats/"+otherUid+"/"+chatId).set(true);
+  stopPrivateChat();activePrivateChatId=chatId;
+  windowBox.innerHTML=`<div class="private-window"><div class="private-top"><h3 id="privateChatTitle" style="color:#71d6ff"></h3><button id="closePrivateChat">Close Chat</button></div><div id="privateMessages" class="private-messages"></div><input id="privateMessageInput" maxlength="2000" placeholder="Write a private message..."><button id="privateSendButton">Send Private Message</button><p id="privateChatStatus" class="small"></p></div>`;
   $("privateChatTitle").textContent="🔒 "+otherName;
-
-  $("closePrivateChat").onclick=()=>{
-   stopPrivateChat();
-   windowBox.innerHTML="";
-  };
-
-  privateMessagesRef=db.ref(
-   "privateChats/"+chatId+"/messages"
-  ).limitToLast(100);
-
+  $("closePrivateChat").onclick=()=>{stopPrivateChat();windowBox.innerHTML=""};
+  privateMessagesRef=db.ref("privateChats/"+chatId+"/messages").limitToLast(100);
   privateMessagesRef.on("value",snapshot=>{
-   const box=$("privateMessages");
-   if(!box) return;
-
-   box.innerHTML="";
-
+   const box=$("privateMessages");if(!box)return;box.innerHTML="";
    snapshot.forEach(child=>{
-    const msg=child.val()||{};
-
-    const item=document.createElement("div");
-    item.className="private-message"+
-     (msg.uid===currentUser.uid?" mine":"");
-
-    const sender=document.createElement("strong");
-    sender.textContent=msg.uid===currentUser.uid
-     ?"You"
-     :otherName;
-
-    const content=document.createElement("div");
-    content.textContent=msg.text||"";
-
-    const time=document.createElement("div");
-    time.className="small";
-    time.textContent=msg.timestamp
-     ?new Date(msg.timestamp).toLocaleString()
-     :"";
-
-    item.append(sender,content,time);
-    box.appendChild(item);
-   });
-
-   box.scrollTop=box.scrollHeight;
-
-  },error=>{
-   const chatStatus=$("privateChatStatus");
-   if(chatStatus){
-    chatStatus.textContent="Chat error: "+error.message;
-   }
-  });
-
+    const msg=child.val()||{},item=document.createElement("div");
+    item.className="private-message"+(msg.uid===currentUser.uid?" mine":"");
+    const sender=document.createElement("strong");sender.textContent=msg.uid===currentUser.uid?"You":otherName;
+    const content=document.createElement("div");content.textContent=msg.text||"";
+    const time=document.createElement("div");time.className="small";time.textContent=msg.timestamp?new Date(msg.timestamp).toLocaleString():"";
+    item.append(sender,content,time);box.appendChild(item);
+   });box.scrollTop=box.scrollHeight;
+  },error=>{if($("privateChatStatus"))$("privateChatStatus").textContent=error.message});
   $("privateSendButton").onclick=sendPrivateMessage;
-
-  $("privateMessageInput").addEventListener("keydown",event=>{
-   if(event.key==="Enter") sendPrivateMessage();
-  });
-
-  if(status) status.textContent="Private conversation opened.";
+  $("privateMessageInput").addEventListener("keydown",e=>{if(e.key==="Enter")sendPrivateMessage()});
+  if(status)status.textContent="Private conversation opened.";
   windowBox.scrollIntoView({behavior:"smooth"});
-
- }catch(error){
-  if(status) status.textContent="Private chat error: "+error.message;
- }
+ }catch(error){if(status)status.textContent="Private chat error: "+error.message}
 }
-
 async function sendPrivateMessage(){
- const input=$("privateMessageInput");
- const button=$("privateSendButton");
- const status=$("privateChatStatus");
-
- if(!input || !activePrivateChatId || !currentUser) return;
-
- const message=input.value.trim();
- if(!message) return;
-
- button.disabled=true;
- status.textContent="Sending private message...";
-
+ const input=$("privateMessageInput"),button=$("privateSendButton"),status=$("privateChatStatus");
+ if(!input||!activePrivateChatId||!currentUser)return;
+ const message=input.value.trim();if(!message)return;
+ button.disabled=true;status.textContent="Sending...";
  try{
-  await db.ref(
-   "privateChats/"+activePrivateChatId+"/messages"
-  ).push({
-   uid:currentUser.uid,
-   name:currentName,
-   text:message,
-   timestamp:firebase.database.ServerValue.TIMESTAMP
+  await db.ref("privateChats/"+activePrivateChatId+"/messages").push({
+   uid:currentUser.uid,name:currentName,text:message,timestamp:firebase.database.ServerValue.TIMESTAMP
   });
-
-  input.value="";
-  status.textContent="Private message sent.";
-
- }catch(error){
-  status.textContent="Send error: "+error.message;
- }finally{
-  button.disabled=false;
- }
+  input.value="";status.textContent="Private message sent.";
+ }catch(error){status.textContent="Send error: "+error.message}
+ finally{button.disabled=false}
 }
 
-/* ==================================
-   GROUP SYSTEM
-================================== */
-
+/* GROUP SYSTEM */
 function startGroups(){
  $("groupsArea").innerHTML=`
-  <h2 style="color:#71d6ff">👥 Zenvix Groups</h2>
-
-  <h3>Create Your Group</h3>
-  <input id="newGroupName" maxlength="40" placeholder="Enter group name">
-  <button id="createGroup">Create Group</button>
-
-  <hr style="border-color:#304866;margin:20px 0">
-
-  <h3>Join a Group</h3>
-  <input id="joinGroupId" placeholder="Paste Group ID here">
-  <button id="joinGroup">Join Group</button>
-
-  <p id="groupStatus" class="small"></p>
-  <h3 style="color:#71d6ff">My Groups</h3>
-  <div id="groupList"></div>
-  <div id="groupChat"></div>
- `;
-
- $("createGroup").onclick=createGroup;
- $("joinGroup").onclick=joinGroup;
-
- loadMyGroups();
+ <h2 style="color:#71d6ff">👥 Zenvix Groups</h2>
+ <h3>Create Your Group</h3><input id="newGroupName" maxlength="40" placeholder="Enter group name"><button id="createGroup">Create Group</button>
+ <hr style="border-color:#304866;margin:20px 0">
+ <h3>Join a Group</h3><input id="joinGroupId" placeholder="Paste Group ID here"><button id="joinGroup">Join Group</button>
+ <p id="groupStatus" class="small"></p><h3 style="color:#71d6ff">My Groups</h3><div id="groupList"></div><div id="groupChat"></div>`;
+ $("createGroup").onclick=createGroup;$("joinGroup").onclick=joinGroup;loadMyGroups();
 }
-
-function groupStatus(message){
- if($("groupStatus")) $("groupStatus").textContent=message;
-}
-
+function groupStatus(message){if($("groupStatus"))$("groupStatus").textContent=message}
 async function createGroup(){
- if(!currentUser) return;
-
- const input=$("newGroupName");
- const name=input.value.trim();
-
- if(!name||name.length>40){
-  groupStatus("Enter a group name up to 40 characters.");
-  return;
- }
-
+ if(!currentUser)return;const input=$("newGroupName"),name=input.value.trim();
+ if(!name||name.length>40){groupStatus("Enter a group name up to 40 characters.");return}
  try{
-  groupStatus("Creating group...");
-
-  const ref=db.ref("groups").push();
-
-  await ref.set({
-   name:name,
-   owner:currentUser.uid,
-   createdAt:Date.now(),
-   members:{[currentUser.uid]:true}
-  });
-
+  groupStatus("Creating group...");const ref=db.ref("groups").push();
+  await ref.set({name,owner:currentUser.uid,createdAt:Date.now(),members:{[currentUser.uid]:true}});
   await db.ref("userGroups/"+currentUser.uid+"/"+ref.key).set(true);
-
-  input.value="";
-  groupStatus("Group created. ID: "+ref.key);
-  loadMyGroups();
-
- }catch(error){
-  groupStatus("Create error: "+error.message);
- }
+  input.value="";groupStatus("Group created. ID: "+ref.key);loadMyGroups();
+ }catch(error){groupStatus("Create error: "+error.message)}
 }
-
 async function joinGroup(){
- if(!currentUser) return;
-
- const id=$("joinGroupId").value.trim();
- if(!id){
-  groupStatus("Please enter a Group ID.");
-  return;
- }
-
+ if(!currentUser)return;const id=$("joinGroupId").value.trim();if(!id){groupStatus("Please enter a Group ID.");return}
  try{
-  groupStatus("Joining group...");
-
-  const ref=db.ref("groups/"+id);
-
+  groupStatus("Joining group...");const ref=db.ref("groups/"+id);
+  const check=await ref.once("value");if(!check.exists()){groupStatus("Group not found.");return}
   await ref.child("members/"+currentUser.uid).set(true);
-
-  const check=await ref.once("value");
-
-  if(!check.exists()){
-   groupStatus("Group not found.");
-   return;
-  }
-
   await db.ref("userGroups/"+currentUser.uid+"/"+id).set(true);
-
-  $("joinGroupId").value="";
-  groupStatus("Successfully joined "+(check.val().name||"group"));
-  loadMyGroups();
-
- }catch(error){
-  groupStatus("Could not join group: "+error.message);
- }
+  $("joinGroupId").value="";groupStatus("Successfully joined "+(check.val().name||"group"));loadMyGroups();
+ }catch(error){groupStatus("Could not join group: "+error.message)}
 }
-
 function loadMyGroups(){
- if(!currentUser) return;
-
- if(groupListRef) groupListRef.off();
-
+ if(!currentUser)return;if(groupListRef)groupListRef.off();
  groupListRef=db.ref("userGroups/"+currentUser.uid);
-
  groupListRef.on("value",async snapshot=>{
-  const list=$("groupList");
-  if(!list) return;
-
-  list.innerHTML="";
-
-  if(!snapshot.exists()){
-   list.textContent="No groups yet. Create or join a group.";
-   return;
-  }
-
-  const ids=[];
-  snapshot.forEach(child=>ids.push(child.key));
-
+  const list=$("groupList");if(!list)return;list.innerHTML="";
+  if(!snapshot.exists()){list.textContent="No groups yet. Create or join a group.";return}
+  const ids=[];snapshot.forEach(child=>ids.push(child.key));
   for(const id of ids){
    try{
-    const snap=await db.ref("groups/"+id).once("value");
-    if(!snap.exists()) continue;
-
-    const group=snap.val()||{};
-
-    const card=document.createElement("div");
-    card.className="message";
-
-    const open=document.createElement("button");
-    open.textContent="👥 "+(group.name||"Group");
-    open.onclick=()=>openGroup(id,group.name||"Group");
-
-    const label=document.createElement("p");
-    label.className="small";
-    label.textContent="Group ID: "+id;
-
-    const copy=document.createElement("button");
-    copy.textContent="Copy Group ID";
-    copy.onclick=async()=>{
-     try{
-      await navigator.clipboard.writeText(id);
-      groupStatus("Group ID copied.");
-     }catch(error){
-      groupStatus("Copy unavailable. Please copy the ID manually.");
-     }
-    };
-
-    card.append(open,label,copy);
-    list.appendChild(card);
-
-   }catch(error){
-    console.error("Group read error:",error);
-   }
+    const snap=await db.ref("groups/"+id).once("value");if(!snap.exists())continue;
+    const group=snap.val()||{},card=document.createElement("div");card.className="message";
+    const open=document.createElement("button");open.textContent="👥 "+(group.name||"Group");open.onclick=()=>openGroup(id,group.name||"Group");
+    const label=document.createElement("p");label.className="small";label.textContent="Group ID: "+id;
+    const copy=document.createElement("button");copy.textContent="Copy Group ID";
+    copy.onclick=async()=>{try{await navigator.clipboard.writeText(id);groupStatus("Group ID copied.")}catch(e){groupStatus("Copy unavailable. Copy ID manually.")}};
+    card.append(open,label,copy);list.appendChild(card);
+   }catch(error){console.error(error)}
   }
  },error=>groupStatus("Group list error: "+error.message));
 }
-
 function openGroup(id,name){
- if(groupMessagesRef) groupMessagesRef.off();
-
- $("groupChat").innerHTML=`
-  <hr style="border-color:#304866;margin:20px 0">
-  <h3 style="color:#71d6ff"></h3>
-  <div id="groupMessages" style="height:260px;overflow-y:auto;background:#0c1627;padding:10px;border-radius:10px"></div>
-  <input id="groupMessageInput" maxlength="500" placeholder="Write a group message...">
-  <button id="groupSend">Send Message</button>
-  <p id="groupSendStatus" class="small"></p>
- `;
-
- $("groupChat").querySelector("h3").textContent="👥 "+name;
-
- const box=$("groupMessages");
-
- groupMessagesRef=db.ref("groups/"+id+"/messages").limitToLast(100);
-
+ if(groupMessagesRef)groupMessagesRef.off();
+ $("groupChat").innerHTML=`<hr style="border-color:#304866;margin:20px 0"><h3 id="groupTitle" style="color:#71d6ff"></h3><div id="groupMessages" style="height:260px;overflow-y:auto;background:#0c1627;padding:10px;border-radius:10px"></div><input id="groupMessageInput" maxlength="500" placeholder="Write a group message..."><button id="groupSend">Send Message</button><p id="groupSendStatus" class="small"></p>`;
+ $("groupTitle").textContent="👥 "+name;
+ const box=$("groupMessages");groupMessagesRef=db.ref("groups/"+id+"/messages").limitToLast(100);
  groupMessagesRef.on("value",snapshot=>{
-  box.innerHTML="";
-
-  snapshot.forEach(child=>{
-   const msg=child.val()||{};
-   const item=document.createElement("div");
-   item.className="message";
-
-   const sender=document.createElement("strong");
-   sender.textContent=msg.name||"Member";
-
-   const content=document.createElement("div");
-   content.textContent=msg.text||"";
-
-   const time=document.createElement("div");
-   time.className="small";
-   time.textContent=msg.createdAt
-    ?new Date(msg.createdAt).toLocaleString():"";
-
-   item.append(sender,content,time);
-   box.appendChild(item);
-  });
-
-  box.scrollTop=box.scrollHeight;
- },error=>{
-  $("groupSendStatus").textContent="Chat error: "+error.message;
- });
-
+  box.innerHTML="";snapshot.forEach(child=>{
+   const msg=child.val()||{},item=document.createElement("div");item.className="message";
+   const sender=document.createElement("strong");sender.textContent=msg.name||"Member";
+   const content=document.createElement("div");content.textContent=msg.text||"";
+   const time=document.createElement("div");time.className="small";time.textContent=msg.createdAt?new Date(msg.createdAt).toLocaleString():"";
+   item.append(sender,content,time);box.appendChild(item);
+  });box.scrollTop=box.scrollHeight;
+ },error=>$("groupSendStatus").textContent="Chat error: "+error.message);
  async function sendGroupMessage(){
-  const input=$("groupMessageInput");
-  const text=input.value.trim();
-  if(!text||!currentUser) return;
-
-  $("groupSend").disabled=true;
-  $("groupSendStatus").textContent="Sending...";
-
+  const input=$("groupMessageInput"),text=input.value.trim();if(!text||!currentUser)return;
+  $("groupSend").disabled=true;$("groupSendStatus").textContent="Sending...";
   try{
-   await db.ref("groups/"+id+"/messages").push({
-    uid:currentUser.uid,
-    name:currentName,
-    text:text,
-    createdAt:Date.now()
-   });
-
-   input.value="";
-   $("groupSendStatus").textContent="Message sent.";
-
-  }catch(error){
-   $("groupSendStatus").textContent="Send error: "+error.message;
-  }finally{
-   $("groupSend").disabled=false;
-  }
+   await db.ref("groups/"+id+"/messages").push({uid:currentUser.uid,name:currentName,text,createdAt:Date.now()});
+   input.value="";$("groupSendStatus").textContent="Message sent.";
+  }catch(error){$("groupSendStatus").textContent="Send error: "+error.message}
+  finally{$("groupSend").disabled=false}
  }
-
  $("groupSend").onclick=sendGroupMessage;
- $("groupMessageInput").addEventListener("keydown",event=>{
-  if(event.key==="Enter") sendGroupMessage();
- });
+ $("groupMessageInput").addEventListener("keydown",e=>{if(e.key==="Enter")sendGroupMessage()});
 }
 
-/* ==================================
-   ONLINE MEMBERS
-================================== */
-
+/* ONLINE MEMBERS */
 function startMembers(){
- if(membersRef) membersRef.off();
-
- membersRef=db.ref("publicProfiles");
-
+ if(membersRef)membersRef.off();membersRef=db.ref("publicProfiles");
  membersRef.on("value",snapshot=>{
   const panel=$("membersPanel");
-  panel.innerHTML=`
-   <h3 style="color:#71d6ff">Online Members</h3>
-   <div id="memberCount"></div>
-   <div id="memberList"></div>
-  `;
-
+  panel.innerHTML=`<h3 style="color:#71d6ff">Online Members</h3><div id="memberCount"></div><div id="memberList"></div>`;
   const data=snapshot.val()||{};
-  const members=Object.entries(data).map(([uid,p])=>({
-   uid:uid,
-   name:p.displayName||"Zenvix User",
-   online:p.online===true,
-   lastSeen:p.lastSeen||null
-  })).sort((a,b)=>Number(b.online)-Number(a.online));
-
-  $("memberCount").textContent=
-   members.filter(m=>m.online).length+
-   " Online • "+members.length+" Members";
-
-  if(!members.length){
-   $("memberList").textContent="No members yet.";
-   return;
-  }
-
+  const members=Object.entries(data).map(([uid,p])=>({uid,name:p.displayName||"Zenvix User",online:p.online===true,lastSeen:p.lastSeen||null})).sort((a,b)=>Number(b.online)-Number(a.online));
+  $("memberCount").textContent=members.filter(m=>m.online).length+" Online • "+members.length+" Members";
+  if(!members.length){$("memberList").textContent="No members yet.";return}
   members.forEach(member=>{
-   const row=document.createElement("div");
-   row.className="member";
-
-   const avatar=document.createElement("div");
-   avatar.className="avatar";
-   avatar.textContent=member.name.charAt(0).toUpperCase();
-
-   const info=document.createElement("div");
-   info.style.flex="1";
-   info.style.minWidth="130px";
-
-   const name=document.createElement("strong");
-   name.textContent=member.name;
-
-   const status=document.createElement("div");
-   status.className="small";
-   status.textContent=member.online
-    ?"● Online"
-    :(member.lastSeen
-      ?"Offline • Last seen: "+new Date(member.lastSeen).toLocaleString()
-      :"Offline");
-
-   if(member.online) status.classList.add("online");
-
-   info.append(name,status);
-
-   const privateButton=document.createElement("button");
-   privateButton.textContent="🔒 Private Message";
-   privateButton.style.width="auto";
-   privateButton.style.padding="10px 12px";
-   privateButton.style.marginTop="5px";
-
-   if(member.uid===currentUser.uid){
-    privateButton.textContent="This is you";
-    privateButton.disabled=true;
-   }else{
-    privateButton.onclick=()=>{
-     openPrivateChat(member.uid,member.name);
-    };
-   }
-
-   row.append(avatar,info,privateButton);
-   $("memberList").appendChild(row);
+   const row=document.createElement("div");row.className="member";
+   const avatar=document.createElement("div");avatar.className="avatar";avatar.textContent=member.name.charAt(0).toUpperCase();
+   const info=document.createElement("div");info.style.flex="1";info.style.minWidth="130px";
+   const name=document.createElement("strong");name.textContent=member.name;
+   const status=document.createElement("div");status.className="small";status.textContent=member.online?"● Online":member.lastSeen?"Offline • Last seen: "+new Date(member.lastSeen).toLocaleString():"Offline";
+   if(member.online)status.classList.add("online");info.append(name,status);
+   const privateButton=document.createElement("button");privateButton.textContent="🔒 Private Message";privateButton.style.width="auto";privateButton.style.padding="10px 12px";privateButton.style.marginTop="5px";
+   if(member.uid===currentUser.uid){privateButton.textContent="This is you";privateButton.disabled=true}
+   else privateButton.onclick=()=>openPrivateChat(member.uid,member.name);
+   row.append(avatar,info,privateButton);$("memberList").appendChild(row);
   });
-
- },error=>{
-  $("membersPanel").textContent="Members error: "+error.message;
- });
+ },error=>$("membersPanel").textContent="Members error: "+error.message);
 }
 
-/* ==================================
-   LOGOUT
-================================== */
-
-$("logoutButton").onclick=async()=>{
- if(!auth) return;
-
+/* =========================================
+   GAMING LIVE - FIRST PHASE
+   Creates live session records and preview.
+   Actual viewer video requires WebRTC next.
+========================================= */
+function startGaming(){
+ $("gamingArea").innerHTML=`
+ <div class="game-hero">
+  <h2>🎮 ZENVIX GAMING LIVE</h2>
+  <p>Play your favourite game. Share your gameplay with Zenvix.</p>
+  <p class="small">GTA V • GTA Vice City • PUBG • Free Fire • Minecraft • Other Games</p>
+ </div>
+ <h3 style="color:#71d6ff">🔴 Start Your Live</h3>
+ <label class="small">Choose your game</label>
+ <select id="gameChoice">
+  <option value="GTA 5">GTA 5</option>
+  <option value="GTA Vice City">GTA Vice City</option>
+  <option value="PUBG Mobile">PUBG Mobile</option>
+  <option value="Free Fire">Free Fire</option>
+  <option value="Minecraft">Minecraft</option>
+  <option value="Other Game">Other Game</option>
+ </select>
+ <input id="streamTitle" maxlength="120" placeholder="Live title e.g. GTA 5 gameplay">
+ <button id="goLiveButton">🔴 Go Live / Share Screen</button>
+ <button id="stopLiveButton" class="stop-live" disabled>Stop My Live</button>
+ <video id="localPreview" class="live-preview" autoplay muted playsinline style="display:none"></video>
+ <p id="gamingStatus" class="small">Choose a game and press Go Live to create a live session.</p>
+ <p class="small">Note: This first version creates the live session and local screen preview. Viewers will see the live listing, but video broadcasting is not connected yet.</p>
+ <hr style="border-color:#304866;margin:20px 0">
+ <h3 style="color:#71d6ff">🌍 Watch Live</h3>
+ <div id="liveList"><p class="small">Loading live streams...</p></div>
+ <h3 style="color:#71d6ff">🎁 Gifts & Wallet</h3>
+ <div class="game-card">
+  <p>🎁 Gifts and creator wallet are planned for a future update.</p>
+  <p class="small">No real payments, gifts or withdrawals are active yet.</p>
+ </div>
+ <h3 style="color:#71d6ff">🏆 Tournaments</h3>
+ <div class="game-card"><p>Tournaments and rankings are coming soon.</p></div>
+ `;
+ $("goLiveButton").onclick=startMyLive;
+ $("stopLiveButton").onclick=stopMyLive;
+ gamingRef=db.ref("liveStreams");
+ gamingListener=snapshot=>renderLiveStreams(snapshot);
+ gamingRef.on("value",gamingListener,error=>{
+  if($("gamingStatus"))$("gamingStatus").textContent="Live list error: "+error.message;
+ });
+}
+function stopGamingListener(){
+ if(gamingRef&&gamingListener)gamingRef.off("value",gamingListener);
+ gamingRef=null;gamingListener=null;
+}
+function renderLiveStreams(snapshot){
+ const list=$("liveList");if(!list)return;list.innerHTML="";
+ let found=0;
+ snapshot.forEach(child=>{
+  const stream=child.val()||{};
+  if(stream.status!=="live")return;
+  found++;
+  const card=document.createElement("div");card.className="game-card";
+  const title=document.createElement("strong");title.textContent="🔴 "+(stream.title||"Live Stream");
+  const game=document.createElement("p");game.textContent="🎮 "+(stream.game||"Game");
+  const owner=document.createElement("p");owner.className="small";
+  owner.textContent="Streamer: "+(stream.ownerName||"Zenvix Member");
+  const note=document.createElement("p");note.className="small";
+  note.textContent="Live session found. Viewer video connection is not enabled yet.";
+  card.append(title,game,owner,note);
+  if(stream.ownerUid===currentUser.uid){
+   const own=document.createElement("p");own.className="small";own.textContent="This is your live session.";
+   card.appendChild(own);
+  }
+  list.appendChild(card);
+ });
+ if(!found)list.textContent="No one is live right now. Be the first to start a stream!";
+}
+async function startMyLive(){
+ if(!currentUser||!db)return;
+ const button=$("goLiveButton"),status=$("gamingStatus");
+ const game=$("gameChoice").value;
+ const title=$("streamTitle").value.trim()||game+" Live Gameplay";
+ button.disabled=true;status.textContent="Preparing your live session...";
  try{
-  stopMessages();
-  stopPrivateChat();
-
-  if(privateInboxRef) privateInboxRef.off();
-  if(groupListRef) groupListRef.off();
-  if(groupMessagesRef) groupMessagesRef.off();
-  if(profileRef) profileRef.off();
-  if(membersRef) membersRef.off();
-
-  await auth.signOut();
-
-  currentUser=null;
-  currentName="";
-  $("status").textContent="You have logged out.";
-
+  if(activeStreamId)throw new Error("You already have an active session. Stop it first.");
+  const ref=db.ref("liveStreams").push();
+  const streamData={
+   ownerUid:currentUser.uid,
+   ownerName:currentName,
+   game:game,
+   title:title,
+   status:"live",
+   createdAt:Date.now()
+  };
+  await ref.set(streamData);
+  activeStreamId=ref.key;
+  $("stopLiveButton").disabled=false;
+  status.textContent="Your live session is listed on Zenvix. Trying to open screen preview...";
+  try{
+   if(!navigator.mediaDevices||!navigator.mediaDevices.getDisplayMedia){
+    throw new Error("Screen sharing is not supported by this browser. Your live listing is still created.");
+   }
+   localStream=await navigator.mediaDevices.getDisplayMedia({video:true,audio:true});
+   const video=$("localPreview");
+   video.srcObject=localStream;video.style.display="block";
+   localStream.getVideoTracks()[0].addEventListener("ended",()=>{
+    stopMyLive();
+   });
+   status.textContent="Screen preview started. Other viewers cannot see the video until WebRTC broadcasting is connected.";
+  }catch(screenError){
+   status.textContent="Live listing created, but screen preview unavailable: "+screenError.message;
+  }
  }catch(error){
-  showError("status",error);
- }
+  status.textContent="Could not start live: "+error.message;
+ }finally{button.disabled=false}
+}
+async function stopMyLive(){
+ const status=$("gamingStatus");
+ try{
+  if(localStream){
+   localStream.getTracks().forEach(track=>track.stop());
+   localStream=null;
+  }
+  const video=$("localPreview");
+  if(video){video.srcObject=null;video.style.display="none"}
+  if(activeStreamId&&currentUser){
+   await db.ref("liveStreams/"+activeStreamId).update({status:"ended"});
+  }
+  activeStreamId=null;
+  $("stopLiveButton").disabled=true;
+  if(status)status.textContent="Your live session has ended.";
+ }catch(error){if(status)status.textContent="Stop error: "+error.message}
+}
+
+/* LOGOUT */
+$("logoutButton").onclick=async()=>{
+ if(!auth)return;
+ try{
+  await stopMyLive();
+  stopMessages();stopPrivateChat();stopGamingListener();
+  if(privateInboxRef)privateInboxRef.off();
+  if(groupListRef)groupListRef.off();
+  if(groupMessagesRef)groupMessagesRef.off();
+  if(profileRef)profileRef.off();
+  if(membersRef)membersRef.off();
+  await auth.signOut();
+  currentUser=null;currentName="";$("status").textContent="You have logged out.";
+ }catch(error){showError("status",error)}
 };
-
-/* Catch unexpected JavaScript errors */
-
-window.addEventListener("error",event=>{
- diagnostic("JavaScript error: "+(event.message||"Unknown error"));
-});
-
-window.addEventListener("unhandledrejection",event=>{
- const reason=event.reason;
- diagnostic("Async error: "+(reason&&reason.message?reason.message:String(reason)));
-});
-
-/* Start after all button handlers are ready. */
+window.addEventListener("error",event=>diagnostic("JavaScript error: "+(event.message||"Unknown error")));
+window.addEventListener("unhandledrejection",event=>diagnostic("Async error: "+(event.reason&&event.reason.message?event.reason.message:String(event.reason))));
 initializeZenvix();
-
 </script>
 </body>
 </html>
