@@ -6,166 +6,353 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>ZENVIX</title>
 <link rel="manifest" href="./manifest.json">
-<meta name="theme-color" content="#080e1c">
+<meta name="theme-color" content="#10151d">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
 <style>
 *{box-sizing:border-box}
-:root{--bg:#080e1c;--panel:#111d32;--panel2:#172943;--line:#294866;--blue:#39c5ff;--purple:#9b72ff;--muted:#a9bad0}
-body{margin:0;min-height:100vh;color:#fff;font-family:Arial,sans-serif;background:radial-gradient(ellipse at 10% 0%,#153b60 0,transparent 38%),radial-gradient(ellipse at 100% 40%,#29204e 0,transparent 35%),linear-gradient(135deg,#060b15,#0b172a 60%,#080e1c)}
-.container{width:min(900px,100%);margin:auto;padding:16px}
-h1{text-align:center;color:#8be2ff;letter-spacing:5px;font-size:37px;text-shadow:0 0 22px #168bd0}
-h2,h3{color:#8be2ff}
-p{line-height:1.5}
-.small{font-size:13px;color:var(--muted);line-height:1.5;overflow-wrap:anywhere}
-.panel,#profileCard,#groupsArea,#membersPanel,#privateInbox,#gamingArea{background:linear-gradient(145deg,rgba(24,43,68,.96),rgba(12,22,39,.97));border:1px solid #294866;border-radius:20px;padding:18px;margin-top:18px;box-shadow:0 12px 35px #0005,inset 0 1px 0 #ffffff0c}
-input,button,select{width:100%;padding:14px;margin-top:10px;border:1px solid transparent;border-radius:12px;font-size:15px}
-input,select{background:#eaf3ff;color:#101827}
-input:focus{outline:2px solid var(--blue)}
-button{background:linear-gradient(110deg,#087dbb,#356be0);color:white;font-weight:bold;cursor:pointer;box-shadow:0 5px 18px #087dbb35;transition:.2s}
-button:active{transform:scale(.98)}
+:root{
+ --bg:#0b1018;--panel:#151e29;--panel2:#1c2937;
+ --line:#354455;--gold:#d7b879;--gold2:#f0d9a4;
+ --white:#f4f1e9;--muted:#a8b1bc;--red:#d65c65;
+}
+body{
+ margin:0;min-height:100vh;color:var(--white);
+ font-family:Arial,sans-serif;
+ background:
+ radial-gradient(ellipse at 15% 0%,#293748 0,transparent 38%),
+ radial-gradient(ellipse at 100% 55%,#302b27 0,transparent 35%),
+ linear-gradient(145deg,#090e15,#111a25 55%,#0a1018);
+ padding-bottom:90px;
+}
+button,input,select{font:inherit}
+button{
+ width:100%;padding:14px;margin-top:10px;border:1px solid #b99b60;
+ border-radius:12px;color:#171b20;font-weight:bold;cursor:pointer;
+ background:linear-gradient(110deg,#c5a76c,#f0d9a4);
+ box-shadow:0 5px 18px #0004;
+}
 button:disabled{opacity:.5;cursor:not-allowed}
-.google{background:#fff;color:#222}
-.logout,.stop-live{background:linear-gradient(110deg,#9b3545,#d04b62)}
-#appPanel,#chatPanel{display:none}
-#messages{height:350px;overflow-y:auto;background:#091323;border:1px solid #263e5b;border-radius:14px;padding:12px}
-.message,.private-message{background:linear-gradient(120deg,#203b5a,#192c45);border:1px solid #345372;padding:12px;margin:9px 0;border-radius:13px;overflow-wrap:anywhere}
-.message strong,.private-message strong{color:#75d9ff}
-.online{color:#21df86}.offline{color:#aab7d0}
-.zx-hero,.game-hero{padding:22px;border-radius:18px;background:linear-gradient(120deg,#07517c,#253c72 65%,#452c77);border:1px solid #438fc0;box-shadow:0 8px 30px #087dbb25}
-.zx-profile,.member{display:flex;align-items:center;gap:12px;padding:13px;background:#101e32;border:1px solid #294866;border-radius:14px;margin:10px 0}
-.avatar{width:45px;height:45px;min-width:45px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#16a6dc,#8056db);font-weight:bold;box-shadow:0 0 15px #168bd055}
-.zx-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}
-.zx-card,.game-card,.private-card{background:linear-gradient(145deg,#1d3858,#14253d);padding:15px;border-radius:15px;border:1px solid #345373;min-height:100px;box-shadow:0 7px 18px #0002}
-.section-title{color:#71d6ff;margin-top:22px}
-#ownerDashboard{margin-top:18px}
-.owner-panel{background:linear-gradient(145deg,#172b46,#101827);border:1px solid #368fc0;border-radius:18px;padding:17px}
-.owner-heading{color:#71d6ff}.owner-label{display:inline-block;background:#164b70;color:#a8e8ff;padding:7px 12px;border-radius:20px;font-size:12px}
-.owner-agent{background:#1b3049;border:1px solid #355878;border-radius:14px;padding:14px;margin-top:12px}
-.owner-agent h3{color:#71d6ff}
-.owner-room{margin-top:14px;padding:14px;background:#0c1627;border:1px solid #304866;border-radius:14px}
-.owner-status{color:#ffc66d;font-size:13px}
-.owner-button{background:linear-gradient(110deg,#12669b,#6951c8)}
-.private-card{margin:10px 0}
-.private-card button{margin-top:8px}
-.private-message.mine{background:linear-gradient(120deg,#104b70,#263c70)}
-.private-top{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
-.private-top button{width:auto;margin:0;padding:10px 15px}
-.game-card{margin:10px 0}
-.live-preview{width:100%;max-height:340px;background:#050b14;border-radius:12px;margin-top:12px}
-.game-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-#diagnostics{background:#101827;padding:12px;border-radius:10px;white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px;color:#b8e8ff;line-height:1.6}
-#status,#loginStatus,#chatStatus,#groupStatus{overflow-wrap:anywhere}
-
-/* FULL SCREEN ROOMS */
-.room-screen{display:none;position:fixed;inset:0;z-index:9999;overflow-y:auto;background:radial-gradient(ellipse at top left,#153b60,transparent 45%),radial-gradient(ellipse at bottom right,#302052,transparent 42%),#080e1c;padding:0 0 35px}
-.room-wrap{width:min(850px,100%);margin:auto;padding:15px}
-.room-header{position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:12px;padding:13px 15px;background:#101c30ee;backdrop-filter:blur(16px);border:1px solid #345373;border-radius:0 0 17px 17px;box-shadow:0 8px 25px #0005}
-.room-header button{width:auto;min-width:85px;margin:0;padding:11px 14px}
+input,select{
+ width:100%;padding:14px;margin-top:10px;border-radius:12px;
+ border:1px solid #465466;background:#e9edf1;color:#111820;
+}
+input:focus{outline:2px solid var(--gold)}
+.container{width:min(900px,100%);margin:auto;padding:15px}
+.panel,.card,.room-card{
+ background:linear-gradient(145deg,#1b2735,#121b26);
+ border:1px solid var(--line);border-radius:19px;padding:17px;
+ margin-top:15px;box-shadow:0 12px 30px #0004;
+}
+h1,h2,h3{margin-top:0}
+h2,h3{color:var(--gold2)}
+.small{font-size:13px;color:var(--muted);line-height:1.5;overflow-wrap:anywhere}
+.muted{color:var(--muted)}
+#loginPanel{max-width:520px;margin:35px auto}
+.google{background:#f7f7f7;color:#222;border-color:#ddd}
+.logout,.danger{background:linear-gradient(110deg,#8e3440,#cf5962);color:white;border:0}
+#appPanel{display:none}
+#status,#loginStatus{overflow-wrap:anywhere}
+.brandbar{
+ display:flex;align-items:center;justify-content:space-between;gap:12px;
+ padding:12px 15px;background:#111a25dd;border:1px solid #394657;
+ border-radius:17px;backdrop-filter:blur(15px);
+}
+.brand-left{display:flex;align-items:center;gap:11px}
+.brand-icon{
+ width:43px;height:43px;min-width:43px;border-radius:14px;
+ display:grid;place-items:center;font-weight:900;font-size:19px;
+ color:#171b20;background:linear-gradient(145deg,#f2dfb5,#b18c4e);
+ box-shadow:0 0 20px #c6a66a35;
+}
+.brand-name{font-size:20px;letter-spacing:3px;font-weight:900}
+.brand-tag{font-size:10px;color:var(--muted);letter-spacing:1.5px}
+.brand-status{font-size:11px;color:#b9d7c2}
+.hero{
+ padding:24px 19px;border-radius:20px;margin-top:16px;
+ background:linear-gradient(120deg,#263748,#26302f 65%,#473d2c);
+ border:1px solid #766448;box-shadow:0 12px 30px #0004;
+}
+.hero h2{font-size:25px;margin-bottom:8px}
+.section-title{margin:24px 2px 12px;color:var(--gold2)}
+.home-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.home-card{
+ min-height:150px;padding:17px;border-radius:18px;
+ border:1px solid #566171;
+ background:linear-gradient(145deg,#253342,#17222e);
+ box-shadow:0 9px 22px #0004;cursor:pointer;
+ transition:.2s;
+}
+.home-card:active{transform:scale(.98)}
+.home-card .symbol{font-size:30px;margin-bottom:14px}
+.home-card strong{font-size:16px;color:#f0d9a4}
+.home-card p{font-size:12px;line-height:1.5;color:#b4bec8;margin-bottom:0}
+.home-card.gold{background:linear-gradient(145deg,#51442e,#252a2c);border-color:#92794c}
+.page{display:none;animation:fade .2s ease}
+.page.active{display:block}
+@keyframes fade{from{opacity:.5;transform:translateY(5px)}to{opacity:1;transform:none}}
+.page-head{
+ display:flex;align-items:center;gap:12px;margin:18px 0 12px;
+}
+.page-head h2{flex:1;margin:0}
+.back{
+ width:auto;margin:0;padding:10px 14px;color:white;
+ background:#344252;border:1px solid #586575;
+}
+.bottom-nav{
+ position:fixed;bottom:0;left:0;right:0;z-index:1000;
+ display:none;grid-template-columns:repeat(4,1fr);
+ padding:9px 7px calc(9px + env(safe-area-inset-bottom));
+ background:#101720f2;backdrop-filter:blur(18px);
+ border-top:1px solid #46515e;
+ box-shadow:0 -8px 25px #0006;
+}
+.nav-item{
+ border:0;background:transparent;box-shadow:none;color:#9ca8b5;
+ margin:0;padding:7px 2px;border-radius:10px;
+ display:flex;flex-direction:column;align-items:center;gap:4px;
+ font-size:11px;font-weight:600;
+}
+.nav-item .nav-icon{font-size:20px}
+.nav-item.active{color:var(--gold2);background:#c4a66a18}
+.list-card,.message,.private-message,.member{
+ background:linear-gradient(120deg,#243342,#192531);
+ border:1px solid #3c4b5b;border-radius:14px;
+ padding:13px;margin:10px 0;overflow-wrap:anywhere;
+}
+.message strong,.private-message strong{color:var(--gold2)}
+#messages,.room-messages{
+ height:48vh;min-height:260px;max-height:500px;overflow-y:auto;
+ background:#0c141e;border:1px solid #344354;border-radius:14px;padding:12px;
+}
+.send-row{display:flex;gap:8px;align-items:center}
+.send-row input{flex:1;min-width:0}
+.send-row button{width:95px;flex-shrink:0}
+.avatar{
+ width:44px;height:44px;min-width:44px;border-radius:50%;
+ display:grid;place-items:center;color:#171b20;font-weight:bold;
+ background:linear-gradient(145deg,#f0d9a4,#a98549);
+}
+.member{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.member-info{flex:1;min-width:120px}
+.member button{width:auto;padding:10px;margin:0}
+.online{color:#55df9a}
+.offline{color:#aab4c0}
+.room-screen{
+ display:none;position:fixed;inset:0;z-index:2000;overflow-y:auto;
+ background:linear-gradient(145deg,#111c29,#090f17);
+ padding-bottom:30px;
+}
+.room-wrap{width:min(850px,100%);margin:auto;padding:12px}
+.room-header{
+ position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:12px;
+ padding:12px;background:#111b27ee;backdrop-filter:blur(15px);
+ border-bottom:1px solid #46515e;
+}
+.room-header button{width:auto;margin:0}
 .room-heading{flex:1;min-width:0}
-.room-heading h2{font-size:19px;margin:0;overflow-wrap:anywhere}
+.room-heading h2{margin:0;font-size:18px}
 .room-heading p{margin:4px 0 0}
-.room-card{background:linear-gradient(145deg,#142640,#0d192b);border:1px solid #294866;border-radius:17px;padding:15px;margin-top:15px;box-shadow:0 10px 28px #0004}
-.room-messages{height:48vh;min-height:270px;max-height:520px;overflow-y:auto;background:#081322;border:1px solid #263e5b;border-radius:14px;padding:12px}
-.room-send{display:flex;gap:8px;align-items:center}
-.room-send input{flex:1;min-width:0;margin-top:10px}
-.room-send button{width:105px;margin-top:10px}
-.room-members{display:flex;gap:8px;overflow-x:auto;padding:5px 0}
-.room-member{min-width:105px;text-align:center;background:#172b45;border:1px solid #345373;padding:10px;border-radius:13px}
-.room-member .avatar{margin:auto auto 7px}
-.room-member .small{font-size:11px}
-.back-button{background:linear-gradient(110deg,#334b68,#4d4e82)}
-@media(max-width:450px){
-.container{padding:12px}h1{font-size:30px}.panel{padding:14px}.zx-grid{gap:8px}.zx-card{padding:11px}.member{flex-wrap:wrap}
-.room-wrap{padding:10px}.room-header{padding:10px}.room-heading h2{font-size:16px}.room-header button{min-width:70px;padding:10px}
-.room-send button{width:85px;padding:13px 7px}
+#diagnostics{
+ background:#101923;padding:12px;border-radius:10px;
+ white-space:pre-wrap;overflow-wrap:anywhere;
+ font-size:12px;color:#c6d4df;line-height:1.6;
+}
+.game-hero{
+ padding:20px;border-radius:18px;
+ background:linear-gradient(120deg,#51442e,#263542);
+ border:1px solid #92794c;
+}
+.live-preview{width:100%;max-height:300px;background:#000;border-radius:12px}
+@media(max-width:430px){
+ .container{padding:11px}.home-grid{gap:9px}
+ .home-card{padding:13px;min-height:140px}
+ .brand-name{font-size:18px}
+ .send-row button{width:78px;padding:13px 5px}
 }
 </style>
 </head>
 
 <body>
 <main class="container">
-<h1>ZENVIX</h1>
-<p style="text-align:center;color:#a9bad0">Your world. Your people. Your space.</p>
 
-<section class="panel" id="loginPanel">
-<h2>Welcome to Zenvix</h2>
-<input id="displayName" maxlength="50" placeholder="Enter your name">
-<button id="guestButton">Continue as Guest</button>
-<button id="googleButton" class="google">Continue with Google</button>
-<p id="loginStatus" class="small"></p>
-<h3>Login Diagnostics</h3>
-<div id="diagnostics">Zenvix started. Preparing Firebase...</div>
+<section id="loginPanel" class="panel">
+ <div class="brandbar">
+  <div class="brand-left">
+   <div class="brand-icon">Z</div>
+   <div><div class="brand-name">ZENVIX</div><div class="brand-tag">YOUR WORLD. YOUR SPACE.</div></div>
+  </div>
+  <span class="brand-status">● ONLINE</span>
+ </div>
+ <h2 style="margin-top:25px">Welcome to ZENVIX</h2>
+ <p class="small">Connect with people around the world.</p>
+ <input id="displayName" maxlength="50" placeholder="Enter your name">
+ <button id="guestButton">Continue as Guest</button>
+ <button id="googleButton" class="google">Continue with Google</button>
+ <p id="loginStatus" class="small"></p>
+ <details style="margin-top:20px">
+  <summary class="small">Login Diagnostics</summary>
+  <div id="diagnostics">ZENVIX starting...</div>
+ </details>
 </section>
 
-<section class="panel" id="appPanel">
-<p id="welcome"></p>
-<button id="logoutButton" class="logout">Logout</button>
-<div id="dashboard"></div>
-<div id="ownerDashboard"></div>
-<div id="gamingArea"></div>
-<div id="profileCard"></div>
-<div id="privateInbox"></div>
-<div id="groupsArea"></div>
-<div id="membersPanel"></div>
-</section>
+<section id="appPanel">
+ <div class="brandbar">
+  <div class="brand-left">
+   <div class="brand-icon">Z</div>
+   <div><div class="brand-name">ZENVIX</div><div class="brand-tag">CONNECT • SHARE • PLAY</div></div>
+  </div>
+  <span class="brand-status">● ACTIVE</span>
+ </div>
 
-<section class="panel" id="chatPanel">
-<h2>🌐 Public Community Chat</h2>
-<div id="messages"></div>
-<input id="messageInput" maxlength="2000" placeholder="Write your message...">
-<button id="sendButton">Send Message</button>
-<p id="chatStatus" class="small"></p>
+ <section id="homePage" class="page active">
+  <div class="hero">
+   <p class="small">WELCOME TO YOUR WORLD</p>
+   <h2 id="homeGreeting">Welcome to ZENVIX</h2>
+   <p class="muted">Your world. Your people. Your space.</p>
+  </div>
+  <h3 class="section-title">Explore ZENVIX</h3>
+  <div class="home-grid">
+   <div class="home-card gold" onclick="openFeature('gamingPage')">
+    <div class="symbol">🎮</div><strong>Gaming Live</strong>
+    <p>Gaming streams and live sessions</p>
+   </div>
+   <div class="home-card" onclick="openFeature('worldPage')">
+    <div class="symbol">🌍</div><strong>World Chat</strong>
+    <p>Meet and chat with people worldwide</p>
+   </div>
+   <div class="home-card" onclick="openFeature('communityPage')">
+    <div class="symbol">💬</div><strong>Community</strong>
+    <p>Join the public community conversation</p>
+   </div>
+   <div class="home-card gold" onclick="openFeature('liveRoomsPage')">
+    <div class="symbol">📹</div><strong>Live Rooms</strong>
+    <p>Audio and video rooms with multiple people</p>
+   </div>
+  </div>
+
+  <div id="ownerDashboard"></div>
+  <p id="homeStatus" class="small"></p>
+ </section>
+
+ <section id="inboxPage" class="page">
+  <div class="page-head"><h2>✉ Inbox</h2></div>
+  <p class="small">Your private conversations.</p>
+  <div id="privateInbox"></div>
+  <h3 class="section-title">People on ZENVIX</h3>
+  <div id="membersPanel"></div>
+ </section>
+
+ <section id="groupsPage" class="page">
+  <div class="page-head"><h2>👥 Groups</h2></div>
+  <div id="groupsArea"></div>
+ </section>
+
+ <section id="profilePage" class="page">
+  <div class="page-head"><h2>👤 My Profile</h2></div>
+  <div id="profileCard"></div>
+  <div class="card">
+   <h3>Account</h3>
+   <p id="profileEmail" class="small"></p>
+   <p id="profileUid" class="small"></p>
+   <button id="logoutButton" class="danger">Logout</button>
+  </div>
+ </section>
+
+ <section id="gamingPage" class="page">
+  <div class="page-head"><button class="back" onclick="showPage('homePage')">← Back</button><h2>Gaming Live</h2></div>
+  <div id="gamingArea"></div>
+ </section>
+
+ <section id="worldPage" class="page">
+  <div class="page-head"><button class="back" onclick="showPage('homePage')">← Back</button><h2>World Chat</h2></div>
+  <div class="card">
+   <h3>🌍 World Chat</h3>
+   <p class="small">Talk with ZENVIX members around the world.</p>
+   <div id="worldMessages"></div>
+   <div class="send-row">
+    <input id="worldInput" maxlength="2000" placeholder="Write a message...">
+    <button id="worldSend">Send</button>
+   </div>
+   <p id="worldStatus" class="small"></p>
+  </div>
+ </section>
+
+ <section id="communityPage" class="page">
+  <div class="page-head"><button class="back" onclick="showPage('homePage')">← Back</button><h2>Community</h2></div>
+  <div class="card">
+   <h3>💬 Public Community</h3>
+   <div id="messages"></div>
+   <div class="send-row">
+    <input id="messageInput" maxlength="2000" placeholder="Write your message...">
+    <button id="sendButton">Send</button>
+   </div>
+   <p id="chatStatus" class="small"></p>
+  </div>
+ </section>
+
+ <section id="liveRoomsPage" class="page">
+  <div class="page-head"><button class="back" onclick="showPage('homePage')">← Back</button><h2>Live Rooms</h2></div>
+  <div class="game-hero">
+   <h2>📹 ZENVIX LIVE ROOMS</h2>
+   <p>Meet people face-to-face. Talk using audio or video.</p>
+   <p class="small">Multi-person audio/video calling is planned for this room system.</p>
+  </div>
+  <div class="card">
+   <h3>Create or Join a Live Room</h3>
+   <input id="liveRoomName" maxlength="50" placeholder="Enter room name">
+   <button id="createLiveRoom">＋ Create Live Room</button>
+   <input id="liveRoomCode" placeholder="Enter room ID">
+   <button id="joinLiveRoom">Join Room</button>
+   <p id="liveRoomStatus" class="small"></p>
+   <div id="liveRoomList"></div>
+  </div>
+  <div class="card">
+   <h3>Audio & Video Calling</h3>
+   <p class="small">The room interface is prepared, but actual multi-person calling still needs WebRTC peer connections and Firebase signaling rules. Calling controls are not activated yet.</p>
+   <button disabled>🎥 Start Video Call — Setup Required</button>
+   <button disabled>🎙 Start Audio Call — Setup Required</button>
+  </div>
+ </section>
+
+ <p id="status" class="small"></p>
 </section>
-<p id="status" class="small"></p>
 </main>
 
-<!-- GROUP FULL SCREEN ROOM -->
+<nav class="bottom-nav" id="bottomNav">
+ <button class="nav-item active" data-page="homePage"><span class="nav-icon">⌂</span>Home</button>
+ <button class="nav-item" data-page="inboxPage"><span class="nav-icon">✉</span>Inbox</button>
+ <button class="nav-item" data-page="groupsPage"><span class="nav-icon">♧</span>Groups</button>
+ <button class="nav-item" data-page="profilePage"><span class="nav-icon">◉</span>Profile</button>
+</nav>
+
 <section id="groupRoomPage" class="room-screen">
  <div class="room-header">
-  <button class="back-button" id="groupBack">← Back</button>
-  <div class="room-heading">
-   <h2 id="groupRoomTitle">Group Room</h2>
-   <p class="small" id="groupRoomSub">ZENVIX GROUP</p>
-  </div>
+  <button class="back" id="groupBack">← Back</button>
+  <div class="room-heading"><h2 id="groupRoomTitle">Group Room</h2><p class="small">ZENVIX GROUP</p></div>
   <span>👥</span>
  </div>
  <div class="room-wrap">
+  <div class="room-card"><h3>Group Members</h3><div id="groupRoomMembers"></div><p id="groupMembersStatus" class="small"></p></div>
   <div class="room-card">
-   <strong style="color:#8be2ff">GROUP MEMBERS</strong>
-   <div id="groupRoomMembers" class="room-members"></div>
-   <p id="groupMembersStatus" class="small"></p>
-  </div>
-  <div class="room-card">
-   <h3 style="margin-top:0">💬 Group Conversation</h3>
-   <div id="groupRoomMessages" class="room-messages"></div>
-   <div class="room-send">
-    <input id="groupRoomInput" maxlength="500" placeholder="Write a message...">
-    <button id="groupRoomSend">Send</button>
-   </div>
+   <h3>Group Conversation</h3><div id="groupRoomMessages" class="room-messages"></div>
+   <div class="send-row"><input id="groupRoomInput" maxlength="500" placeholder="Write a message..."><button id="groupRoomSend">Send</button></div>
    <p id="groupRoomStatus" class="small"></p>
   </div>
  </div>
 </section>
 
-<!-- PRIVATE FULL SCREEN ROOM -->
 <section id="privateRoomPage" class="room-screen">
  <div class="room-header">
-  <button class="back-button" id="privateBack">← Back</button>
-  <div class="room-heading">
-   <h2 id="privateRoomTitle">Private Chat</h2>
-   <p class="small">🔒 PRIVATE CONVERSATION</p>
-  </div>
-  <span>🔐</span>
+  <button class="back" id="privateBack">← Back</button>
+  <div class="room-heading"><h2 id="privateRoomTitle">Private Chat</h2><p class="small">PRIVATE CONVERSATION</p></div>
+  <span>🔒</span>
  </div>
  <div class="room-wrap">
   <div class="room-card">
    <div id="privateRoomMessages" class="room-messages"></div>
-   <div class="room-send">
-    <input id="privateRoomInput" maxlength="2000" placeholder="Write a private message...">
-    <button id="privateRoomSend">Send</button>
-   </div>
+   <div class="send-row"><input id="privateRoomInput" maxlength="2000" placeholder="Write a message..."><button id="privateRoomSend">Send</button></div>
    <p id="privateRoomStatus" class="small"></p>
   </div>
  </div>
@@ -174,55 +361,65 @@ button:disabled{opacity:.5;cursor:not-allowed}
 <script>
 const $=id=>document.getElementById(id);
 let auth=null,db=null,currentUser=null,currentName="";
-let messagesQuery=null,messagesListener=null;
-let groupListRef=null,groupMessagesRef=null,profileRef=null,membersRef=null;
+let messagesQuery=null,worldQuery=null,groupListRef=null;
 let privateInboxRef=null,privateMessagesRef=null,activePrivateChatId=null;
-let gamingRef=null,gamingListener=null;
+let groupMessagesRef=null,activeGroupId=null,groupRoomOpen=false;
+let profileRef=null,membersRef=null,gamingRef=null,gamingListener=null;
 let localStream=null,activeStreamId=null;
-let activeGroupId=null,activeGroupMemberRef=null,groupRoomOpen=false;
-let privateOtherName="";
 
 const OWNER_UID="0ludLj5SwNbJtahIdrcxl4pY2Op2";
 
-function isZenvixOwner(){
+function isOwner(){
  return !!currentUser&&!currentUser.isAnonymous&&currentUser.uid===OWNER_UID;
 }
 function diagnostic(message){
- const box=$("diagnostics");if(!box)return;
- box.textContent+="\n["+new Date().toLocaleTimeString()+"] "+message;
- box.scrollTop=box.scrollHeight;
+ const box=$("diagnostics");if(box)box.textContent+="\n"+message;
 }
-function showError(element,error){
+function showError(id,error){
  const message=error&&error.message?error.message:String(error);
- const code=error&&error.code?error.code:"ERROR";
- if($(element))$(element).textContent="Error: "+code+" - "+message;
- diagnostic("ERROR: "+code+" - "+message);
+ if($(id))$(id).textContent="Error: "+message;
+ diagnostic("ERROR: "+message);
 }
 function loadScript(url){
  return new Promise((resolve,reject)=>{
-  const script=document.createElement("script");script.src=url;script.async=true;
-  script.onload=resolve;script.onerror=()=>reject(new Error("Firebase file could not load: "+url));
-  document.head.appendChild(script);
+  const s=document.createElement("script");s.src=url;s.async=true;
+  s.onload=resolve;s.onerror=()=>reject(new Error("Could not load Firebase."));
+  document.head.appendChild(s);
  });
 }
+function showPage(page){
+ document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+ if($(page))$(page).classList.add("active");
+ document.querySelectorAll(".nav-item").forEach(b=>{
+  b.classList.toggle("active",b.dataset.page===page);
+ });
+ $("bottomNav").style.display="grid";
+ window.scrollTo(0,0);
+}
+function openFeature(page){
+ showPage(page);
+}
+document.querySelectorAll(".nav-item").forEach(button=>{
+ button.onclick=()=>showPage(button.dataset.page);
+});
 
 $("guestButton").onclick=async()=>{
  const name=$("displayName").value.trim();
  if(!name){$("loginStatus").textContent="Please enter your name.";return}
- if(!auth){$("loginStatus").textContent="Firebase is still loading.";return}
- $("guestButton").disabled=true;$("loginStatus").textContent="Connecting as Guest...";
+ if(!auth){$("loginStatus").textContent="Firebase is loading.";return}
+ $("guestButton").disabled=true;
  try{localStorage.setItem("zenvixGuestName",name);await auth.signInAnonymously()}
- catch(error){showError("loginStatus",error)}
+ catch(e){showError("loginStatus",e)}
  finally{$("guestButton").disabled=false}
 };
 $("googleButton").onclick=async()=>{
- if(!auth){$("loginStatus").textContent="Firebase is still loading.";return}
- $("googleButton").disabled=true;$("loginStatus").textContent="Opening Google login...";
+ if(!auth)return;
+ $("googleButton").disabled=true;
  try{
   const provider=new firebase.auth.GoogleAuthProvider();
   provider.setCustomParameters({prompt:"select_account"});
   await auth.signInWithPopup(provider);
- }catch(error){showError("loginStatus",error)}
+ }catch(e){showError("loginStatus",e)}
  finally{$("googleButton").disabled=false}
 };
 
@@ -232,7 +429,7 @@ async function initializeZenvix(){
   await loadScript("https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js");
   await loadScript("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js");
   await loadScript("https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js");
-  const firebaseConfig={
+  const config={
    apiKey:"AIzaSyCIgG9MMxLlvuMM9MavvMTrAQPuYZ6a2Ds",
    authDomain:"livechat2026-51a85.firebaseapp.com",
    databaseURL:"https://livechat2026-51a85-default-rtdb.asia-southeast1.firebasedatabase.app",
@@ -242,141 +439,148 @@ async function initializeZenvix(){
    appId:"1:467836802450:web:c9c48f316fcf3bf4d4dd4b",
    measurementId:"G-LXL179GDDP"
   };
-  if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
+  if(!firebase.apps.length)firebase.initializeApp(config);
   auth=firebase.auth();db=firebase.database();
-  diagnostic("Firebase initialized successfully.");
-  auth.onAuthStateChanged(handleAuthState,error=>showError("loginStatus",error));
- }catch(error){showError("loginStatus",error)}
+  diagnostic("Firebase connected.");
+  auth.onAuthStateChanged(handleAuthState,e=>showError("loginStatus",e));
+ }catch(e){showError("loginStatus",e)}
 }
 function showLogin(){
- $("loginPanel").style.display="block";$("appPanel").style.display="none";$("chatPanel").style.display="none";
+ $("loginPanel").style.display="block";$("appPanel").style.display="none";
+ $("bottomNav").style.display="none";
 }
 function showApp(){
- $("loginPanel").style.display="none";$("appPanel").style.display="block";$("chatPanel").style.display="block";
+ $("loginPanel").style.display="none";$("appPanel").style.display="block";
+ $("bottomNav").style.display="grid";showPage("homePage");
 }
 async function handleAuthState(user){
- stopMessages();stopPrivateChat();stopGamingListener();closeGroupRoom();closePrivateRoom();
+ stopMessages();stopWorldChat();stopPrivateChat();stopGamingListener();
+ closeGroupRoom();closePrivateRoom();
  if(!user){
-  currentUser=null;currentName="";$("ownerDashboard").innerHTML="";showLogin();
-  diagnostic("No user signed in.");return;
+  currentUser=null;currentName="";showLogin();return;
  }
  currentUser=user;
- currentName=user.isAnonymous?localStorage.getItem("zenvixGuestName")||"Guest":user.displayName||"Zenvix Member";
- showApp();$("welcome").textContent="Welcome, "+currentName;
- $("status").textContent="Signed in. Connecting to Zenvix...";diagnostic("User signed in.");
+ currentName=user.isAnonymous?
+  localStorage.getItem("zenvixGuestName")||"Guest":
+  user.displayName||"Zenvix Member";
+ showApp();
+ $("homeGreeting").textContent="Welcome, "+currentName;
+ $("profileEmail").textContent="Email: "+(user.email||"Guest Account");
+ $("profileUid").textContent="Account ID: "+user.uid;
+ $("status").textContent="Connecting to ZENVIX...";
  try{
-  await db.ref("users/"+user.uid).update({uid:user.uid,name:currentName,updatedAt:firebase.database.ServerValue.TIMESTAMP});
-  $("status").textContent="Connected to Zenvix.";
-  buildDashboard();buildOwnerDashboard();startProfile(user);startPresence(user);
-  startMessages();startGroups();startMembers();startPrivateInbox();startGaming();
- }catch(error){showError("status",error)}
-}
-function buildDashboard(){
- $("dashboard").innerHTML=`
- <div class="zx-hero"><h2>Welcome to Zenvix 👋</h2><p>Your world. Your people. Your space.</p></div>
- <h3 class="section-title">My Account</h3>
- <div class="zx-profile"><div class="avatar" id="dashAvatar">Z</div><div><strong id="dashName"></strong><div class="small" id="dashEmail"></div></div></div>
- <h3 class="section-title">Explore Zenvix</h3>
- <div class="zx-grid">
-  <div class="zx-card">🌐<br><strong>Community</strong><p class="small">Public chat room</p></div>
-  <div class="zx-card">👥<br><strong>Groups</strong><p class="small">Create and join groups</p></div>
-  <div class="zx-card">🔒<br><strong>Private Inbox</strong><p class="small">Personal conversations</p></div>
-  <div class="zx-card">👤<br><strong>My Profile</strong><p class="small">Your account information</p></div>
-  <div class="zx-card" style="grid-column:1/-1">🎮<br><strong>Gaming Live</strong><p class="small">GTA, PUBG, Free Fire and more</p><button id="openGaming">Open Gaming Live</button></div>
- </div>
- <button id="openCommunity">Open Public Community Chat</button>
- <button id="openInbox">Open Private Inbox</button>
- <button id="openGroups">Open My Groups</button>`;
- $("dashName").textContent=currentName;$("dashEmail").textContent=currentUser.email||"Guest Account";
- $("dashAvatar").textContent=currentName.charAt(0).toUpperCase();
- $("openCommunity").onclick=()=>$("chatPanel").scrollIntoView({behavior:"smooth"});
- $("openInbox").onclick=()=>$("privateInbox").scrollIntoView({behavior:"smooth"});
- $("openGaming").onclick=()=>$("gamingArea").scrollIntoView({behavior:"smooth"});
- $("openGroups").onclick=()=>$("groupsArea").scrollIntoView({behavior:"smooth"});
+  await db.ref("users/"+user.uid).update({
+   uid:user.uid,name:currentName,
+   updatedAt:firebase.database.ServerValue.TIMESTAMP
+  });
+  $("status").textContent="Connected to ZENVIX.";
+  buildOwnerDashboard();startProfile(user);startPresence(user);
+  startMessages();startWorldChat();startGroups();
+  startPrivateInbox();startMembers();startGaming();
+ }catch(e){showError("status",e)}
 }
 
-/* OWNER DASHBOARD */
+/* OWNER AREA */
 function buildOwnerDashboard(){
- const panel=$("ownerDashboard");if(!panel)return;
- if(!isZenvixOwner()){panel.innerHTML="";return}
+ const panel=$("ownerDashboard");
+ if(!isOwner()){panel.innerHTML="";return}
  panel.innerHTML=`
- <div class="owner-panel">
-  <div class="owner-label">👑 VERIFIED OWNER AREA</div>
-  <h2 class="owner-heading">ZENVIX OWNER DASHBOARD</h2>
-  <p class="small">Welcome, Owner. Restricted to your authorized Google account.</p>
-  <div class="zx-grid">
-   <div class="zx-card">👑<br><strong>Owner Access</strong><p class="small">Owner account detected.</p></div>
-   <div class="zx-card">🤖<br><strong>Private AI Room</strong><p class="small">Three planned assistants.</p></div>
-  </div>
-  <button id="openOwnerAIRoom" class="owner-button">🤖 Open Private Owner AI Room</button>
-  <div id="ownerAIRoom" class="owner-room" style="display:none">
-   <h2 class="owner-heading">🔐 Private Owner AI Room</h2>
-   <div class="owner-agent"><h3>👥 Group Manager AI</h3><p class="small">Group management and member support.</p><p class="owner-status">Status: Secure backend connection required.</p></div>
-   <div class="owner-agent"><h3>📈 Investment AI</h3><p class="small">Financial research and risk explanations.</p><p class="owner-status">Status: Secure backend connection required.</p></div>
-   <div class="owner-agent"><h3>🛠 Personal Owner AI</h3><p class="small">ZENVIX planning and management support.</p><p class="owner-status">Status: Secure backend connection required.</p></div>
-   <div class="owner-agent"><strong>🔒 Owner Privacy</strong><p class="small">AI conversations are not active yet. A secure server connection is required.</p></div>
-   <button id="closeOwnerAIRoom" class="logout">Close Private AI Room</button>
+ <div class="card">
+  <span class="small">AUTHORIZED OWNER</span>
+  <h3>👑 ZENVIX OWNER DASHBOARD</h3>
+  <p class="small">Owner account recognized.</p>
+  <button id="ownerAIButton">Open Private Owner AI Room</button>
+  <div id="ownerAIBox" style="display:none">
+   <p class="small">Group Manager AI, Investment AI and Personal Owner AI are planned. A secure AI backend is required before they can respond.</p>
   </div>
  </div>`;
- $("openOwnerAIRoom").onclick=()=>{$("ownerAIRoom").style.display="block";$("ownerAIRoom").scrollIntoView({behavior:"smooth"})};
- $("closeOwnerAIRoom").onclick=()=>{$("ownerAIRoom").style.display="none";$("openOwnerAIRoom").scrollIntoView({behavior:"smooth"})};
-}
-function escapeText(value){
- const div=document.createElement("div");div.textContent=String(value);return div.innerHTML;
+ $("ownerAIButton").onclick=()=>{
+  $("ownerAIBox").style.display=$("ownerAIBox").style.display==="none"?"block":"none";
+ };
 }
 
-/* PROFILE */
+/* PROFILE AND PRESENCE */
 function startProfile(user){
  profileRef=db.ref("publicProfiles/"+user.uid);
- profileRef.on("value",snapshot=>{
-  const data=snapshot.val()||{},online=data.online===true;
+ profileRef.on("value",snap=>{
+  const d=snap.val()||{};
   $("profileCard").innerHTML=`
-  <h3>👤 My Profile</h3><p>Name: ${escapeText(currentName)}</p>
-  <p>Email: ${escapeText(user.email||"Guest Account")}</p>
-  <p class="${online?"online":"offline"}">● ${online?"Online":"Offline"}</p>
-  <p class="small">${data.lastSeen?"Last seen: "+new Date(data.lastSeen).toLocaleString():"You are currently active."}</p>`;
- },error=>console.error(error));
+   <div class="card">
+    <div class="avatar">${escapeText(currentName.charAt(0).toUpperCase())}</div>
+    <h3>${escapeText(currentName)}</h3>
+    <p class="${d.online?"online":"offline"}">${d.online?"● Online":"● Offline"}</p>
+    <p class="small">${d.lastSeen?"Last seen: "+new Date(d.lastSeen).toLocaleString():"Active on ZENVIX"}</p>
+   </div>`;
+ },e=>console.error(e));
 }
 function startPresence(user){
  const ref=db.ref("publicProfiles/"+user.uid);
- db.ref(".info/connected").on("value",snapshot=>{
-  if(snapshot.val()!==true)return;
+ db.ref(".info/connected").on("value",snap=>{
+  if(snap.val()!==true)return;
   ref.onDisconnect().update({online:false,lastSeen:firebase.database.ServerValue.TIMESTAMP})
-  .then(()=>ref.update({displayName:currentName,online:true})).catch(error=>console.error(error));
+   .then(()=>ref.update({displayName:currentName,online:true}))
+   .catch(e=>console.error(e));
  });
 }
+function escapeText(value){
+ const d=document.createElement("div");d.textContent=String(value);return d.innerHTML;
+}
 
-/* PUBLIC CHAT */
+/* PUBLIC COMMUNITY */
 function stopMessages(){
- if(messagesQuery&&messagesListener)messagesQuery.off("value",messagesListener);
- messagesQuery=null;messagesListener=null;
+ if(messagesQuery)messagesQuery.off();
+ messagesQuery=null;
 }
 function startMessages(){
  stopMessages();messagesQuery=db.ref("messages").limitToLast(100);
- messagesListener=snapshot=>{
+ messagesQuery.on("value",snap=>{
   const box=$("messages");box.innerHTML="";
-  snapshot.forEach(child=>{
-   const msg=child.val()||{},item=document.createElement("div");item.className="message";
-   const name=document.createElement("strong");name.textContent=msg.name||"Member";
-   const content=document.createElement("div");content.textContent=msg.text||"";
+  snap.forEach(child=>{
+   const m=child.val()||{},item=document.createElement("div");item.className="message";
+   const name=document.createElement("strong");name.textContent=m.name||"Member";
+   const content=document.createElement("div");content.textContent=m.text||"";
    const time=document.createElement("div");time.className="small";
-   time.textContent=msg.timestamp?new Date(msg.timestamp).toLocaleString():"";
+   time.textContent=m.timestamp?new Date(m.timestamp).toLocaleString():"";
+   item.append(name,content,time);box.appendChild(item);
+  });
+  box.scrollTop=box.scrollHeight;
+ },e=>showError("chatStatus",e));
+}
+async function sendPublicMessage(inputId,statusId,path){
+ const text=$(inputId).value.trim();if(!text||!currentUser)return;
+ try{
+  await db.ref(path).push({
+   uid:currentUser.uid,name:currentName,text,
+   timestamp:firebase.database.ServerValue.TIMESTAMP
+  });
+  $(inputId).value="";$(statusId).textContent="Message sent.";
+ }catch(e){showError(statusId,e)}
+}
+$("sendButton").onclick=()=>sendPublicMessage("messageInput","chatStatus","messages");
+$("messageInput").addEventListener("keydown",e=>{
+ if(e.key==="Enter")sendPublicMessage("messageInput","chatStatus","messages");
+});
+
+/* WORLD CHAT */
+function stopWorldChat(){if(worldQuery)worldQuery.off();worldQuery=null}
+function startWorldChat(){
+ stopWorldChat();worldQuery=db.ref("worldMessages").limitToLast(100);
+ worldQuery.on("value",snap=>{
+  const box=$("worldMessages");box.innerHTML="";
+  snap.forEach(child=>{
+   const m=child.val()||{},item=document.createElement("div");item.className="message";
+   const name=document.createElement("strong");name.textContent=m.name||"Member";
+   const content=document.createElement("div");content.textContent=m.text||"";
+   const time=document.createElement("div");time.className="small";
+   time.textContent=m.timestamp?new Date(m.timestamp).toLocaleString():"";
    item.append(name,content,time);box.appendChild(item);
   });box.scrollTop=box.scrollHeight;
- };
- messagesQuery.on("value",messagesListener,error=>showError("chatStatus",error));
+ },e=>showError("worldStatus",e));
 }
-async function sendMessage(){
- const text=$("messageInput").value.trim();if(!currentUser||!text)return;
- $("sendButton").disabled=true;$("chatStatus").textContent="Sending...";
- try{
-  await db.ref("messages").push({uid:currentUser.uid,name:currentName,text,timestamp:firebase.database.ServerValue.TIMESTAMP});
-  $("messageInput").value="";$("chatStatus").textContent="Message sent.";
- }catch(error){showError("chatStatus",error)}
- finally{$("sendButton").disabled=false}
-}
-$("sendButton").onclick=sendMessage;
-$("messageInput").addEventListener("keydown",e=>{if(e.key==="Enter")sendMessage()});
+$("worldSend").onclick=()=>sendPublicMessage("worldInput","worldStatus","worldMessages");
+$("worldInput").addEventListener("keydown",e=>{
+ if(e.key==="Enter")sendPublicMessage("worldInput","worldStatus","worldMessages");
+});
 
 /* PRIVATE INBOX */
 function stopPrivateChat(){
@@ -384,364 +588,382 @@ function stopPrivateChat(){
  activePrivateChatId=null;
 }
 function startPrivateInbox(){
- $("privateInbox").innerHTML=`
- <h2>🔒 Private Inbox</h2><p class="small">Your personal conversations</p>
- <p id="privateInboxStatus" class="small"></p><div id="privateChatList"></div>`;
+ $("privateInbox").innerHTML='<p id="privateInboxStatus" class="small"></p><div id="privateChatList"></div>';
  if(privateInboxRef)privateInboxRef.off();
  privateInboxRef=db.ref("userChats/"+currentUser.uid);
- privateInboxRef.on("value",async snapshot=>{
-  const list=$("privateChatList");if(!list)return;list.innerHTML="";
-  if(!snapshot.exists()){list.textContent="No private conversations yet. Choose a member below to start chatting.";return}
-  const entries=[];snapshot.forEach(child=>entries.push(child.key));
-  for(const chatId of entries){
+ privateInboxRef.on("value",async snap=>{
+  const list=$("privateChatList");list.innerHTML="";
+  if(!snap.exists()){list.textContent="No private chats yet. Choose a member below.";return}
+  const ids=[];snap.forEach(c=>ids.push(c.key));
+  for(const id of ids){
    try{
-    const ms=await db.ref("privateChats/"+chatId+"/members").once("value");
+    const ms=await db.ref("privateChats/"+id+"/members").once("value");
     const members=ms.val()||{};
-    const otherUid=Object.keys(members).find(uid=>uid!==currentUser.uid&&members[uid]===true);
-    if(!otherUid)continue;
-    const ps=await db.ref("publicProfiles/"+otherUid).once("value");
-    const otherName=(ps.val()||{}).displayName||"Zenvix Member";
-    const card=document.createElement("div");card.className="private-card";
-    const name=document.createElement("strong");name.textContent="💬 "+otherName;
-    const button=document.createElement("button");button.textContent="Open Private Chat";
-    button.onclick=()=>openPrivateChat(otherUid,otherName);
-    card.append(name,button);list.appendChild(card);
-   }catch(error){console.error(error)}
+    const other=Object.keys(members).find(uid=>uid!==currentUser.uid&&members[uid]===true);
+    if(!other)continue;
+    const ps=await db.ref("publicProfiles/"+other).once("value");
+    const name=(ps.val()||{}).displayName||"Zenvix Member";
+    const card=document.createElement("div");card.className="list-card";
+    const title=document.createElement("strong");title.textContent="💬 "+name;
+    const btn=document.createElement("button");btn.textContent="Open Chat";
+    btn.onclick=()=>openPrivateChat(other,name);
+    card.append(title,btn);list.appendChild(card);
+   }catch(e){console.error(e)}
   }
- },error=>{if($("privateInboxStatus"))$("privateInboxStatus").textContent=error.message});
+ },e=>showError("privateInboxStatus",e));
 }
 async function openPrivateChat(otherUid,otherName){
  if(!currentUser||otherUid===currentUser.uid)return;
- const chatId=[currentUser.uid,otherUid].sort().join("_");
- const status=$("privateInboxStatus");
- if(status)status.textContent="Opening private conversation...";
+ const id=[currentUser.uid,otherUid].sort().join("_");
  try{
-  const membersRef=db.ref("privateChats/"+chatId+"/members");
-  const existing=await membersRef.once("value");
-  if(!existing.exists()){
-   await membersRef.set({[currentUser.uid]:true,[otherUid]:true});
-  }else{
-   const members=existing.val()||{};
-   if(members[currentUser.uid]!==true||members[otherUid]!==true)throw new Error("Unexpected chat members.");
+  const mref=db.ref("privateChats/"+id+"/members"),existing=await mref.once("value");
+  if(!existing.exists())await mref.set({[currentUser.uid]:true,[otherUid]:true});
+  else{
+   const m=existing.val()||{};
+   if(m[currentUser.uid]!==true||m[otherUid]!==true)throw new Error("Chat members do not match.");
   }
-  await db.ref("userChats/"+currentUser.uid+"/"+chatId).set(true);
-  await db.ref("userChats/"+otherUid+"/"+chatId).set(true);
-  stopPrivateChat();activePrivateChatId=chatId;privateOtherName=otherName;
+  await db.ref("userChats/"+currentUser.uid+"/"+id).set(true);
+  await db.ref("userChats/"+otherUid+"/"+id).set(true);
+  stopPrivateChat();activePrivateChatId=id;
   $("privateRoomTitle").textContent="🔒 "+otherName;
   $("privateRoomMessages").innerHTML="";
-  $("privateRoomStatus").textContent="Connecting...";
   $("privateRoomPage").style.display="block";
-  privateMessagesRef=db.ref("privateChats/"+chatId+"/messages").limitToLast(100);
-  privateMessagesRef.on("value",snapshot=>{
-   const box=$("privateRoomMessages");if(!box)return;box.innerHTML="";
-   snapshot.forEach(child=>{
-    const msg=child.val()||{},item=document.createElement("div");
-    item.className="private-message"+(msg.uid===currentUser.uid?" mine":"");
-    const sender=document.createElement("strong");sender.textContent=msg.uid===currentUser.uid?"You":otherName;
-    const content=document.createElement("div");content.textContent=msg.text||"";
+  privateMessagesRef=db.ref("privateChats/"+id+"/messages").limitToLast(100);
+  privateMessagesRef.on("value",snap=>{
+   const box=$("privateRoomMessages");box.innerHTML="";
+   snap.forEach(child=>{
+    const m=child.val()||{},item=document.createElement("div");
+    item.className="private-message";
+    const name=document.createElement("strong");name.textContent=m.uid===currentUser.uid?"You":otherName;
+    const content=document.createElement("div");content.textContent=m.text||"";
     const time=document.createElement("div");time.className="small";
-    time.textContent=msg.timestamp?new Date(msg.timestamp).toLocaleString():"";
-    item.append(sender,content,time);box.appendChild(item);
+    time.textContent=m.timestamp?new Date(m.timestamp).toLocaleString():"";
+    item.append(name,content,time);box.appendChild(item);
    });box.scrollTop=box.scrollHeight;
-  },error=>$("privateRoomStatus").textContent="Chat error: "+error.message);
-  if(status)status.textContent="Private conversation opened.";
- }catch(error){if(status)status.textContent="Private chat error: "+error.message}
+  },e=>$("privateRoomStatus").textContent=e.message);
+ }catch(e){$("privateInboxStatus").textContent="Private chat error: "+e.message}
 }
+$("privateBack").onclick=closePrivateRoom;
 function closePrivateRoom(){
  stopPrivateChat();$("privateRoomPage").style.display="none";
 }
-$("privateBack").onclick=closePrivateRoom;
 async function sendPrivateMessage(){
- const input=$("privateRoomInput"),button=$("privateRoomSend");
- const message=input.value.trim();if(!message||!activePrivateChatId||!currentUser)return;
- button.disabled=true;$("privateRoomStatus").textContent="Sending...";
+ const text=$("privateRoomInput").value.trim();
+ if(!text||!activePrivateChatId||!currentUser)return;
  try{
   await db.ref("privateChats/"+activePrivateChatId+"/messages").push({
-   uid:currentUser.uid,name:currentName,text:message,timestamp:firebase.database.ServerValue.TIMESTAMP
+   uid:currentUser.uid,name:currentName,text,
+   timestamp:firebase.database.ServerValue.TIMESTAMP
   });
-  input.value="";$("privateRoomStatus").textContent="Private message sent.";
- }catch(error){$("privateRoomStatus").textContent="Send error: "+error.message}
- finally{button.disabled=false}
+  $("privateRoomInput").value="";$("privateRoomStatus").textContent="Sent.";
+ }catch(e){showError("privateRoomStatus",e)}
 }
 $("privateRoomSend").onclick=sendPrivateMessage;
-$("privateRoomInput").addEventListener("keydown",e=>{if(e.key==="Enter")sendPrivateMessage()});
+$("privateRoomInput").addEventListener("keydown",e=>{
+ if(e.key==="Enter")sendPrivateMessage();
+});
 
-/* GROUP SYSTEM */
+/* GROUPS */
 function startGroups(){
  $("groupsArea").innerHTML=`
- <h2>👥 ZENVIX Groups</h2>
- <div class="game-card"><h3>Create Your Group</h3>
- <input id="newGroupName" maxlength="40" placeholder="Enter group name">
- <button id="createGroup">＋ Create Group</button></div>
- <div class="game-card"><h3>Join a Group</h3>
- <input id="joinGroupId" placeholder="Paste Group ID here">
- <button id="joinGroup">Join Group</button></div>
- <p id="groupStatus" class="small"></p><h3>My Groups</h3><div id="groupList"></div>`;
- $("createGroup").onclick=createGroup;$("joinGroup").onclick=joinGroup;loadMyGroups();
+  <div class="card"><h3>Create a Group</h3>
+   <input id="newGroupName" maxlength="40" placeholder="Group name">
+   <button id="createGroup">＋ Create Group</button>
+  </div>
+  <div class="card"><h3>Join a Group</h3>
+   <input id="joinGroupId" placeholder="Enter Group ID">
+   <button id="joinGroup">Join Group</button>
+  </div>
+  <p id="groupStatus" class="small"></p>
+  <h3 class="section-title">My Groups</h3><div id="groupList"></div>`;
+ $("createGroup").onclick=createGroup;$("joinGroup").onclick=joinGroup;
+ loadMyGroups();
 }
-function groupStatus(message){if($("groupStatus"))$("groupStatus").textContent=message}
+function groupStatus(text){if($("groupStatus"))$("groupStatus").textContent=text}
 async function createGroup(){
- if(!currentUser)return;
- const input=$("newGroupName"),name=input.value.trim();
- if(!name||name.length>40){groupStatus("Enter a group name up to 40 characters.");return}
+ const name=$("newGroupName").value.trim();
+ if(!name||!currentUser){groupStatus("Enter a group name.");return}
  try{
-  groupStatus("Creating group...");
+  groupStatus("Creating...");
   const ref=db.ref("groups").push();
   await ref.set({name,owner:currentUser.uid,createdAt:Date.now(),members:{[currentUser.uid]:true}});
   await db.ref("userGroups/"+currentUser.uid+"/"+ref.key).set(true);
-  input.value="";groupStatus("Group created. ID: "+ref.key);loadMyGroups();
- }catch(error){groupStatus("Create error: "+error.message)}
+  $("newGroupName").value="";groupStatus("Group created. ID: "+ref.key);loadMyGroups();
+ }catch(e){groupStatus("Create error: "+e.message)}
 }
 async function joinGroup(){
- if(!currentUser)return;
- const id=$("joinGroupId").value.trim();if(!id){groupStatus("Please enter a Group ID.");return}
+ const id=$("joinGroupId").value.trim();if(!id)return;
  try{
-  groupStatus("Joining group...");
-  const ref=db.ref("groups/"+id),check=await ref.once("value");
-  if(!check.exists()){groupStatus("Group not found.");return}
+  const ref=db.ref("groups/"+id),snap=await ref.once("value");
+  if(!snap.exists()){groupStatus("Group not found.");return}
   await ref.child("members/"+currentUser.uid).set(true);
   await db.ref("userGroups/"+currentUser.uid+"/"+id).set(true);
-  $("joinGroupId").value="";groupStatus("Successfully joined "+(check.val().name||"group"));loadMyGroups();
- }catch(error){groupStatus("Could not join group: "+error.message)}
+  $("joinGroupId").value="";groupStatus("Joined group.");loadMyGroups();
+ }catch(e){groupStatus("Join error: "+e.message)}
 }
 function loadMyGroups(){
- if(!currentUser)return;
  if(groupListRef)groupListRef.off();
  groupListRef=db.ref("userGroups/"+currentUser.uid);
- groupListRef.on("value",async snapshot=>{
-  const list=$("groupList");if(!list)return;list.innerHTML="";
-  if(!snapshot.exists()){list.textContent="No groups yet. Create or join a group.";return}
-  const ids=[];snapshot.forEach(child=>ids.push(child.key));
+ groupListRef.on("value",async snap=>{
+  const list=$("groupList");list.innerHTML="";
+  if(!snap.exists()){list.textContent="No groups yet.";return}
+  const ids=[];snap.forEach(c=>ids.push(c.key));
   for(const id of ids){
    try{
-    const snap=await db.ref("groups/"+id).once("value");if(!snap.exists())continue;
-    const group=snap.val()||{},card=document.createElement("div");card.className="private-card";
-    const title=document.createElement("strong");title.textContent="👥 "+(group.name||"Group");
+    const gs=await db.ref("groups/"+id).once("value");if(!gs.exists())continue;
+    const g=gs.val()||{},card=document.createElement("div");card.className="list-card";
+    const title=document.createElement("strong");title.textContent="👥 "+(g.name||"Group");
     const label=document.createElement("p");label.className="small";label.textContent="Group ID: "+id;
-    const open=document.createElement("button");open.textContent="Open Full-Screen Group Room";
-    open.onclick=()=>openGroupRoom(id,group.name||"Group");
+    const open=document.createElement("button");open.textContent="Open Group";
+    open.onclick=()=>openGroupRoom(id,g.name||"Group");
     const copy=document.createElement("button");copy.textContent="Copy Group ID";
     copy.onclick=async()=>{
      try{await navigator.clipboard.writeText(id);groupStatus("Group ID copied.")}
-     catch(e){groupStatus("Copy unavailable. Copy ID manually: "+id)}
+     catch(e){groupStatus("Copy this ID: "+id)}
     };
     card.append(title,label,open,copy);list.appendChild(card);
-   }catch(error){console.error(error)}
+   }catch(e){console.error(e)}
   }
- },error=>groupStatus("Group list error: "+error.message));
+ },e=>groupStatus(e.message));
 }
-
-/* FULL SCREEN GROUP ROOM */
 async function openGroupRoom(id,name){
- if(!currentUser)return;
- closeGroupRoom();
+ closeGroupRoom();activeGroupId=id;groupRoomOpen=true;
  $("groupRoomTitle").textContent="👥 "+name;
- $("groupRoomSub").textContent="ZENVIX GROUP • "+id;
  $("groupRoomMessages").innerHTML="";
- $("groupRoomMembers").innerHTML="";
- $("groupRoomStatus").textContent="Checking group access...";
  $("groupRoomPage").style.display="block";
- groupRoomOpen=true;activeGroupId=id;
+ $("groupRoomStatus").textContent="Checking membership...";
  try{
-  const memberCheck=await db.ref("groups/"+id+"/members/"+currentUser.uid).once("value");
-  if(memberCheck.val()!==true)throw new Error("You are not a member of this group.");
-  $("groupRoomStatus").textContent="Connected to group.";
+  const check=await db.ref("groups/"+id+"/members/"+currentUser.uid).once("value");
+  if(check.val()!==true)throw new Error("You are not a member of this group.");
+  $("groupRoomStatus").textContent="Connected.";
   loadGroupMembers(id);
   groupMessagesRef=db.ref("groups/"+id+"/messages").limitToLast(100);
-  groupMessagesRef.on("value",snapshot=>{
+  groupMessagesRef.on("value",snap=>{
    if(!groupRoomOpen||activeGroupId!==id)return;
    const box=$("groupRoomMessages");box.innerHTML="";
-   snapshot.forEach(child=>{
-    const msg=child.val()||{},item=document.createElement("div");item.className="message";
-    const sender=document.createElement("strong");sender.textContent=msg.name||"Member";
-    const content=document.createElement("div");content.textContent=msg.text||"";
-    const time=document.createElement("div");time.className="small";
-    time.textContent=msg.createdAt?new Date(msg.createdAt).toLocaleString():"";
-    item.append(sender,content,time);box.appendChild(item);
+   snap.forEach(child=>{
+    const m=child.val()||{},item=document.createElement("div");item.className="message";
+    const name=document.createElement("strong");name.textContent=m.name||"Member";
+    const content=document.createElement("div");content.textContent=m.text||"";
+    item.append(name,content);box.appendChild(item);
    });box.scrollTop=box.scrollHeight;
-  },error=>$("groupRoomStatus").textContent="Chat error: "+error.message);
- }catch(error){
-  $("groupRoomStatus").textContent="Could not open group: "+error.message;
- }
+  },e=>showError("groupRoomStatus",e));
+ }catch(e){showError("groupRoomStatus",e)}
 }
 async function loadGroupMembers(id){
  const box=$("groupRoomMembers");box.innerHTML="";
- $("groupMembersStatus").textContent="Loading members...";
  try{
   const snap=await db.ref("groups/"+id+"/members").once("value");
-  const members=snap.val()||{},uids=Object.keys(members).filter(uid=>members[uid]===true);
-  if(!uids.length){$("groupMembersStatus").textContent="No member information available.";return}
-  $("groupMembersStatus").textContent=uids.length+" group member(s)";
+  const members=snap.val()||{},uids=Object.keys(members).filter(u=>members[u]===true);
+  $("groupMembersStatus").textContent=uids.length+" members";
   for(const uid of uids){
-   let profile={};
-   try{const p=await db.ref("publicProfiles/"+uid).once("value");profile=p.val()||{}}
-   catch(e){profile={}}
-   const name=profile.displayName||(uid===currentUser.uid?currentName:"Zenvix Member");
-   const card=document.createElement("div");card.className="room-member";
-   const avatar=document.createElement("div");avatar.className="avatar";avatar.textContent=name.charAt(0).toUpperCase();
-   const title=document.createElement("strong");title.textContent=name;
-   const status=document.createElement("div");status.className="small";
-   status.textContent=profile.online===true?"● Online":uid===currentUser.uid?"You":"Member";
-   if(profile.online===true)status.classList.add("online");
-   card.append(avatar,title,status);box.appendChild(card);
+   let p={};try{const s=await db.ref("publicProfiles/"+uid).once("value");p=s.val()||{}}catch(e){}
+   const name=p.displayName||(uid===currentUser.uid?currentName:"Zenvix Member");
+   const row=document.createElement("div");row.className="member";
+   const avatar=document.createElement("div");avatar.className="avatar";avatar.textContent=name[0].toUpperCase();
+   const label=document.createElement("strong");label.textContent=name;
+   row.append(avatar,label);box.appendChild(row);
   }
- }catch(error){$("groupMembersStatus").textContent="Member list unavailable: "+error.message}
+ }catch(e){$("groupMembersStatus").textContent="Member list unavailable: "+e.message}
 }
-async function sendGroupRoomMessage(){
- const input=$("groupRoomInput"),button=$("groupRoomSend");
- const text=input.value.trim();if(!text||!currentUser||!activeGroupId)return;
- button.disabled=true;$("groupRoomStatus").textContent="Sending...";
+async function sendGroupMessage(){
+ const text=$("groupRoomInput").value.trim();if(!text||!activeGroupId)return;
  try{
   const check=await db.ref("groups/"+activeGroupId+"/members/"+currentUser.uid).once("value");
-  if(check.val()!==true)throw new Error("You are no longer a member of this group.");
+  if(check.val()!==true)throw new Error("You are not a member.");
   await db.ref("groups/"+activeGroupId+"/messages").push({
    uid:currentUser.uid,name:currentName,text,createdAt:Date.now()
   });
-  input.value="";$("groupRoomStatus").textContent="Message sent.";
- }catch(error){$("groupRoomStatus").textContent="Send error: "+error.message}
- finally{button.disabled=false}
+  $("groupRoomInput").value="";$("groupRoomStatus").textContent="Sent.";
+ }catch(e){showError("groupRoomStatus",e)}
 }
-$("groupRoomSend").onclick=sendGroupRoomMessage;
-$("groupRoomInput").addEventListener("keydown",e=>{if(e.key==="Enter")sendGroupRoomMessage()});
+$("groupRoomSend").onclick=sendGroupMessage;
+$("groupRoomInput").addEventListener("keydown",e=>{
+ if(e.key==="Enter")sendGroupMessage();
+});
 function closeGroupRoom(){
  if(groupMessagesRef){groupMessagesRef.off();groupMessagesRef=null}
- if(activeGroupMemberRef){activeGroupMemberRef.off();activeGroupMemberRef=null}
- activeGroupId=null;groupRoomOpen=false;
- $("groupRoomPage").style.display="none";
+ activeGroupId=null;groupRoomOpen=false;$("groupRoomPage").style.display="none";
 }
 $("groupBack").onclick=closeGroupRoom;
 
 /* ONLINE MEMBERS */
 function startMembers(){
- if(membersRef)membersRef.off();membersRef=db.ref("publicProfiles");
- membersRef.on("value",snapshot=>{
-  const panel=$("membersPanel");
-  panel.innerHTML=`<h3>🌐 Online Members</h3><div id="memberCount"></div><div id="memberList"></div>`;
-  const data=snapshot.val()||{};
-  const members=Object.entries(data).map(([uid,p])=>({
-   uid,name:p.displayName||"Zenvix User",online:p.online===true,lastSeen:p.lastSeen||null
+ if(membersRef)membersRef.off();
+ membersRef=db.ref("publicProfiles");
+ membersRef.on("value",snap=>{
+  const panel=$("membersPanel");panel.innerHTML="";
+  const data=snap.val()||{};
+  const entries=Object.entries(data).map(([uid,p])=>({
+   uid,name:p.displayName||"Zenvix Member",online:p.online===true
   })).sort((a,b)=>Number(b.online)-Number(a.online));
-  $("memberCount").textContent=members.filter(m=>m.online).length+" Online • "+members.length+" Members";
-  if(!members.length){$("memberList").textContent="No members yet.";return}
-  members.forEach(member=>{
+  const count=document.createElement("p");count.className="small";
+  count.textContent=entries.filter(x=>x.online).length+" online • "+entries.length+" members";
+  panel.appendChild(count);
+  entries.forEach(m=>{
    const row=document.createElement("div");row.className="member";
-   const avatar=document.createElement("div");avatar.className="avatar";avatar.textContent=member.name.charAt(0).toUpperCase();
-   const info=document.createElement("div");info.style.flex="1";info.style.minWidth="130px";
-   const name=document.createElement("strong");name.textContent=member.name;
-   const status=document.createElement("div");status.className="small";
-   status.textContent=member.online?"● Online":member.lastSeen?"Offline • Last seen: "+new Date(member.lastSeen).toLocaleString():"Offline";
-   if(member.online)status.classList.add("online");
+   const avatar=document.createElement("div");avatar.className="avatar";avatar.textContent=m.name[0].toUpperCase();
+   const info=document.createElement("div");info.className="member-info";
+   const name=document.createElement("strong");name.textContent=m.name;
+   const status=document.createElement("div");status.className="small "+(m.online?"online":"offline");
+   status.textContent=m.online?"● Online":"Offline";
    info.append(name,status);
-   const button=document.createElement("button");button.textContent=member.uid===currentUser.uid?"This is you":"🔒 Private Message";
-   button.style.width="auto";button.style.padding="10px 12px";
-   if(member.uid===currentUser.uid)button.disabled=true;
-   else button.onclick=()=>openPrivateChat(member.uid,member.name);
-   row.append(avatar,info,button);$("memberList").appendChild(row);
+   const button=document.createElement("button");
+   button.textContent=m.uid===currentUser.uid?"You":"Private Message";
+   if(m.uid===currentUser.uid)button.disabled=true;
+   else button.onclick=()=>openPrivateChat(m.uid,m.name);
+   row.append(avatar,info,button);panel.appendChild(row);
   });
- },error=>$("membersPanel").textContent="Members error: "+error.message);
+ },e=>panelError("membersPanel",e));
 }
+function panelError(id,e){if($(id))$(id).textContent=e.message}
 
 /* GAMING LIVE */
 function startGaming(){
  $("gamingArea").innerHTML=`
- <div class="game-hero"><h2>🎮 ZENVIX GAMING LIVE</h2>
- <p>Play your favourite game. Share your gameplay with Zenvix.</p>
- <p class="small">GTA V • GTA Vice City • PUBG • Free Fire • Minecraft • Other Games</p></div>
- <h3>🔴 Start Your Live</h3>
- <label class="small">Choose your game</label>
- <select id="gameChoice">
- <option value="GTA 5">GTA 5</option><option value="GTA Vice City">GTA Vice City</option>
- <option value="PUBG Mobile">PUBG Mobile</option><option value="Free Fire">Free Fire</option>
- <option value="Minecraft">Minecraft</option><option value="Other Game">Other Game</option></select>
- <input id="streamTitle" maxlength="120" placeholder="Live title e.g. GTA 5 gameplay">
- <button id="goLiveButton">🔴 Go Live / Share Screen</button>
- <button id="stopLiveButton" class="stop-live" disabled>Stop My Live</button>
- <video id="localPreview" class="live-preview" autoplay muted playsinline style="display:none"></video>
- <p id="gamingStatus" class="small">Choose a game and press Go Live.</p>
- <p class="small">Note: This version creates a live session and local screen preview. Other viewers cannot see video until WebRTC broadcasting is connected.</p>
- <hr style="border-color:#304866;margin:20px 0">
- <h3>🌍 Watch Live</h3><div id="liveList"><p class="small">Loading live streams...</p></div>
- <h3>🎁 Gifts & Wallet</h3><div class="game-card"><p>Gifts and creator wallet are planned for a future update.</p><p class="small">No real payments or withdrawals are active yet.</p></div>
- <h3>🏆 Tournaments</h3><div class="game-card">Tournaments and rankings are coming soon.</div>`;
+  <div class="game-hero"><h2>🎮 ZENVIX GAMING LIVE</h2>
+   <p>Share your gaming sessions with the community.</p>
+   <p class="small">PUBG • Free Fire • GTA • Minecraft • Other Games</p>
+  </div>
+  <div class="card">
+   <h3>Start Your Live Session</h3>
+   <select id="gameChoice">
+    <option>PUBG Mobile</option><option>Free Fire</option>
+    <option>GTA 5</option><option>GTA Vice City</option>
+    <option>Minecraft</option><option>Other Game</option>
+   </select>
+   <input id="streamTitle" maxlength="120" placeholder="Live title">
+   <button id="goLiveButton">🔴 Go Live</button>
+   <button id="stopLiveButton" class="danger" disabled>Stop My Live</button>
+   <video id="localPreview" class="live-preview" autoplay muted playsinline style="display:none"></video>
+   <p id="gamingStatus" class="small">Choose a game to start.</p>
+   <p class="small">Screen preview is local only. Viewer broadcasting needs WebRTC setup.</p>
+  </div>
+  <div class="card"><h3>🌍 Watch Live</h3><div id="liveList"></div></div>
+  <div class="card"><h3>🎁 Gifts & Wallet</h3><p class="small">Future feature. Payments and withdrawals are not active.</p></div>
+  <div class="card"><h3>🏆 Tournaments</h3><p class="small">Coming in a future update.</p></div>`;
  $("goLiveButton").onclick=startMyLive;$("stopLiveButton").onclick=stopMyLive;
- gamingRef=db.ref("liveStreams");gamingListener=snapshot=>renderLiveStreams(snapshot);
- gamingRef.on("value",gamingListener,error=>{if($("gamingStatus"))$("gamingStatus").textContent="Live list error: "+error.message});
+ gamingRef=db.ref("liveStreams");gamingListener=snap=>renderLiveStreams(snap);
+ gamingRef.on("value",gamingListener,e=>showError("gamingStatus",e));
 }
 function stopGamingListener(){
  if(gamingRef&&gamingListener)gamingRef.off("value",gamingListener);
  gamingRef=null;gamingListener=null;
 }
-function renderLiveStreams(snapshot){
+function renderLiveStreams(snap){
  const list=$("liveList");if(!list)return;list.innerHTML="";
- let found=0;
- snapshot.forEach(child=>{
-  const stream=child.val()||{};if(stream.status!=="live")return;found++;
-  const card=document.createElement("div");card.className="game-card";
-  const title=document.createElement("strong");title.textContent="🔴 "+(stream.title||"Live Stream");
-  const game=document.createElement("p");game.textContent="🎮 "+(stream.game||"Game");
-  const owner=document.createElement("p");owner.className="small";owner.textContent="Streamer: "+(stream.ownerName||"Zenvix Member");
-  const note=document.createElement("p");note.className="small";note.textContent="Live session found. Viewer video connection is not enabled yet.";
-  card.append(title,game,owner,note);
-  if(stream.ownerUid===currentUser.uid){const own=document.createElement("p");own.className="small";own.textContent="This is your live session.";card.appendChild(own)}
-  list.appendChild(card);
+ let count=0;
+ snap.forEach(child=>{
+  const s=child.val()||{};if(s.status!=="live")return;count++;
+  const card=document.createElement("div");card.className="list-card";
+  const title=document.createElement("strong");title.textContent="🔴 "+(s.title||"Live Session");
+  const game=document.createElement("p");game.className="small";game.textContent="🎮 "+(s.game||"Game");
+  const owner=document.createElement("p");owner.className="small";owner.textContent="Streamer: "+(s.ownerName||"Member");
+  card.append(title,game,owner);list.appendChild(card);
  });
- if(!found)list.textContent="No one is live right now. Be the first to start a stream!";
+ if(!count)list.textContent="No live sessions right now.";
 }
 async function startMyLive(){
- if(!currentUser||!db)return;
- const button=$("goLiveButton"),status=$("gamingStatus"),game=$("gameChoice").value;
- const title=$("streamTitle").value.trim()||game+" Live Gameplay";
- button.disabled=true;status.textContent="Preparing your live session...";
+ if(!currentUser)return;
+ const button=$("goLiveButton");button.disabled=true;
  try{
-  if(activeStreamId)throw new Error("You already have an active session. Stop it first.");
+  if(activeStreamId)throw new Error("You already have a live session.");
+  const game=$("gameChoice").value;
+  const title=$("streamTitle").value.trim()||game+" Live";
   const ref=db.ref("liveStreams").push();
   await ref.set({ownerUid:currentUser.uid,ownerName:currentName,game,title,status:"live",createdAt:Date.now()});
   activeStreamId=ref.key;$("stopLiveButton").disabled=false;
-  status.textContent="Live session listed. Trying to open screen preview...";
+  $("gamingStatus").textContent="Your live session is listed.";
   try{
-   if(!navigator.mediaDevices||!navigator.mediaDevices.getDisplayMedia)throw new Error("Screen sharing is not supported by this browser.");
+   if(!navigator.mediaDevices||!navigator.mediaDevices.getDisplayMedia)throw new Error("Screen sharing not supported.");
    localStream=await navigator.mediaDevices.getDisplayMedia({video:true,audio:true});
    const video=$("localPreview");video.srcObject=localStream;video.style.display="block";
    localStream.getVideoTracks()[0].addEventListener("ended",stopMyLive);
-   status.textContent="Screen preview started. Other viewers cannot see video until WebRTC broadcasting is connected.";
-  }catch(screenError){status.textContent="Live listing created, but screen preview unavailable: "+screenError.message}
- }catch(error){status.textContent="Could not start live: "+error.message}
+   $("gamingStatus").textContent="Local screen preview active. Other viewers cannot see it yet.";
+  }catch(e){$("gamingStatus").textContent="Live listing created. Screen preview unavailable: "+e.message}
+ }catch(e){showError("gamingStatus",e)}
  finally{button.disabled=false}
 }
 async function stopMyLive(){
- const status=$("gamingStatus");
  try{
-  if(localStream){localStream.getTracks().forEach(track=>track.stop());localStream=null}
+  if(localStream){localStream.getTracks().forEach(t=>t.stop());localStream=null}
   const video=$("localPreview");if(video){video.srcObject=null;video.style.display="none"}
   if(activeStreamId&&currentUser)await db.ref("liveStreams/"+activeStreamId).update({status:"ended"});
-  activeStreamId=null;if($("stopLiveButton"))$("stopLiveButton").disabled=true;
-  if(status)status.textContent="Your live session has ended.";
- }catch(error){if(status)status.textContent="Stop error: "+error.message}
+  activeStreamId=null;
+  if($("stopLiveButton"))$("stopLiveButton").disabled=true;
+  if($("gamingStatus"))$("gamingStatus").textContent="Live session ended.";
+ }catch(e){showError("gamingStatus",e)}
 }
+
+/* LIVE ROOM DIRECTORY */
+async function createLiveRoom(){
+ const name=$("liveRoomName").value.trim();
+ if(!name){$("liveRoomStatus").textContent="Enter a room name.";return}
+ try{
+  const ref=db.ref("liveRooms").push();
+  await ref.set({
+   name,ownerUid:currentUser.uid,ownerName:currentName,
+   createdAt:Date.now(),status:"open"
+  });
+  $("liveRoomName").value="";
+  $("liveRoomStatus").textContent="Room created. Room ID: "+ref.key;
+  $("liveRoomCode").value=ref.key;
+  loadLiveRooms();
+ }catch(e){showError("liveRoomStatus",e)}
+}
+async function joinLiveRoom(){
+ const id=$("liveRoomCode").value.trim();if(!id)return;
+ try{
+  const snap=await db.ref("liveRooms/"+id).once("value");
+  if(!snap.exists())throw new Error("Room not found.");
+  await db.ref("liveRooms/"+id+"/participants/"+currentUser.uid).set({
+   name:currentName,joinedAt:Date.now()
+  });
+  $("liveRoomStatus").textContent="You joined "+(snap.val().name||"the room")+". Room calling setup is still required.";
+ }catch(e){showError("liveRoomStatus",e)}
+}
+function loadLiveRooms(){
+ db.ref("liveRooms").limitToLast(30).on("value",snap=>{
+  const box=$("liveRoomList");box.innerHTML="<h3>Available Rooms</h3>";
+  let count=0;
+  snap.forEach(child=>{
+   const r=child.val()||{};if(r.status!=="open")return;count++;
+   const card=document.createElement("div");card.className="list-card";
+   const title=document.createElement("strong");title.textContent="📹 "+(r.name||"Live Room");
+   const owner=document.createElement("p");owner.className="small";owner.textContent="Host: "+(r.ownerName||"Member");
+   const btn=document.createElement("button");btn.textContent="Join Room";
+   btn.onclick=()=>{$("liveRoomCode").value=child.key;joinLiveRoom()};
+   card.append(title,owner,btn);box.appendChild(card);
+  });
+  if(!count)box.innerHTML+="<p class='small'>No open rooms yet.</p>";
+ },e=>showError("liveRoomStatus",e));
+}
+$("createLiveRoom").onclick=createLiveRoom;
+$("joinLiveRoom").onclick=joinLiveRoom;
 
 /* LOGOUT */
 $("logoutButton").onclick=async()=>{
  if(!auth)return;
  try{
-  await stopMyLive();stopMessages();stopPrivateChat();stopGamingListener();
-  closeGroupRoom();closePrivateRoom();
+  await stopMyLive();stopMessages();stopWorldChat();stopPrivateChat();
+  stopGamingListener();closeGroupRoom();closePrivateRoom();
   if(privateInboxRef)privateInboxRef.off();
   if(groupListRef)groupListRef.off();
   if(profileRef)profileRef.off();
   if(membersRef)membersRef.off();
   await auth.signOut();currentUser=null;currentName="";
-  $("ownerDashboard").innerHTML="";$("status").textContent="You have logged out.";
- }catch(error){showError("status",error)}
+  $("status").textContent="Logged out.";
+ }catch(e){showError("status",e)}
 };
 
-window.addEventListener("error",event=>diagnostic("JavaScript error: "+(event.message||"Unknown error")));
-window.addEventListener("unhandledrejection",event=>diagnostic("Async error: "+(event.reason&&event.reason.message?event.reason.message:String(event.reason))));
+window.addEventListener("error",e=>diagnostic("JavaScript error: "+e.message));
+window.addEventListener("unhandledrejection",e=>diagnostic("Async error: "+String(e.reason)));
 
 if("serviceWorker" in navigator){
  window.addEventListener("load",()=>{
   navigator.serviceWorker.register("./service-worker.js")
-   .then(()=>console.log("ZENVIX Service Worker Connected"))
-   .catch(error=>console.error("ZENVIX Service Worker Error:",error));
+   .then(()=>console.log("ZENVIX service worker ready"))
+   .catch(e=>console.error(e));
  });
 }
 initializeZenvix();
